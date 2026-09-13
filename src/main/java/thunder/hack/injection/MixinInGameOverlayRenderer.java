@@ -3,7 +3,6 @@ package thunder.hack.injection;
 import thunder.hack.core.manager.client.ModuleManager;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.hud.InGameOverlayRenderer;
-import net.minecraft.client.render.command.OrderedRenderCommandQueue;
 import net.minecraft.client.texture.Sprite;
 import net.minecraft.client.util.math.MatrixStack;
 import org.spongepowered.asm.mixin.Mixin;
@@ -29,13 +28,5 @@ public class MixinInGameOverlayRenderer {
     private static void renderInWallOverlayHook(Sprite sprite, MatrixStack matrices, CallbackInfo ci) {
         if (ModuleManager.noRender.isEnabled() && ModuleManager.noRender.blockOverlay.getValue() || ModuleManager.shaders.isEnabled())
             ci.cancel();
-    }
-
-    @Inject(method = "renderFloatingItem(Lnet/minecraft/client/util/math/MatrixStack;FLnet/minecraft/client/render/command/OrderedRenderCommandQueue;)V", at = @At("HEAD"), cancellable = true)
-    private void renderFloatingItemHook(MatrixStack matrices, float tickProgress, OrderedRenderCommandQueue queue, CallbackInfo ci) {
-        if (ModuleManager.totemAnimation.isEnabled()) {
-            ModuleManager.totemAnimation.renderFloatingItem(tickProgress);
-            ci.cancel();
-        }
     }
 }

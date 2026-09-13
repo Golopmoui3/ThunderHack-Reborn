@@ -9,12 +9,12 @@ import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec3d;
 import thunder.hack.core.manager.client.ModuleManager;
 import thunder.hack.events.impl.PacketEvent;
 import thunder.hack.features.modules.Module;
 import thunder.hack.injection.accesors.IClientPlayerEntity;
 import thunder.hack.injection.accesors.IExplosionS2CPacket;
-import thunder.hack.injection.accesors.ISPacketEntityVelocity;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.player.MovementUtility;
 
@@ -70,31 +70,32 @@ public class Velocity extends Module {
                             flag = true;
                         } else {
                             flag = false;
-                            ((ISPacketEntityVelocity) pac).setMotionX(((int) (pac.getVelocityX() * -0.1)));
-                            ((ISPacketEntityVelocity) pac).setMotionZ(((int) (pac.getVelocityZ() * -0.1)));
+                            e.cancel();
+                            Vec3d v = pac.getVelocity();
+                            mc.player.setVelocity(v.x * -0.1, v.y, v.z * -0.1);
                         }
                     }
                     case Redirect -> {
-                        double vX = Math.abs(pac.getVelocityX());
-                        double vZ = Math.abs(pac.getVelocityZ());
+                        double vX = Math.abs(pac.getVelocity().x * 8000);
+                        double vZ = Math.abs(pac.getVelocity().z * 8000);
                         double[] motion = MovementUtility.forward((vX + vZ));
-                        ((ISPacketEntityVelocity) pac).setMotionX((int) (motion[0]));
-                        ((ISPacketEntityVelocity) pac).setMotionY(0);
-                        ((ISPacketEntityVelocity) pac).setMotionZ((int) (motion[1]));
+                        e.cancel();
+                        mc.player.setVelocity(motion[0] / 8000, 0, motion[1] / 8000);
                     }
                     case Custom -> {
-                        ((ISPacketEntityVelocity) pac).setMotionX((int) ((float) pac.getVelocityX() * horizontal.getValue() / 100f));
-                        ((ISPacketEntityVelocity) pac).setMotionY((int) ((float) pac.getVelocityY() * vertical.getValue() / 100f));
-                        ((ISPacketEntityVelocity) pac).setMotionZ((int) ((float) pac.getVelocityZ() * horizontal.getValue() / 100f));
+                        e.cancel();
+                        Vec3d v = pac.getVelocity();
+                        mc.player.setVelocity(v.x * horizontal.getValue() / 100f, v.y * vertical.getValue() / 100f, v.z * horizontal.getValue() / 100f);
                     }
                     case Sunrise -> {
                         e.cancel();
-                        sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), -999.0, mc.player.getZ(), true));
+                        sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), -999.0, mc.player.getZ(), true, false));
                     }
                     case Cancel -> e.cancel();
                     case Jump -> {
-                        ((ISPacketEntityVelocity) pac).setMotionX((int) ((float) pac.getVelocityX() * horizontal.getValue() / 100f));
-                        ((ISPacketEntityVelocity) pac).setMotionZ((int) ((float) pac.getVelocityZ() * horizontal.getValue() / 100f));
+                        e.cancel();
+                        Vec3d v = pac.getVelocity();
+                        mc.player.setVelocity(v.x * horizontal.getValue() / 100f, v.y, v.z * horizontal.getValue() / 100f);
                     }
                     case OldGrim -> {
                         e.cancel();
@@ -194,8 +195,8 @@ public class Velocity extends Module {
             case GrimNew -> {
                 if (flag) {
                     if (ccCooldown <= 0) {
-                        sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), ((IClientPlayerEntity) mc.player).getLastYaw(), ((IClientPlayerEntity) mc.player).getLastPitch(), mc.player.isOnGround()));
-                        sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, BlockPos.ofFloored(mc.player.getPos()), Direction.DOWN));
+                        sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), ((IClientPlayerEntity) mc.player).getLastYaw(), ((IClientPlayerEntity) mc.player).getLastPitch(), mc.player.isOnGround(), false));
+                        sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, BlockPos.ofFloored(mc.player.getEntityPos()), Direction.DOWN));
                     }
                     flag = false;
                 }

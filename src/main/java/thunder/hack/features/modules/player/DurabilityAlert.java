@@ -34,7 +34,7 @@ public class DurabilityAlert extends Module {
             for (PlayerEntity player : mc.world.getPlayers()) {
                 if (!Managers.FRIEND.isFriend(player)) continue;
                 if (player == mc.player) continue;
-                for (ItemStack stack : player.getInventory().armor) {
+                for (ItemStack stack : InventoryUtility.getArmorItems(player)) {
                     if (stack.isEmpty() || !InventoryUtility.isArmorPiece(stack)) continue;
                     if (getDurability(stack) < percent.getValue() && timer.passedMs(30000)) {
                         mc.player.networkHandler.sendChatCommand("msg " + player.getName().getString() + (isRu() ? " Срочно чини броню!" : " Fix your armor right now!"));
@@ -46,7 +46,7 @@ public class DurabilityAlert extends Module {
         }
 
         boolean flag = false;
-        for (ItemStack stack : mc.player.getInventory().armor) {
+        for (ItemStack stack : InventoryUtility.getArmorItems(mc.player)) {
             if (stack.isEmpty() || !InventoryUtility.isArmorPiece(stack)) continue;
             if (getDurability(stack) < percent.getValue()) {
                 need_alert = true;

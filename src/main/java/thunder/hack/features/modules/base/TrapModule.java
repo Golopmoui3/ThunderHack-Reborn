@@ -103,14 +103,14 @@ public abstract class TrapModule extends PlaceModule {
     protected @Nullable BlockPos getBlockToPlace() {
         if (target == null || mc.player == null) return null;
         return getBlocks(target).stream()
-                .filter(pos -> pos.getSquaredDistance(mc.player.getPos()) < range.getPow2Value())
+                .filter(pos -> pos.getSquaredDistance(mc.player.getEntityPos()) < range.getPow2Value())
                 .filter(pos -> InteractionUtility.canPlaceBlock(pos, interact.getValue(), true))
                 .max(Comparator.comparing(pos -> mc.player.squaredDistanceTo(pos.toCenterPos())))
                 .orElse(null);
     }
 
     protected List<BlockPos> getBlocks(@NotNull PlayerEntity player) {
-        final Vec3d playerPos = player.getPos();
+        final Vec3d playerPos = player.getEntityPos();
         final List<BlockPos> offsets = new ArrayList<>();
         final List<BlockPos> holePoses = HoleUtility.getHolePoses(playerPos);
         final List<BlockPos> surroundPoses = HoleUtility.getSurroundPoses(playerPos);
@@ -134,7 +134,7 @@ public abstract class TrapModule extends PlaceModule {
                 if (interact.getValue() != InteractionUtility.Interact.AirPlace) {
                     surroundPoses.stream()
                             .map(pos -> pos.up(2))
-                            .filter(pos -> pos.getSquaredDistance(mc.player.getPos()) < range.getPow2Value())
+                            .filter(pos -> pos.getSquaredDistance(mc.player.getEntityPos()) < range.getPow2Value())
                             .max(Comparator.comparing(pos -> mc.player.squaredDistanceTo(pos.toCenterPos())))
                             .ifPresent(pos -> {
                                 offsets.add(pos);
@@ -152,7 +152,7 @@ public abstract class TrapModule extends PlaceModule {
                         .toList());
                 if (interact.getValue() != InteractionUtility.Interact.AirPlace) {
                     surroundPoses.stream()
-                            .filter(pos -> pos.getSquaredDistance(mc.player.getPos()) < range.getPow2Value())
+                            .filter(pos -> pos.getSquaredDistance(mc.player.getEntityPos()) < range.getPow2Value())
                             .max(Comparator.comparing(pos -> player.squaredDistanceTo(pos.toCenterPos())))
                             .ifPresent(pos -> {
                                 offsets.add(pos);
@@ -173,7 +173,7 @@ public abstract class TrapModule extends PlaceModule {
                 if (interact.getValue() != InteractionUtility.Interact.AirPlace) {
                     surroundPoses.stream()
                             .map(BlockPos::down)
-                            .filter(pos -> pos.getSquaredDistance(mc.player.getPos()) < range.getPow2Value())
+                            .filter(pos -> pos.getSquaredDistance(mc.player.getEntityPos()) < range.getPow2Value())
                             .max(Comparator.comparing(pos -> player.squaredDistanceTo(pos.toCenterPos())))
                             .ifPresent(pos -> {
                                 offsets.add(pos);
@@ -201,7 +201,7 @@ public abstract class TrapModule extends PlaceModule {
 
         surroundPoses.stream()
                 .map(BlockPos::down)
-                .filter(pos -> pos.getSquaredDistance(mc.player.getPos()) < range.getPow2Value())
+                .filter(pos -> pos.getSquaredDistance(mc.player.getEntityPos()) < range.getPow2Value())
                 .filter(pos -> {
                     for (Direction dir : Direction.values()) {
                         if (!mc.world.getBlockState(pos.add(dir.getVector().up())).isReplaceable()) {

@@ -157,35 +157,9 @@ public class LogoutSpots extends Module {
         }
     }
 
-    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel<PlayerEntity> modelBase, Identifier texture, int alpha) {
-        modelBase.leftPants.visible = true;
-        modelBase.rightPants.visible = true;
-        modelBase.leftSleeve.visible = true;
-        modelBase.rightSleeve.visible = true;
-        modelBase.jacket.visible = true;
-        modelBase.hat.visible = true;
-
-        double x = entity.getX() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-        double y = entity.getY() - mc.getEntityRenderDispatcher().camera.getPos().getY();
-        double z = entity.getZ() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
-        ((IEntity) entity).setPos(entity.getPos());
-        matrices.push();
-        matrices.translate((float) x, (float) y, (float) z);
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.bodyYaw)));
-        prepareScale(matrices);
-        modelBase.animateModel((PlayerEntity) entity, entity.limbAnimator.getAnimationProgress(), entity.limbAnimator.getSpeed(), Render3DEngine.getTickDelta());
-        float limbSpeed = Math.min(entity.limbAnimator.getSpeed(), 1f);
-        modelBase.setAngles((PlayerEntity) entity, entity.limbAnimator.getAnimationProgress(), limbSpeed, entity.age, entity.headYaw - entity.bodyYaw, entity.getPitch());
-        BufferBuilder buffer;
-        if (renderMode.is(RenderMode.TexturedChams)) {
-            Render2DEngine.bindTexture(texture);
-            buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-        } else {
-            buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-        }
-        modelBase.render(matrices, buffer, 10, 0);
-        Render2DEngine.endBuilding(buffer);
-        matrices.pop();
+    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel modelBase, Identifier texture, int alpha) {
+        // TODO(1.21.11): fake-player model rendering needs a command-queue port (no queue in the 3D hook);
+        //  logout markers, boxes and nametags still render, only the stored body is skipped for now.
     }
 
     private static void prepareScale(@NotNull MatrixStack matrixStack) {

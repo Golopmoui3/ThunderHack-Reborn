@@ -132,7 +132,7 @@ public class PlayerManager implements IManager {
     public void onPacketReceive(PacketEvent.@NotNull Receive event) {
         if (event.getPacket() instanceof UpdateSelectedSlotS2CPacket slot) {
             switchTimer.reset();
-            serverSideSlot = slot.getSlot();
+            serverSideSlot = slot.slot();
         }
     }
 
@@ -152,7 +152,7 @@ public class PlayerManager implements IManager {
             return true;
 
         HitResult result = rayTrace(distance, yaw, pitch);
-        Vec3d startPoint = mc.player.getPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+        Vec3d startPoint = mc.player.getEntityPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
         double distancePow2 = Math.pow(distance, 2);
 
         if (result != null)
@@ -187,7 +187,7 @@ public class PlayerManager implements IManager {
 
     public boolean checkRtx(float yaw, float pitch, float distance, float wallDistance, Entity entity) {
         HitResult result = rayTrace(distance, yaw, pitch);
-        Vec3d startPoint = mc.player.getPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+        Vec3d startPoint = mc.player.getEntityPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
         double distancePow2 = Math.pow(distance, 2);
 
         if (result != null)
@@ -221,7 +221,7 @@ public class PlayerManager implements IManager {
     public Entity getRtxTarget(float yaw, float pitch, float distance, boolean ignoreWalls) {
         Entity targetedEntity = null;
         HitResult result = ignoreWalls ? null : rayTrace(distance, yaw, pitch);
-        Vec3d vec3d = mc.player.getPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+        Vec3d vec3d = mc.player.getEntityPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
         double distancePow2 = Math.pow(distance, 2);
         if (result != null) distancePow2 = result.getPos().squaredDistanceTo(vec3d);
         Vec3d vec3d2 = getRotationVector(pitch, yaw);
@@ -243,7 +243,7 @@ public class PlayerManager implements IManager {
     }
 
     public Vec3d getRtxPoint(float yaw, float pitch, float distance) {
-        Vec3d vec3d = mc.player.getPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
+        Vec3d vec3d = mc.player.getEntityPos().add(0, mc.player.getEyeHeight(mc.player.getPose()), 0);
         double distancePow2 = Math.pow(distance, 2);
         Vec3d vec3d2 = getRotationVector(pitch, yaw);
         Vec3d vec3d3 = vec3d.add(vec3d2.x * distance, vec3d2.y * distance, vec3d2.z * distance);
@@ -299,7 +299,7 @@ public class PlayerManager implements IManager {
 
     public boolean isInWeb() {
         Box pBox = mc.player.getBoundingBox();
-        BlockPos pBlockPos = BlockPos.ofFloored(mc.player.getPos());
+        BlockPos pBlockPos = BlockPos.ofFloored(mc.player.getEntityPos());
 
         for (int x = pBlockPos.getX() - 2; x <= pBlockPos.getX() + 2; x++) {
             for (int y = pBlockPos.getY() - 1; y <= pBlockPos.getY() + 4; y++) {

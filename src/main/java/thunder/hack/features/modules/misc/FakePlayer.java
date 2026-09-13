@@ -73,9 +73,9 @@ public class FakePlayer extends Module {
     public void onPacketReceive(PacketEvent.Receive e) {
         if (e.getPacket() instanceof ExplosionS2CPacket explosion && fakePlayer != null && fakePlayer.hurtTime == 0) {
             fakePlayer.onDamaged(mc.world.getDamageSources().generic());
-            fakePlayer.setHealth(fakePlayer.getHealth() + fakePlayer.getAbsorptionAmount() - ExplosionUtility.getAutoCrystalDamage(new Vec3d(explosion.getX(), explosion.getY(), explosion.getZ()), fakePlayer, 0, false));
+            fakePlayer.setHealth(fakePlayer.getHealth() + fakePlayer.getAbsorptionAmount() - ExplosionUtility.getAutoCrystalDamage(explosion.center(), fakePlayer, 0, false));
             if (fakePlayer.isDead()) {
-                if (fakePlayer.tryUseDeathProtector(mc.world.getDamageSources().generic())) {
+                if (tryUseTotemFake()) {
                     fakePlayer.setHealth(10f);
 
 
@@ -107,7 +107,7 @@ public class FakePlayer extends Module {
                 fakePlayer.setHeadYaw(p.yaw);
 
                 fakePlayer.updateTrackedPosition(p.x, p.y, p.z);
-                fakePlayer.updateTrackedPositionAndAngles(p.x, p.y, p.z, p.yaw, p.pitch, 3);
+                fakePlayer.updateTrackedPositionAndAngles(new Vec3d(p.x, p.y, p.z), p.yaw, p.pitch);
             } else movementTick = 0;
 
             if (autoTotem.getValue() && fakePlayer.getOffHandStack().getItem() != Items.TOTEM_OF_UNDYING)
@@ -132,7 +132,7 @@ public class FakePlayer extends Module {
                 fakePlayer.setHealth(fakePlayer.getHealth() + fakePlayer.getAbsorptionAmount() - InventoryUtility.getHitDamage(mc.player.getMainHandStack(), fakePlayer));
             else fakePlayer.setHealth(fakePlayer.getHealth() + fakePlayer.getAbsorptionAmount() - 1f);
             if (fakePlayer.isDead()) {
-                if (fakePlayer.tryUseDeathProtector(mc.world.getDamageSources().generic())) {
+                if (tryUseTotemFake()) {
                     fakePlayer.setHealth(10f);
                     new EntityStatusS2CPacket(fakePlayer, EntityStatuses.USE_TOTEM_OF_UNDYING).apply(mc.player.networkHandler);
                 }
@@ -140,10 +140,24 @@ public class FakePlayer extends Module {
         }
     }
 
+    /**
+     * 1.21.11 removed LivingEntity#tryUseDeathProtector - the fake player emulates
+     * totem behavior directly (consume totem from hand, heal, fire event).
+     */
+    private boolean tryUseTotemFake() {
+        for (Hand hand : Hand.values()) {
+            ItemStack stack = fakePlayer.getStackInHand(hand);
+            if (stack.isOf(Items.TOTEM_OF_UNDYING)) {
+                stack.decrement(1);
+                return true;
+            }
+        }
+        return false;
+    }
+
     @Override
     public void onDisable() {
         if (fakePlayer == null) return;
-        fakePlayer.kill();
         fakePlayer.setRemoved(Entity.RemovalReason.KILLED);
         fakePlayer.onRemoved();
         fakePlayer = null;

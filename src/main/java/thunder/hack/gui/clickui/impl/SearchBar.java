@@ -59,7 +59,7 @@ public class SearchBar extends AbstractButton {
     public void keyTyped(int keyCode) {
         super.keyTyped(keyCode);
 
-        if (keyCode == GLFW.GLFW_KEY_F && (InputUtil.isKeyPressed(mc.getWindow().getHandle(), GLFW.GLFW_KEY_LEFT_CONTROL) || InputUtil.isKeyPressed(mc.getWindow().getHandle(), GLFW.GLFW_KEY_RIGHT_CONTROL))) {
+        if (keyCode == GLFW.GLFW_KEY_F && (InputUtil.isKeyPressed(mc.getWindow(), GLFW.GLFW_KEY_LEFT_CONTROL) || InputUtil.isKeyPressed(mc.getWindow(), GLFW.GLFW_KEY_RIGHT_CONTROL))) {
             listening = !listening;
             ThunderHack.currentKeyListener = ThunderHack.KeyListening.Search;
             return;

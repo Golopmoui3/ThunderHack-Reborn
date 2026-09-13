@@ -33,13 +33,13 @@ public class TotemCounter extends HudElement {
         float factor = Math.abs(angle < 0 ? angle / 15f : 0f);
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().translate(xPos, yPos, 0);
-        context.getMatrices().multiply(RotationAxis.NEGATIVE_Z.rotation((float) Math.toRadians(-Render2DEngine.interpolateFloat(prevAngle, angle, Render3DEngine.getTickDelta()))));
-        context.getMatrices().translate(-xPos, -yPos, 0);
+        context.getMatrices().translate(xPos, yPos);
+        context.getMatrices().rotate((float) Math.toRadians(Render2DEngine.interpolateFloat(prevAngle, angle, Render3DEngine.getTickDelta())));
+        context.getMatrices().translate(-xPos, -yPos);
 
-        context.getMatrices().translate(xPos - 36, yPos - 9, 0);
+        context.getMatrices().translate(xPos - 36, yPos - 9);
         context.drawItem(Items.TOTEM_OF_UNDYING.getDefaultStack(), 0, 0);
-        context.getMatrices().translate(-(xPos - 36), -(yPos - 9), 0);
+        context.getMatrices().translate(-(xPos - 36), -(yPos - 9));
 
         if (factor > 0)
             Render2DEngine.drawBlurredShadow(context, xPos - 34, yPos - 6, 11, 11, 8, Render2DEngine.injectAlpha(new Color(0xFF0000), (int) (255 * factor)));

@@ -48,14 +48,14 @@ public class Spider extends Module {
             mc.player.setPitch(82);
             int slot = getAtHotBar();
             if (slot != -1) {
-                int originalSlot = mc.player.getInventory().selectedSlot;
-                mc.player.getInventory().selectedSlot = slot;
+                int originalSlot = mc.player.getInventory().getSelectedSlot();
+                mc.player.getInventory().setSelectedSlot(slot);
                 sendPacket(new UpdateSelectedSlotC2SPacket(slot));
 
                 mc.interactionManager.interactItem(mc.player, Hand.MAIN_HAND);
                 mc.player.swingHand(Hand.MAIN_HAND);
 
-                mc.player.getInventory().selectedSlot = originalSlot;
+                mc.player.getInventory().setSelectedSlot(originalSlot);
                 sendPacket(new UpdateSelectedSlotC2SPacket(originalSlot));
             }
 
@@ -94,7 +94,7 @@ public class Spider extends Module {
                 Vec3d hitVec = new Vec3d(neighbour.getX() + 0.5, neighbour.getY() + 0.5, neighbour.getZ() + 0.5).add(new Vec3d(opposite.getUnitVector()).multiply(0.5));
                 sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(Hand.MAIN_HAND, new BlockHitResult(hitVec, opposite, neighbour, false), id));
                 sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
-                if (mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos()).add(0, 2, 0)).getBlock() != Blocks.AIR) {
+                if (mc.world.getBlockState(BlockPos.ofFloored(mc.player.getEntityPos()).add(0, 2, 0)).getBlock() != Blocks.AIR) {
                     sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.START_DESTROY_BLOCK, neighbour, opposite));
                     sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, neighbour, opposite));
                 }
@@ -102,7 +102,7 @@ public class Spider extends Module {
             }
             mc.player.setOnGround(true);
             mc.player.jump();
-            sendPacket(new UpdateSelectedSlotC2SPacket(mc.player.getInventory().selectedSlot));
+            sendPacket(new UpdateSelectedSlotC2SPacket(mc.player.getInventory().getSelectedSlot()));
         }
     }
 

@@ -32,7 +32,7 @@ public final class Quiver extends Module {
     @Override
     public void onEnable() {
         count = 0;
-        preBowSlot = mc.player.getInventory().selectedSlot;
+        preBowSlot = mc.player.getInventory().getSelectedSlot();
     }
 
     @Override
@@ -87,7 +87,7 @@ public final class Quiver extends Module {
     }
 
     private void releaseBow() {
-        sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(mc.player.getYaw(), -90, mc.player.isOnGround()));
+        sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(mc.player.getYaw(), -90, mc.player.isOnGround(), false));
         mc.options.useKey.setPressed(false);
         mc.interactionManager.stopUsingItem(mc.player);
         count++;

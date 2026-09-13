@@ -5,6 +5,8 @@ import net.minecraft.client.gl.RenderPipelines;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.gui.DrawContext;
+import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.ClientPlayerLikeState;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.player.PlayerEntity;
@@ -152,7 +154,7 @@ public final class Core {
     @SuppressWarnings("unused")
     public void onEntitySpawn(EventEntitySpawn e) {
         new ArrayList<>(InteractionUtility.awaiting.keySet()).forEach(bp -> {
-            if (e.getEntity() != null && bp.getSquaredDistance(e.getEntity().getPos()) < 4.)
+            if (e.getEntity() != null && bp.getSquaredDistance(e.getEntity().getEntityPos()) < 4.)
                 InteractionUtility.awaiting.remove(bp);
         });
     }*/
@@ -172,13 +174,13 @@ public final class Core {
             float xOffset = mc.getWindow().getScaledWidth() / 2f;
             float yOffset = mc.getWindow().getScaledHeight() / 2f;
             float yaw = getRotations(new Vec2f(ThunderHack.gps_position.getX(), ThunderHack.gps_position.getZ())) - mc.player.getYaw();
-            e.getMatrices().translate(xOffset, yOffset, 0.0F);
-            e.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw));
-            e.getMatrices().translate(-xOffset, -yOffset, 0.0F);
+            e.getMatrices().translate(xOffset, yOffset);
+            e.getMatrices().rotate((float) Math.toRadians(yaw));
+            e.getMatrices().translate(-xOffset, -yOffset);
             Render2DEngine.drawTracerPointer(e, xOffset, yOffset - 50, 12.5f, 0.5f, 3.63f, true, true, HudEditor.getColor(1).getRGB());
-            e.getMatrices().translate(xOffset, yOffset, 0.0F);
-            e.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-yaw));
-            e.getMatrices().translate(-xOffset, -yOffset, 0.0F);
+            e.getMatrices().translate(xOffset, yOffset);
+            e.getMatrices().rotate((float) Math.toRadians(-yaw));
+            e.getMatrices().translate(-xOffset, -yOffset);
             FontRenderers.modules.drawCenteredString(e, "gps (" + dst + "m)", (float) (Math.sin(Math.toRadians(yaw)) * 50f) + xOffset, (float) (yOffset - (Math.cos(Math.toRadians(yaw)) * 50f)) - 23, -1);
 
             if (dst < 10)
@@ -212,20 +214,21 @@ public final class Core {
 
     public static float getRotations(Vec2f vec) {
         if (mc.player == null) return 0;
-        double x = vec.x - mc.player.getPos().x;
-        double z = vec.y - mc.player.getPos().z;
+        double x = vec.x - mc.player.getEntityPos().x;
+        double z = vec.y - mc.player.getEntityPos().z;
         return (float) -(Math.atan2(x, z) * (180 / Math.PI));
     }
 
     public void bobView(MatrixStack matrices, float tickDelta) {
-        if (!(mc.getCameraEntity() instanceof PlayerEntity playerEntity)) {
+        if (!(mc.getCameraEntity() instanceof AbstractClientPlayerEntity abstractPlayer)) {
             return;
         }
 
-        float g = -(playerEntity.horizontalSpeed + (playerEntity.horizontalSpeed - playerEntity.prevHorizontalSpeed) * tickDelta);
-        float h = MathHelper.lerp(tickDelta, playerEntity.prevStrideDistance, playerEntity.strideDistance);
-        matrices.translate(MathHelper.sin(g * (float) Math.PI) * h * 0.1f, -Math.abs(MathHelper.cos(g * (float) Math.PI) * h) * 0.3, 0.0f);
-        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(g * (float) Math.PI) * h * 3.0f));
-        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(g * (float) Math.PI - 0.2f) * h) * 0.3f));
+        ClientPlayerLikeState state = abstractPlayer.getState();
+        float f = state.getReverseLerpedDistanceMoved(tickDelta);
+        float g = state.lerpMovement(tickDelta);
+        matrices.translate(MathHelper.sin(f * (float) Math.PI) * g * 0.5F, -Math.abs(MathHelper.cos(f * (float) Math.PI) * g), 0.0F);
+        matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(MathHelper.sin(f * (float) Math.PI) * g * 3.0F));
+        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(Math.abs(MathHelper.cos(f * (float) Math.PI - 0.2F) * g) * 5.0F));
     }
 }

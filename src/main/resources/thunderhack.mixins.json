@@ -9,7 +9,6 @@
     "MixinBlockCollisionSpliterator",
     "MixinBossBarHud",
     "MixinCamera",
-    "MixinCapeFeatureRenderer",
     "MixinChatInputSuggestor",
     "MixinClientBrandRetriever",
     "MixinClientConnection",
@@ -94,7 +93,6 @@
     "accesors.IHeldItemRenderer",
     "accesors.ILivingEntity",
     "accesors.IPlayerInteractBlockC2SPacket",
-    "accesors.IPlayerMoveC2SPacket",
-    "accesors.ISPacketEntityVelocity"
+    "accesors.IPlayerMoveC2SPacket"
   ]
 }

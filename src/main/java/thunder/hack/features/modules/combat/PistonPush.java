@@ -139,7 +139,7 @@ public final class PistonPush extends Module {
                 return;
             }
             if (onSync) {
-                sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0], angle[1], mc.player.isOnGround()));
+                sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0], angle[1], mc.player.isOnGround(), false));
             } else {
                 mc.player.setYaw(angle[0]);
                 mc.player.setPitch(angle[1]);
@@ -147,10 +147,10 @@ public final class PistonPush extends Module {
         }
 
         placeRunnable = () -> {
-            int prevSlot = mc.player.getInventory().selectedSlot;
+            int prevSlot = mc.player.getInventory().getSelectedSlot();
             InteractionUtility.placeBlock(chargePos, InteractionUtility.Rotate.None, interact.getValue(), placeMode.getValue(), getChargeSlot(), true, false);
             sendPacket(new UpdateSelectedSlotC2SPacket(prevSlot));
-            mc.player.getInventory().selectedSlot = prevSlot;
+            mc.player.getInventory().setSelectedSlot(prevSlot);
             firstPlace = true;
             if (swing.getValue())
                 mc.player.swingHand(Hand.MAIN_HAND);
@@ -170,7 +170,7 @@ public final class PistonPush extends Module {
             if (angle == null)
                 return;
 
-            if (extra) sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0], angle[1], mc.player.isOnGround()));
+            if (extra) sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0], angle[1], mc.player.isOnGround(), false));
             else {
                 mc.player.setYaw(angle[0]);
                 mc.player.setPitch(angle[1]);
@@ -179,15 +179,15 @@ public final class PistonPush extends Module {
 
         placeRunnable = () -> {
             final float angle = InteractionUtility.calculateAngle(target.getEyePos(), pistonPos.toCenterPos())[0];
-            sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle, 0, mc.player.isOnGround()));
+            sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle, 0, mc.player.isOnGround(), false));
             float prevYaw = mc.player.getYaw();
             mc.player.setYaw(angle);
             mc.player.lastYaw = angle;
             ((IClientPlayerEntity) mc.player).setLastYaw(angle);
-            int prevSlot = mc.player.getInventory().selectedSlot;
+            int prevSlot = mc.player.getInventory().getSelectedSlot();
             InteractionUtility.placeBlock(pistonPos, InteractionUtility.Rotate.None, interact.getValue(), placeMode.getValue(), getPistonSlot(), true, false);
             sendPacket(new UpdateSelectedSlotC2SPacket(prevSlot));
-            mc.player.getInventory().selectedSlot = prevSlot;
+            mc.player.getInventory().setSelectedSlot(prevSlot);
             mc.player.setYaw(prevYaw);
             firstPlace = false;
             if (swing.getValue())
@@ -225,7 +225,7 @@ public final class PistonPush extends Module {
     }
 
     private void findPlacePoses() {
-        BlockPos targetBP = BlockPos.ofFloored(target.getPos());
+        BlockPos targetBP = BlockPos.ofFloored(target.getEntityPos());
 
         BlockPos[] surroundPoses = {
                 targetBP.add(1, 1, 0),

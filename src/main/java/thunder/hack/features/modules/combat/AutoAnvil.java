@@ -55,15 +55,15 @@ public class AutoAnvil extends Module {
         final SearchInvResult result = getBlockResult();
         final SearchInvResult plateResult = InventoryUtility.findItemInHotBar(Items.STONE_PRESSURE_PLATE, Items.BIRCH_PRESSURE_PLATE, Items.HEAVY_WEIGHTED_PRESSURE_PLATE, Items.LIGHT_WEIGHTED_PRESSURE_PLATE, Items.OAK_PRESSURE_PLATE);
 
-        final BlockPos anvilPos = BlockPos.ofFloored(target.getPos()).up(2);
+        final BlockPos anvilPos = BlockPos.ofFloored(target.getEntityPos()).up(2);
 
         if (!result.found() || (!plateResult.found() && placePlates.getValue()))
             return;
 
-        Block targetBlock = mc.world.getBlockState(BlockPos.ofFloored(target.getPos())).getBlock();
+        Block targetBlock = mc.world.getBlockState(BlockPos.ofFloored(target.getEntityPos())).getBlock();
 
         if (!(targetBlock instanceof PressurePlateBlock) && targetBlock != Blocks.HEAVY_WEIGHTED_PRESSURE_PLATE && targetBlock != Blocks.LIGHT_WEIGHTED_PRESSURE_PLATE && placePlates.getValue()) {
-            InteractionUtility.placeBlock(BlockPos.ofFloored(target.getPos()), rotate.getValue(), interact.getValue(), placeMode.getValue(), plateResult, true, true);
+            InteractionUtility.placeBlock(BlockPos.ofFloored(target.getEntityPos()), rotate.getValue(), interact.getValue(), placeMode.getValue(), plateResult, true, true);
             return;
         }
 
@@ -72,7 +72,7 @@ public class AutoAnvil extends Module {
                 final BlockPos obsidianPos = Arrays.stream(HoleUtility.VECTOR_PATTERN).parallel()
                         .map(anvilPos::add)
                         .filter(pos -> InteractionUtility.canPlaceBlock(pos, interact.getValue(), false))
-                        .filter(pos -> pos.getSquaredDistance(mc.player.getPos()) <= range.getPow2Value())
+                        .filter(pos -> pos.getSquaredDistance(mc.player.getEntityPos()) <= range.getPow2Value())
                         .findFirst()
                         .orElse(null);
                 final SearchInvResult obbyResult = InventoryUtility.findBlockInHotBar(Blocks.OBSIDIAN);

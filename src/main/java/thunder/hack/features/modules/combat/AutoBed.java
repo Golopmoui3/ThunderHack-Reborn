@@ -140,7 +140,7 @@ public final class AutoBed extends Module {
             } else if (switchToHotbar.getValue()) {
                 SearchInvResult invResult = InventoryUtility.findBed();
                 if (invResult.found() && !(mc.currentScreen instanceof CraftingScreen)) {
-                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, invResult.slot(), mc.player.getInventory().selectedSlot, SlotActionType.SWAP, mc.player);
+                    mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, invResult.slot(), mc.player.getInventory().getSelectedSlot(), SlotActionType.SWAP, mc.player);
                     sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
                 }
             }
@@ -157,7 +157,7 @@ public final class AutoBed extends Module {
 
         if (bestPos != null && placeTimer.passedMs(placeDelay.getValue()) && !(mc.world.getBlockState(bestPos.hitResult().getBlockPos().up()).getBlock() instanceof BedBlock)) {
             final float angle2 = InteractionUtility.calculateAngle(bestPos.hitResult.getBlockPos().toCenterPos(), bestPos.hitResult.getBlockPos().offset(bestPos.dir).toCenterPos())[0];
-            sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle2, 0, mc.player.isOnGround()));
+            sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle2, 0, mc.player.isOnGround(), false));
             float prevYaw = mc.player.getYaw();
             mc.player.setYaw(angle2);
             mc.player.lastYaw = angle2;
@@ -193,7 +193,7 @@ public final class AutoBed extends Module {
 
     private BedData findBedToExplode() {
         int intRange = (int) (Math.floor(range.getValue()) + 1);
-        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getPos()).up()), intRange, intRange, intRange);
+        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getEntityPos()).up()), intRange, intRange, intRange);
 
         BedData bestData = null;
 
@@ -230,7 +230,7 @@ public final class AutoBed extends Module {
 
     private BedData findBlockToPlace() {
         int intRange = (int) (Math.floor(range.getValue()) + 1);
-        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getPos()).up()), intRange, intRange, intRange);
+        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getEntityPos()).up()), intRange, intRange, intRange);
 
         BedData bestData = null;
 
@@ -299,7 +299,7 @@ public final class AutoBed extends Module {
 
     public void craftBed() {
         int intRange = (int) (Math.floor(range.getValue()) + 1);
-        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getPos()).up()), intRange, intRange, intRange);
+        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getEntityPos()).up()), intRange, intRange, intRange);
 
         for (BlockPos b : blocks_) {
             BlockState state = mc.world.getBlockState(b);

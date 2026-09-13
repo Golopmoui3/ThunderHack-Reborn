@@ -296,7 +296,7 @@ public class LegacyHud extends Module {
         int v = Math.min(mc.player.getAir(), u);
 
         int y = mc.getWindow().getScaledHeight() - 55 - (mc.player.isSubmergedInWater() || v < u ? 10 : 0);
-        for (ItemStack is : mc.player.getInventory().armor) {
+        for (ItemStack is : InventoryUtility.getArmorItems(mc.player)) {
             i++;
             if (is.isEmpty())
                 continue;

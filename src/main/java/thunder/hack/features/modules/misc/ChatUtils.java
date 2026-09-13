@@ -132,8 +132,8 @@ public class ChatUtils extends Module {
     public void onUpdate() {
         if (timer.passedMs(15000)) {
             for (PlayerListEntry b : mc.player.networkHandler.getPlayerList()) {
-                if (!nameMap.containsKey(b.getProfile().getId())) {
-                    nameMap.put(b.getProfile().getId(), b.getProfile().getName());
+                if (!nameMap.containsKey(b.getProfile().id())) {
+                    nameMap.put(b.getProfile().id(), b.getProfile().name());
                 }
             }
             timer.reset();
@@ -151,13 +151,13 @@ public class ChatUtils extends Module {
                 } else string1 = "server";
                 if (pck.getActions().contains(PlayerListS2CPacket.Action.ADD_PLAYER)) {
                     for (PlayerListS2CPacket.Entry ple : pck.getPlayerAdditionEntries()) {
-                        if (antiBot(ple.profile().getName())) return;
-                        if (Objects.equals(ple.profile().getName(), mc.player.getName().getString())) return;
+                        if (antiBot(ple.profile().name())) return;
+                        if (Objects.equals(ple.profile().name(), mc.player.getName().getString())) return;
                         if (welcomer.getValue() == Welcomer.Server) {
-                            mc.player.networkHandler.sendChatMessage(getPrefix() + string1 + ple.profile().getName());
+                            mc.player.networkHandler.sendChatMessage(getPrefix() + string1 + ple.profile().name());
                             antiSpam.reset();
-                        } else sendMessage(string1 + ple.profile().getName());
-                        nameMap.put(ple.profile().getId(), ple.profile().getName());
+                        } else sendMessage(string1 + ple.profile().name());
+                        nameMap.put(ple.profile().id(), ple.profile().name());
                     }
                 }
             }

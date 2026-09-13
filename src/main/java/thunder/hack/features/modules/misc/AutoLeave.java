@@ -58,7 +58,7 @@ public class AutoLeave extends Module {
             }
 
 
-            if (pl != mc.player && !Managers.FRIEND.isFriend(pl) && players.getValue() != LeaveMode.None && mc.player.squaredDistanceTo(pl.getPos()) <= distance.getPow2Value()) {
+            if (pl != mc.player && !Managers.FRIEND.isFriend(pl) && players.getValue() != LeaveMode.None && mc.player.squaredDistanceTo(pl.getEntityPos()) <= distance.getPow2Value()) {
                 switch (players.getValue()) {
                     case Command -> {
                         if (autoDisable.getValue()) disable();

@@ -79,9 +79,9 @@ public class Step extends Module {
                     timer = true;
                 }
                 for (double offset : offsets)
-                    sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.lastX, mc.player.lastY + offset, mc.player.lastZ, false));
+                    sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.lastX, mc.player.lastY + offset, mc.player.lastZ, false, false));
                 if (strict.getValue())
-                    sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.lastX, mc.player.lastY + stepHeight, mc.player.lastZ, false));
+                    sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.lastX, mc.player.lastY + stepHeight, mc.player.lastZ, false, false));
             }
             stepTimer.reset();
         }

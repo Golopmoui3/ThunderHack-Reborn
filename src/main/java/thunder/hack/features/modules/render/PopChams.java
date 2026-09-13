@@ -87,46 +87,9 @@ public final class PopChams extends Module {
         popList.add(new Person(entity, ((AbstractClientPlayerEntity) e.getEntity()).getSkin().body()));
     }
 
-    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel<PlayerEntity> modelBase, Identifier texture, int alpha) {
-        modelBase.leftPants.visible = secondLayer.getValue();
-        modelBase.rightPants.visible = secondLayer.getValue();
-        modelBase.leftSleeve.visible = secondLayer.getValue();
-        modelBase.rightSleeve.visible = secondLayer.getValue();
-        modelBase.jacket.visible = secondLayer.getValue();
-        modelBase.hat.visible = secondLayer.getValue();
-
-        double x = entity.getX() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-        double y = entity.getY() - mc.getEntityRenderDispatcher().camera.getPos().getY();
-        double z = entity.getZ() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
-        ((IEntity) entity).setPos(entity.getPos().add(0, (double) ySpeed.getValue() / 50., 0));
-
-        matrices.push();
-        matrices.translate((float) x, (float) y, (float) z);
-
-        float yRotYaw = ((alpha / 255f) * 360f * rotSpeed.getValue());
-        yRotYaw = yRotYaw == 0 ? 0 : Render2DEngine.interpolateFloat(yRotYaw, yRotYaw - (((aSpeed.getValue() / 255f) * 360f * rotSpeed.getValue())), Render3DEngine.getTickDelta());
-
-        matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.bodyYaw + yRotYaw)));
-        prepareScale(matrices);
-
-        modelBase.animateModel((PlayerEntity) entity, entity.limbAnimator.getAnimationProgress(), entity.limbAnimator.getSpeed(), Render3DEngine.getTickDelta());
-
-        float limbSpeed = Math.min(entity.limbAnimator.getSpeed(), 1f);
-
-        modelBase.setAngles((PlayerEntity) entity, entity.limbAnimator.getAnimationProgress(), limbSpeed, entity.age, entity.headYaw - entity.bodyYaw, entity.getPitch());
-
-        BufferBuilder buffer;
-        if (mode.is(Mode.Textured)) {
-            Render2DEngine.bindTexture(texture);
-            buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
-        } else {
-            buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
-        }
-
-
-        modelBase.render(matrices, buffer, 10, 0);
-        Render2DEngine.endBuilding(buffer);
-        matrices.pop();
+    private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel modelBase, Identifier texture, int alpha) {
+        // TODO(1.21.11): fake-player model rendering needs a command-queue port (no queue in the 3D hook);
+        //  boxes/particles/nametags for popped players still render, only the fading body is skipped for now.
     }
 
     private static void prepareScale(@NotNull MatrixStack matrixStack) {

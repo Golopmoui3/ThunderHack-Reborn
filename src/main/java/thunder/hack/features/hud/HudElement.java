@@ -65,10 +65,10 @@ public class HudElement extends Module {
                     Render2DEngine.drawRound(context, finalX == 0 ? getHitX() : finalX, finalY == 0 ? getHitY() : finalY, width, height, 3, new Color(0x7B2F2F2F, true));
 
                 if (finalX != 0)
-                    Render2DEngine.drawLine(finalX, 0, finalX, mc.getWindow().getScaledHeight(), -1);
+                    Render2DEngine.drawLine(context, finalX, 0, finalX, mc.getWindow().getScaledHeight(), -1);
 
                 if (finalY != 0)
-                    Render2DEngine.drawLine(0, finalY, mc.getWindow().getScaledWidth(), finalY, -1);
+                    Render2DEngine.drawLine(context, 0, finalY, mc.getWindow().getScaledWidth(), finalY, -1);
             }
         }
 

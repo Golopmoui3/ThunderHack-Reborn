@@ -44,7 +44,7 @@ public final class InteractionUtility {
 
     public static boolean canSee(Entity entity) {
         Vec3d entityEyes = getEyesPos(entity);
-        Vec3d entityPos = entity.getPos();
+        Vec3d entityPos = entity.getEntityPos();
         return canSee(entityEyes, entityPos);
     }
 
@@ -61,7 +61,7 @@ public final class InteractionUtility {
     }
 
     public static Vec3d getEyesPos(@NotNull Entity entity) {
-        return entity.getPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
+        return entity.getEntityPos().add(0, entity.getEyeHeight(entity.getPose()), 0);
     }
 
     public static float @NotNull [] calculateAngle(Vec3d to) {
@@ -81,7 +81,7 @@ public final class InteractionUtility {
     }
 
     public static boolean placeBlock(BlockPos bp, Rotate rotate, Interact interact, PlaceMode mode, int slot, boolean returnSlot, boolean ignoreEntities) {
-        int prevItem = mc.player.getInventory().selectedSlot;
+        int prevItem = mc.player.getInventory().getSelectedSlot();
         if (slot != -1) InventoryUtility.switchTo(slot);
         else return false;
 
@@ -92,7 +92,7 @@ public final class InteractionUtility {
     }
 
     public static boolean placeBlock(BlockPos bp, Rotate rotate, Interact interact, PlaceMode mode, @NotNull SearchInvResult invResult, boolean returnSlot, boolean ignoreEntities) {
-        int prevItem = mc.player.getInventory().selectedSlot;
+        int prevItem = mc.player.getInventory().getSelectedSlot();
         invResult.switchTo();
         boolean result = placeBlock(bp, rotate, interact, mode, ignoreEntities);
         if (returnSlot) InventoryUtility.switchTo(prevItem);
@@ -118,8 +118,8 @@ public final class InteractionUtility {
             case None -> {
 
             }
-            case Default -> mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0], angle[1], mc.player.isOnGround()));
-            case Grim -> mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), angle[0], angle[1], mc.player.isOnGround()));
+            case Default -> mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle[0], angle[1], mc.player.isOnGround(), false));
+            case Grim -> mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), angle[0], angle[1], mc.player.isOnGround(), false));
         }
 
         if (mode == PlaceMode.Normal)
@@ -131,7 +131,7 @@ public final class InteractionUtility {
         awaiting.put(bp, System.currentTimeMillis());
 
         if (rotate == Rotate.Grim)
-            mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), mc.player.isOnGround()));
+            mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), mc.player.isOnGround(), false));
 
         if (sneak)
             mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));

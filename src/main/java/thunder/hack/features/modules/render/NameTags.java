@@ -18,6 +18,7 @@ import net.minecraft.enchantment.Enchantment;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.passive.HorseEntity;
@@ -162,16 +163,16 @@ public class NameTags extends Module {
 
                 if (armorMode.getValue() != Armor.Durability) stacks.add(ent.getOffHandStack());
 
-                stacks.add(ent.getInventory().armor.get(0));
-                stacks.add(ent.getInventory().armor.get(1));
-                stacks.add(ent.getInventory().armor.get(2));
-                stacks.add(ent.getInventory().armor.get(3));
+                stacks.add(ent.getEquippedStack(EquipmentSlot.FEET));
+                stacks.add(ent.getEquippedStack(EquipmentSlot.LEGS));
+                stacks.add(ent.getEquippedStack(EquipmentSlot.CHEST));
+                stacks.add(ent.getEquippedStack(EquipmentSlot.HEAD));
 
                 if (armorMode.getValue() != Armor.Durability) stacks.add(ent.getMainHandStack());
 
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(tagX - 2 + (textWidth + 4) / 2f, (float) (posY - 13f) + 6.5f, 0);
-                context.getMatrices().scale(scale, scale, 1f);
+                context.getMatrices().scale(scale, scale);
                 context.getMatrices().translate(-(tagX - 2 + (textWidth + 4) / 2f), -(float) ((posY - 13f) + 6.5f), 0);
 
                 float item_offset = 0;
@@ -180,7 +181,7 @@ public class NameTags extends Module {
                         if (armorMode.getValue() == Armor.Full) {
                             context.getMatrices().pushMatrix();
                             context.getMatrices().translate(posX - 55 + item_offset, (float) (posY - 33f), 0);
-                            context.getMatrices().scale(1.1f, 1.1f, 1.1f);
+                            context.getMatrices().scale(1.1f, 1.1f);
                             DiffuseLighting.disableGuiDepthLighting();
                             context.drawItem(armorComponent, 0, 0);
                             context.drawStackOverlay(mc.textRenderer, armorComponent, 0, 0);
@@ -188,7 +189,7 @@ public class NameTags extends Module {
                         } else {
                             context.getMatrices().pushMatrix();
                             context.getMatrices().translate(posX - 35 + item_offset, (float) (posY - 20), 0);
-                            context.getMatrices().scale(0.7f, 0.7f, 0.7f);
+                            context.getMatrices().scale(0.7f, 0.7f);
 
                             float durability = armorComponent.getMaxDamage() - armorComponent.getDamage();
                             int percent = (int) ((durability / (float) armorComponent.getMaxDamage()) * 100F);
@@ -213,9 +214,9 @@ public class NameTags extends Module {
                         if (enchantss.getValue()) {
                             if (!onlyHands.getValue() || (armorComponent == ent.getOffHandStack() || armorComponent == ent.getMainHandStack())) {
                                 for (RegistryKey<Enchantment> enchantment : encMap.keySet()) {
-                                    if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(enchantment).get())) {
+                                    if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(enchantment.getValue()).orElseThrow())) {
                                         String id = encMap.get(enchantment);
-                                        int level = enchants.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(enchantment).get());
+                                        int level = enchants.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(enchantment.getValue()).orElseThrow());
                                         String encName = id + level;
 
                                         if (font.getValue() == Font.Fancy) {
@@ -289,8 +290,8 @@ public class NameTags extends Module {
                     float f = (float) ent.getAttributeValue(EntityAttributes.MAX_HEALTH);
                     int p = MathHelper.ceil(ent.getAbsorptionAmount());
                     context.getMatrices().pushMatrix();
-                    context.getMatrices().translate(posX - 44, posY, 0);
-                    context.getMatrices().scale(1.1f, 1.1f, 1f);
+                    context.getMatrices().translate(posX - 44, posY);
+                    context.getMatrices().scale(1.1f, 1.1f);
                     renderHealthBar(context, ent, f, i, p);
                     context.getMatrices().popMatrix();
                 }
@@ -578,7 +579,7 @@ public class NameTags extends Module {
             }
 
             context.getMatrices().pushMatrix();
-            context.getMatrices().translate(x, y, 0);
+            context.getMatrices().translate(x, y);
             context.drawSprite(0, 0, 0, 18, 18, mc.getStatusEffectSpriteManager().getSprite(statusEffectInstance.getEffectType()));
             FontRenderers.sf_bold_mini.drawCenteredString(context, PotionHud.getDuration(statusEffectInstance), 9, -8, -1);
             FontRenderers.categories.drawCenteredString(context, power, 9, -16, -1);

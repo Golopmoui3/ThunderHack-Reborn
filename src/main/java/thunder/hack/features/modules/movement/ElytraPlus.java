@@ -426,10 +426,10 @@ public class ElytraPlus extends Module {
             float cos;
             float sin;
             for (int i = 0; i <= 30; i++) {
-                cos = (float) ((flightZonePos.getX() - mc.getEntityRenderDispatcher().camera.getPos().getX()) + Math.cos(i * (Math.PI * 2f) / 30f) * 95);
-                sin = (float) ((flightZonePos.getZ() - mc.getEntityRenderDispatcher().camera.getPos().getZ()) + Math.sin(i * (Math.PI * 2f) / 30f) * 95);
-                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) -mc.getEntityRenderDispatcher().camera.getPos().getY(), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 255).getRGB());
-                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) ((float) 128 - mc.getEntityRenderDispatcher().camera.getPos().getY()), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 0).getRGB());
+                cos = (float) ((flightZonePos.getX() - mc.getEntityRenderDispatcher().camera.getCameraPos().getX()) + Math.cos(i * (Math.PI * 2f) / 30f) * 95);
+                sin = (float) ((flightZonePos.getZ() - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ()) + Math.sin(i * (Math.PI * 2f) / 30f) * 95);
+                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) -mc.getEntityRenderDispatcher().camera.getCameraPos().getY(), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 255).getRGB());
+                bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) ((float) 128 - mc.getEntityRenderDispatcher().camera.getCameraPos().getY()), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 0).getRGB());
             }
             Render2DEngine.endBuilding(bufferBuilder);
             GlStateManager._enableCull();
@@ -470,7 +470,7 @@ public class ElytraPlus extends Module {
             MovementUtility.setMotion(Math.min((acceleration = (acceleration + 11.0F / xzSpeed.getValue())) / 100.0F, xzSpeed.getValue()));
             if (!MovementUtility.isMoving()) acceleration = 0;
 
-            if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), bombKey.getValue().getKey())) {
+            if (InputUtil.isKeyPressed(mc.getWindow(), bombKey.getValue().getKey())) {
                 MovementUtility.setMotion(0.8f);
                 mc.player.setVelocity(mc.player.getVelocity().getX(), mc.player.age % 2 == 0 ? 0.41999998688697815 : -0.41999998688697815, mc.player.getVelocity().getZ());
                 acceleration = 70;
@@ -494,7 +494,7 @@ public class ElytraPlus extends Module {
         if (mc.player.getInventory().getStack(38).getItem() != Items.ELYTRA || !mc.player.isGliding() || mc.player.isTouchingWater() || mc.player.isInLava() || !mc.player.isGliding())
             return;
 
-        float moveForward = mc.player.input.movementForward;
+        float moveForward = mc.player.input.getMovementInput().y;
 
         if (cruiseControl.getValue()) {
             if (mc.options.jumpKey.isPressed()) height++;
@@ -719,20 +719,20 @@ public class ElytraPlus extends Module {
 
         boolean inOffhand = mc.player.getOffHandStack().getItem() == Items.FIREWORK_ROCKET;
 
-        int prevSlot = mc.player.getInventory().selectedSlot;
+        int prevSlot = mc.player.getInventory().getSelectedSlot();
 
         if (!inOffhand && prevSlot != slot)
             sendPacket(new UpdateSelectedSlotC2SPacket(slot));
 
         sendSequencedPacket(id -> new PlayerInteractItemC2SPacket(inOffhand ? Hand.OFF_HAND : Hand.MAIN_HAND, id, mc.player.getYaw(), mc.player.getPitch()));
 
-        if (!inOffhand && prevSlot != mc.player.getInventory().selectedSlot)
+        if (!inOffhand && prevSlot != mc.player.getInventory().getSelectedSlot())
             sendPacket(new UpdateSelectedSlotC2SPacket(prevSlot));
 
         flying = true;
         lastFireworkTime = System.currentTimeMillis();
         pingTimer.reset();
-        flightZonePos = mc.player.getPos();
+        flightZonePos = mc.player.getEntityPos();
     }
 
     private void equipElytra() {
@@ -797,7 +797,7 @@ public class ElytraPlus extends Module {
     }
 
     public void fireWorkOnPlayerUpdate() {
-        boolean inAir = mc.world.isAir(BlockPos.ofFloored(mc.player.getPos()));
+        boolean inAir = mc.world.isAir(BlockPos.ofFloored(mc.player.getEntityPos()));
         boolean aboveLiquid = isAboveLiquid(0.1f) && inAir && mc.player.getVelocity().getY() < 0.0;
         if (mc.player.fallDistance > 0.0f && inAir || aboveLiquid) {
             equipElytra();
@@ -868,10 +868,10 @@ public class ElytraPlus extends Module {
             if (!MovementUtility.isMoving())
                 acceleration = 0;
 
-            if (mc.player.input.movementSideways > 0) {
-                mc.player.input.movementSideways = 1;
-            } else if (mc.player.input.movementSideways < 0) {
-                mc.player.input.movementSideways = -1;
+            if (mc.player.input.getMovementInput().x > 0) {
+                mc.player.input.getMovementInput().x = 1;
+            } else if (mc.player.input.getMovementInput().x < 0) {
+                mc.player.input.getMovementInput().x = -1;
             }
 
             MovementUtility.modifyEventSpeed(e, xzSpeed.getValue() * Math.min((acceleration += 9) / 100.0f, 1.0f));

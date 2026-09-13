@@ -95,14 +95,14 @@ public class PacketFly extends Module {
     }
 
     public void sendPackets(Vec3d vec3d, boolean confirm) {
-        Vec3d motion = mc.player.getPos().add(vec3d);
+        Vec3d motion = mc.player.getEntityPos().add(vec3d);
         Vec3d rubberBand = getVectorByMode(vec3d, motion);
 
-        PlayerMoveC2SPacket motionPacket =  new PlayerMoveC2SPacket.PositionAndOnGround(motion.x, motion.y, motion.z, mc.player.isOnGround());
+        PlayerMoveC2SPacket motionPacket =  new PlayerMoveC2SPacket.PositionAndOnGround(motion.x, motion.y, motion.z, mc.player.isOnGround(), false);
         movePackets.add(motionPacket);
         sendPacket(motionPacket);
 
-        PlayerMoveC2SPacket rubberBandPacket = new PlayerMoveC2SPacket.PositionAndOnGround(rubberBand.x, rubberBand.y, rubberBand.z, mc.player.isOnGround());
+        PlayerMoveC2SPacket rubberBandPacket = new PlayerMoveC2SPacket.PositionAndOnGround(rubberBand.x, rubberBand.y, rubberBand.z, mc.player.isOnGround(), false);
         movePackets.add(rubberBandPacket);
         sendPacket(rubberBandPacket);
 

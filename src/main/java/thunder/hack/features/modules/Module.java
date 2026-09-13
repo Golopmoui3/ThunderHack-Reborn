@@ -297,10 +297,10 @@ public abstract class Module {
     public void debug(String message) {
         if (fullNullCheck() || !ClientSettings.debug.getValue()) return;
         if (mc.isOnThread()) {
-            mc.player.sendMessage(Text.of(CommandManager.getClientMessage() + " " + Formatting.GRAY + "[" + Formatting.DARK_PURPLE + getDisplayName() + Formatting.GRAY + "] [\uD83D\uDD27] " + message));
+            mc.player.sendMessage(Text.of(CommandManager.getClientMessage() + " " + Formatting.GRAY + "[" + Formatting.DARK_PURPLE + getDisplayName() + Formatting.GRAY + "] [\uD83D\uDD27] " + message), false);
         } else {
             mc.executeSync(() -> {
-                mc.player.sendMessage(Text.of(CommandManager.getClientMessage() + " " + Formatting.GRAY + "[" + Formatting.DARK_PURPLE + getDisplayName() + Formatting.GRAY + "] [\uD83D\uDD27] " + message));
+                mc.player.sendMessage(Text.of(CommandManager.getClientMessage() + " " + Formatting.GRAY + "[" + Formatting.DARK_PURPLE + getDisplayName() + Formatting.GRAY + "] [\uD83D\uDD27] " + message), false);
             });
         }
     }
@@ -317,7 +317,7 @@ public abstract class Module {
         if (button < 10) // check
             return false;
 
-        return InputUtil.isKeyPressed(mc.getWindow().getHandle(), button);
+        return InputUtil.isKeyPressed(mc.getWindow(), button);
     }
 
     public boolean isKeyPressed(Setting<Bind> bind) {

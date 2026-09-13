@@ -45,7 +45,7 @@ public class EntitySpeed extends Module {
         Entity entity = mc.player.getControllingVehicle();
 
         if (entity == null) return;
-        if ((!mc.world.isChunkLoaded((int) entity.getPos().getX() >> 4, (int) entity.getPos().getZ() >> 4) || entity.getPos().getY() < -60) && stopunloaded.getValue())
+        if ((!mc.world.isChunkLoaded((int) entity.getEntityPos().getX() >> 4, (int) entity.getEntityPos().getZ() >> 4) || entity.getEntityPos().getY() < -60) && stopunloaded.getValue())
             return;
 
         if (entity.horizontalCollision || mc.player.horizontalCollision)
@@ -58,7 +58,7 @@ public class EntitySpeed extends Module {
         double predictedX = entity.getX() + motion[0];
         double predictedZ = entity.getZ() + motion[1];
 
-        if ((!mc.world.isChunkLoaded((int) predictedX >> 4, (int) predictedZ >> 4) || entity.getPos().getY() < -60) && stopunloaded.getValue())
+        if ((!mc.world.isChunkLoaded((int) predictedX >> 4, (int) predictedZ >> 4) || entity.getEntityPos().getY() < -60) && stopunloaded.getValue())
             return;
 
         if (MovementUtility.isMoving()) entity.setVelocity(motion[0], entity.getVelocity().getY(), motion[1]);

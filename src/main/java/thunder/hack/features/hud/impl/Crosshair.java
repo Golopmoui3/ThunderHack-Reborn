@@ -85,9 +85,9 @@ public class Crosshair extends Module {
             case WiseTree -> {
                 Color color = this.color.getValue().getColorObject();
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(xAnim, yAnim, 0);
+                context.getMatrices().translate(xAnim, yAnim);
                 context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotation((System.currentTimeMillis() % 70000) / 70000f * 360f));
-                context.getMatrices().translate(-xAnim, -yAnim, 0);
+                context.getMatrices().translate(-xAnim, -yAnim);
                 Render2DEngine.drawRect(context, xAnim - 0.75f, yAnim - 5, 1.5f, 10, color);
                 Render2DEngine.drawRect(context, xAnim - 5, yAnim - 0.75f, 10, 1.5f, color);
                 Render2DEngine.drawRect(context, xAnim, yAnim - 5, 5, 1.5f, color);
@@ -98,7 +98,7 @@ public class Crosshair extends Module {
             }
             case Dot -> {
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(xAnim + 4, yAnim + 4, 0);
+                context.getMatrices().translate(xAnim + 4, yAnim + 4);
                 GlStateManager._enableBlend();
                 GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
                 BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);

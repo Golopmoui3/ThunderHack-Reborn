@@ -2,6 +2,7 @@ package thunder.hack.features.modules.render;
 
 import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.math.MatrixStack;
@@ -9,8 +10,10 @@ import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
+import org.joml.Matrix3x2fStack;
 import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
+import thunder.hack.utility.render.Render3DEngine;
 
 public class TotemAnimation extends Module {
     public TotemAnimation() {
@@ -38,7 +41,12 @@ public class TotemAnimation extends Module {
         }
     }
 
-    public void renderFloatingItem(float tickDelta) {
+    @Override
+    public void onRender2D(DrawContext context) {
+        renderFloatingItem(context, Render3DEngine.getTickDelta());
+    }
+
+    public void renderFloatingItem(DrawContext context, float tickDelta) {
         if (floatingItem != null && floatingItemTimeLeft > 0 && !mode.is(Mode.Off)) {
             int scaledWidth = mc.getWindow().getScaledWidth();
             int scaledHeight = mc.getWindow().getScaledHeight();
@@ -49,12 +57,8 @@ public class TotemAnimation extends Module {
             float progressCubed = animationProgress * progressSquared;
             float oscillationFactor = 10.25F * progressCubed * progressSquared - 24.95F * progressSquared * progressSquared + 25.5F * progressCubed - 13.8F * progressSquared + 4.0F * animationProgress;
             float oscillationRadians = oscillationFactor * 3.1415927F;
-            GlStateManager._enableDepthTest();
-            GlStateManager._disableCull();
-            GlStateManager._enableBlend();
-            GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
-            MatrixStack matrixStack = new MatrixStack();
-            matrixStack.push();
+            Matrix3x2fStack matrices = context.getMatrices();
+            matrices.pushMatrix();
             float adjustedProgress = ((float) elapsedTime + tickDelta);
             float scale = 50.0F + 175.0F * MathHelper.sin(oscillationRadians);
 
@@ -62,59 +66,58 @@ public class TotemAnimation extends Module {
                 case FadeOut -> {
                     final float x2 = (float) (Math.sin(((adjustedProgress * 112) / 180f)) * 100);
                     final float y2 = (float) (Math.cos(((adjustedProgress * 112) / 180f)) * 50);
-                    matrixStack.translate((float) (scaledWidth / 2) + x2, (float) (scaledHeight / 2) + y2, -50.0F);
-                    matrixStack.scale(scale, -scale, scale);
+                    matrices.translate((float) (scaledWidth / 2) + x2, (float) (scaledHeight / 2) + y2);
+                    matrices.scale(scale / 16f, scale / 16f);
                 }
 
                 case Size -> {
-                    matrixStack.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2), -50.0F);
-                    matrixStack.scale(scale, -scale, scale);
+                    matrices.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2));
+                    matrices.scale(scale / 16f, scale / 16f);
                 }
 
                 case Otkisuli -> {
-                    matrixStack.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2), -50.0F);
-                    matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(adjustedProgress * 2));
-                    matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(adjustedProgress * 2));
-                    matrixStack.scale(200 - adjustedProgress * 1.5f, -200 + adjustedProgress * 1.5f, 200 - adjustedProgress * 1.5f);
+                    matrices.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2));
+                    // TODO(1.21.11): X rotation has no 2D equivalent and was dropped
+                    matrices.rotate((float) Math.toRadians(adjustedProgress * 2));
+                    float s = (200 - adjustedProgress * 1.5f) / 16f;
+                    matrices.scale(s, s);
                 }
 
                 case Insert -> {
-                    matrixStack.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2), -50.0F);
-                    matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(adjustedProgress * 3));
-                    matrixStack.scale(200 - adjustedProgress * 1.5f, -200 + adjustedProgress * 1.5f, 200 - adjustedProgress * 1.5f);
+                    matrices.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2));
+                    // TODO(1.21.11): X rotation has no 2D equivalent and was dropped
+                    float s = (200 - adjustedProgress * 1.5f) / 16f;
+                    matrices.scale(s, s);
                 }
 
                 case Fall -> {
                     float downFactor = (float) (Math.pow(adjustedProgress, 3) * 0.2f);
-                    matrixStack.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2) + downFactor, -50.0F);
-                    matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(adjustedProgress * 5));
-                    matrixStack.scale(200 - adjustedProgress * 1.5f, -200 + adjustedProgress * 1.5f, 200 - adjustedProgress * 1.5f);
+                    matrices.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2) + downFactor);
+                    matrices.rotate((float) Math.toRadians(adjustedProgress * 5));
+                    float s = (200 - adjustedProgress * 1.5f) / 16f;
+                    matrices.scale(s, s);
                 }
 
                 case Rocket -> {
                     float downFactor = (float) (Math.pow(adjustedProgress, 3) * 0.2f) - 20;
-                    matrixStack.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2) - downFactor, -50.0F);
-                    matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(adjustedProgress * floatingItemTimeLeft * 2));
-                    matrixStack.scale(200 - adjustedProgress * 1.5f, -200 + adjustedProgress * 1.5f, 200 - adjustedProgress * 1.5f);
+                    matrices.translate((float) (scaledWidth / 2), (float) (scaledHeight / 2) - downFactor);
+                    // TODO(1.21.11): Y spin has no 2D equivalent and was dropped
+                    float s = (200 - adjustedProgress * 1.5f) / 16f;
+                    matrices.scale(s, s);
                 }
 
                 case Roll -> {
                     float rightFactor = (float) (Math.pow(adjustedProgress, 2) * 4.5f);
-                    matrixStack.translate((float) (scaledWidth / 2) + rightFactor, (float) (scaledHeight / 2), -50.0F);
-                    matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(adjustedProgress * 40));
-                    matrixStack.scale(200 - adjustedProgress * 1.5f, -200 + adjustedProgress * 1.5f, 200 - adjustedProgress * 1.5f);
+                    matrices.translate((float) (scaledWidth / 2) + rightFactor, (float) (scaledHeight / 2));
+                    matrices.rotate((float) Math.toRadians(adjustedProgress * 40));
+                    float s = (200 - adjustedProgress * 1.5f) / 16f;
+                    matrices.scale(s, s);
                 }
             }
 
-            VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
             // TODO(1.21.11): no global shader tint anymore; totem draws untinted for now
-            mc.getItemRenderer().renderItem(floatingItem, ItemDisplayContext.FIXED, 15728880, OverlayTexture.DEFAULT_UV, matrixStack, immediate, mc.world, 0);
-            matrixStack.pop();
-            immediate.draw();
-
-            GlStateManager._disableBlend();
-            GlStateManager._enableCull();
-            GlStateManager._disableDepthTest();
+            context.drawItem(floatingItem, -8, -8);
+            matrices.popMatrix();
         }
     }
 

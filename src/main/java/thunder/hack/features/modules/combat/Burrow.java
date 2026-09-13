@@ -150,7 +150,7 @@ public final class Burrow extends Module {
         }
 
         if (timer.passedMs(250)) {
-            if (rotate.getValue()) sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(mc.player.getYaw(), 90, onGround.getValue()));
+            if (rotate.getValue()) sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(mc.player.getYaw(), 90, onGround.getValue(), false));
 
             InventoryUtility.saveSlot();
             InteractionUtility.placeBlock(pos, InteractionUtility.Rotate.None, InteractionUtility.Interact.Vanilla, InteractionUtility.PlaceMode.Packet, webResult.slot(), false, true);
@@ -171,7 +171,7 @@ public final class Burrow extends Module {
         }
 
         if (timer.passedMs(250)) {
-            if (rotate.getValue()) sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(mc.player.getYaw(), 90, onGround.getValue()));
+            if (rotate.getValue()) sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(mc.player.getYaw(), 90, onGround.getValue(), false));
             InventoryUtility.saveSlot();
             InteractionUtility.placeBlock(pos, InteractionUtility.Rotate.None, InteractionUtility.Interact.Vanilla, InteractionUtility.PlaceMode.Normal, skullResult.slot(), false, true);
             mc.player.swingHand(Hand.MAIN_HAND);
@@ -183,7 +183,7 @@ public final class Burrow extends Module {
     }
 
     public void handleDefault(BlockPos pos) {
-        if ((mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos().offset(Direction.UP, 0.2))).blocksMovement() || !mc.player.verticalCollision)) {
+        if ((mc.world.getBlockState(BlockPos.ofFloored(mc.player.getEntityPos().offset(Direction.UP, 0.2))).blocksMovement() || !mc.player.verticalCollision)) {
             return;
         }
 
@@ -228,20 +228,20 @@ public final class Burrow extends Module {
         if (timer.passedMs(1000)) {
             if (rotate.getValue()) {
                 if (r != null) {
-                    if (rEntity.getPos().equals(new Vec3d(last_x, last_y, last_z))) sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(r[0], r[1], onGround.getValue()));
-                    else sendPacket(new PlayerMoveC2SPacket.Full(rEntity.getX(), rEntity.getY(), rEntity.getZ(), r[0], r[1], onGround.getValue()));
+                    if (rEntity.getPos().equals(new Vec3d(last_x, last_y, last_z))) sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(r[0], r[1], onGround.getValue(), false));
+                    else sendPacket(new PlayerMoveC2SPacket.Full(rEntity.getX(), rEntity.getY(), rEntity.getZ(), r[0], r[1], onGround.getValue(), false));
                 }
             }
 
-            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(rEntity.getX(), rEntity.getY() + 0.42, rEntity.getZ(), onGround.getValue()));
-            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(rEntity.getX(), rEntity.getY() + 0.75, rEntity.getZ(), onGround.getValue()));
-            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(rEntity.getX(), rEntity.getY() + 1.01, rEntity.getZ(), onGround.getValue()));
-            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(rEntity.getX(), rEntity.getY() + 1.16, rEntity.getZ(), onGround.getValue()));
+            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(rEntity.getX(), rEntity.getY() + 0.42, rEntity.getZ(), onGround.getValue(), false));
+            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(rEntity.getX(), rEntity.getY() + 0.75, rEntity.getZ(), onGround.getValue(), false));
+            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(rEntity.getX(), rEntity.getY() + 1.01, rEntity.getZ(), onGround.getValue(), false));
+            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(rEntity.getX(), rEntity.getY() + 1.16, rEntity.getZ(), onGround.getValue(), false));
 
             InventoryUtility.saveSlot();
             InteractionUtility.placeBlock(pos, InteractionUtility.Rotate.None, InteractionUtility.Interact.Vanilla, InteractionUtility.PlaceMode.Packet, slot, false, true);
             mc.player.swingHand(Hand.MAIN_HAND);
-            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(rEntity.getX(), y, rEntity.getZ(), false));
+            sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(rEntity.getX(), y, rEntity.getZ(), false, false));
             timer.reset();
             InventoryUtility.returnSlot();
 
@@ -345,7 +345,7 @@ public final class Burrow extends Module {
     }
 
     public static BlockPos getPlayerPos() {
-        return Math.abs(mc.player.getVelocity().getY()) > 0.1 ? BlockPos.ofFloored(mc.player.getPos()) : getPosition(mc.player);
+        return Math.abs(mc.player.getVelocity().getY()) > 0.1 ? BlockPos.ofFloored(mc.player.getEntityPos()) : getPosition(mc.player);
     }
 
     public enum OffsetMode {

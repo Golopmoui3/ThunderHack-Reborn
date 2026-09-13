@@ -116,12 +116,12 @@ public class WaterMark extends HudElement {
 
             Render2DEngine.addWindow(context, getPosX(), getPosY(), getPosX() + 100, getPosY() + 64, 1f);
             context.getMatrices().pushMatrix();
-            context.getMatrices().translate(getPosX() + 10, getPosY() + 32, 0);
-            context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotation((float) Math.toRadians(mc.player.age * 3 + Render3DEngine.getTickDelta())));
-            context.getMatrices().translate(-(getPosX() + 10), -(getPosY() + 32), 0);
+            context.getMatrices().translate(getPosX() + 10, getPosY() + 32);
+            context.getMatrices().rotate((float) Math.toRadians(mc.player.age * 3 + Render3DEngine.getTickDelta()));
+            context.getMatrices().translate(-(getPosX() + 10), -(getPosY() + 32));
             context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.baltika, (int) getPosX() - 10, (int) getPosY() + 2, 0, 0, 40, 64, 40, 64);
             context.getMatrices().popMatrix();
-            Render2DEngine.popWindow();
+            Render2DEngine.popWindow(context);
 
             FontRenderers.thglitch.drawString(context, "BALTIKA", getPosX() + 43, getPosY() + 41.5, -1);
             setBounds(getPosX(), getPosY(), 100, 64);

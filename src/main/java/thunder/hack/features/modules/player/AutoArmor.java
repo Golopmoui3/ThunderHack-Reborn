@@ -148,14 +148,14 @@ public class AutoArmor extends Module {
             if (is.hasEnchantments()) {
                 ItemEnchantmentsComponent enchants = EnchantmentHelper.getEnchantments(is);
 
-                //mc.world.getRegistryManager().get(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION).get()
-                if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.PROTECTION).get()))
-                    prot += enchants.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.PROTECTION).get()) * protectionMultiplier;
+                //mc.world.getRegistryManager().get(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION.getValue()).orElseThrow()
+                if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.PROTECTION.getValue()).orElseThrow()))
+                    prot += enchants.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.PROTECTION.getValue()).orElseThrow()) * protectionMultiplier;
 
-                if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION).get()))
-                    prot += enchants.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION).get()) * blastMultiplier;
+                if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION.getValue()).orElseThrow()))
+                    prot += enchants.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION.getValue()).orElseThrow()) * blastMultiplier;
 
-                if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BINDING_CURSE).get()) && ignoreCurse.getValue())
+                if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BINDING_CURSE.getValue()).orElseThrow()) && ignoreCurse.getValue())
                     prot = -999;
             }
 

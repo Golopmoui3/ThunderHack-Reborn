@@ -137,7 +137,7 @@ public final class AutoWeb extends Module {
         PlayerEntity target = Managers.COMBAT.getNearestTarget(range.getValue());
         if (target != null) {
 
-            BlockPos targetBp = BlockPos.ofFloored(target.getPos());
+            BlockPos targetBp = BlockPos.ofFloored(target.getEntityPos());
 
             ArrayList<BlockPos> positions = new ArrayList<>();
             if (leggs.getValue())
@@ -182,7 +182,7 @@ public final class AutoWeb extends Module {
         if (mainhandStack != ItemStack.EMPTY && mainhandStack.getItem() instanceof BlockItem) {
             final Block blockFromMainhandItem = ((BlockItem) mainhandStack.getItem()).getBlock();
             if (canUseBlocks.contains(blockFromMainhandItem)) {
-                slot = mc.player.getInventory().selectedSlot;
+                slot = mc.player.getInventory().getSelectedSlot();
             }
         }
         if (slot == -1) {

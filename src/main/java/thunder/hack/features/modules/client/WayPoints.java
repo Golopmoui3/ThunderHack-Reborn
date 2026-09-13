@@ -32,8 +32,8 @@ public final class WayPoints extends Module {
                 if ((mc.isInSingleplayer() && wp.getServer().equals("SinglePlayer"))
                         || (mc.getNetworkHandler().getServerInfo() != null && !mc.getNetworkHandler().getServerInfo().address.contains(wp.getServer()))) continue;
                 if (!mc.world.getRegistryKey().getValue().getPath().equals(wp.getDimension())) continue;
-                double difX = wp.getX() - mc.player.getPos().x;
-                double difZ = wp.getZ() - mc.player.getPos().z;
+                double difX = wp.getX() - mc.player.getEntityPos().x;
+                double difZ = wp.getZ() - mc.player.getEntityPos().z;
                 float yaw = (float) MathHelper.wrapDegrees(Math.toDegrees(Math.atan2(difZ, difX)) - 90.0);
                 double plYaw = MathHelper.wrapDegrees(mc.player.getYaw());
                 if (Math.abs(yaw - plYaw) > 90) continue;

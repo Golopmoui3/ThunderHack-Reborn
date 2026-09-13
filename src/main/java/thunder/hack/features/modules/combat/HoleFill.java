@@ -137,7 +137,7 @@ public final class HoleFill extends Module {
             if (mode.getValue() == Mode.Target) {
                 pos = holes.stream()
                         .filter(this::isHole)
-                        .filter(p -> mc.player.getPos().distanceTo(p.toCenterPos()) <= placeRange.getValue())
+                        .filter(p -> mc.player.getEntityPos().distanceTo(p.toCenterPos()) <= placeRange.getValue())
                         .filter(p -> predicted.getPos().distanceTo(p.toCenterPos()) <= rangeToTarget.getValue())
                         .filter(p -> {
                             if (p.equals(mc.player.getBlockPos()) && selfFill.getValue()) {
@@ -146,12 +146,12 @@ public final class HoleFill extends Module {
                             }
                             return InteractionUtility.canPlaceBlock(p, interactMode.getValue(), false);
                         })
-                        .min(Comparator.comparing(p -> mc.player.getPos().distanceTo(p.toCenterPos())))
+                        .min(Comparator.comparing(p -> mc.player.getEntityPos().distanceTo(p.toCenterPos())))
                         .orElse(null);
             } else {
                 pos = holes.stream()
                         .filter(this::isHole)
-                        .filter(p -> mc.player.getPos().distanceTo(p.toCenterPos()) <= placeRange.getValue())
+                        .filter(p -> mc.player.getEntityPos().distanceTo(p.toCenterPos()) <= placeRange.getValue())
                         .filter(p -> {
                             if (p.equals(mc.player.getBlockPos()) && selfFill.getValue()) {
                                 selfFillNeed = true;
@@ -159,13 +159,13 @@ public final class HoleFill extends Module {
                             }
                             return InteractionUtility.canPlaceBlock(p, interactMode.getValue(), false);
                         })
-                        .min(Comparator.comparing(p -> mc.player.getPos().distanceTo(p.toCenterPos())))
+                        .min(Comparator.comparing(p -> mc.player.getEntityPos().distanceTo(p.toCenterPos())))
                         .orElse(null);
             }
 
             if (pos != null) {
                 List<BlockPos> poses = getHolePoses(pos).stream()
-                        .filter(blockPos -> mc.player.getPos().distanceTo(blockPos.toCenterPos()) <= placeRange.getValue())
+                        .filter(blockPos -> mc.player.getEntityPos().distanceTo(blockPos.toCenterPos()) <= placeRange.getValue())
                         .toList();
                 boolean broke = false;
 
@@ -181,7 +181,7 @@ public final class HoleFill extends Module {
                             return;
                         }
                         case Trap -> {
-                            BlockPos headPos = BlockPos.ofFloored(mc.player.getPos()).up(2);
+                            BlockPos headPos = BlockPos.ofFloored(mc.player.getEntityPos()).up(2);
                             if (mc.world.getBlockState(headPos).isReplaceable() && InteractionUtility.canPlaceBlock(headPos, interactMode.getValue(), false)) {
                                 selfFillNeed = false;
                                 InteractionUtility.placeBlock(headPos, rotate.getValue(), interactMode.getValue(), placeMode.getValue(), slot, true, false);
@@ -310,7 +310,7 @@ public final class HoleFill extends Module {
         ItemStack stack = mc.player.getMainHandStack();
 
         if (!stack.isEmpty() && isValidItem(stack.getItem())) {
-            return mc.player.getInventory().selectedSlot;
+            return mc.player.getInventory().getSelectedSlot();
         } else {
             for (int i = 0; i < 9; ++i) {
                 stack = mc.player.getInventory().getStack(i);

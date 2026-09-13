@@ -23,7 +23,7 @@ public class PerfectDelay extends Module {
     private final Setting<Boolean> trident = new Setting<>("Trident", true);
 
     private float getEnchantLevel(ItemStack stack) {
-        return EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.QUICK_CHARGE).get(), stack);
+        return EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.QUICK_CHARGE.getValue()).orElseThrow(), stack);
     }
 
     @Override

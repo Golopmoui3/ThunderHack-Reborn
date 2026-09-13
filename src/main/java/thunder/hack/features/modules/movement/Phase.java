@@ -49,7 +49,7 @@ public class Phase extends Module {
     public void onCollide(EventCollision e) {
         if (fullNullCheck())
             return;
-        BlockPos playerPos = BlockPos.ofFloored(mc.player.getPos());
+        BlockPos playerPos = BlockPos.ofFloored(mc.player.getEntityPos());
 
         if (!mode.is(Mode.CCClip) && !mode.is(Mode.Pearl) && !mode.is(Mode.ForceMine) && canNoClip() || afterPearlTime > 0) {
             if (!e.getPos().equals(playerPos.down()) || mc.options.sneakKey.isPressed())
@@ -87,12 +87,12 @@ public class Phase extends Module {
                 ).getType().equals(HitResult.Type.MISS) ? 1 : 2;
 
                 mc.player.setPosition(mc.player.getX() + directionVec[0], mc.player.getY() + height, mc.player.getZ() + directionVec[1]);
-                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true));
+                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true, false));
 
-                height = mc.world.isAir(BlockPos.ofFloored(mc.player.getPos().add(diagonalOffset[0], -2, diagonalOffset[1]))) ? 2 : 1;
+                height = mc.world.isAir(BlockPos.ofFloored(mc.player.getEntityPos().add(diagonalOffset[0], -2, diagonalOffset[1]))) ? 2 : 1;
 
                 mc.player.setPosition(mc.player.getX() + directionVec[0], mc.player.getY() - height, mc.player.getZ() + directionVec[1]);
-                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true));
+                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true, false));
                 disable("diagonal");
 
             } else {
@@ -103,15 +103,15 @@ public class Phase extends Module {
                 ).getType().equals(HitResult.Type.MISS) ? 1 : 2;
 
                 mc.player.setPosition(mc.player.getX() + directionVec[0], mc.player.getY() + height, mc.player.getZ() + directionVec[1]);
-                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true));
+                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true, false));
 
                 mc.player.setPosition(mc.player.getX() + directionVec[0], mc.player.getY(), mc.player.getZ() + directionVec[1]);
-                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true));
+                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true, false));
 
-                height = mc.world.isAir(BlockPos.ofFloored(mc.player.getPos().add(diagonalOffset[0], -2, diagonalOffset[1]))) ? 2 : 1;
+                height = mc.world.isAir(BlockPos.ofFloored(mc.player.getEntityPos().add(diagonalOffset[0], -2, diagonalOffset[1]))) ? 2 : 1;
 
                 mc.player.setPosition(mc.player.getX() + directionVec[0], mc.player.getY() - height, mc.player.getZ() + directionVec[1]);
-                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true));
+                sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(mc.player.getX(), mc.player.getY(), mc.player.getZ(), true, false));
                 disable("normal");
             }
         }
@@ -140,7 +140,7 @@ public class Phase extends Module {
             int best_tool = getTool(blockToBreak);
             if (best_tool == -1) return;
 
-            int prevItem = mc.player.getInventory().selectedSlot;
+            int prevItem = mc.player.getInventory().getSelectedSlot();
 
             InventoryUtility.switchTo(best_tool);
             mc.interactionManager.updateBlockBreakingProgress(blockToBreak, mc.player.getHorizontalFacing());
@@ -156,7 +156,7 @@ public class Phase extends Module {
                         if (((x == 0 && y == 0 && z == 0) || (x == 0 && y == 1 && z == 0)) && !mc.options.sneakKey.isPressed())
                             continue;
 
-                        BlockPos bp = BlockPos.ofFloored(mc.player.getPos()).add(x, y, z);
+                        BlockPos bp = BlockPos.ofFloored(mc.player.getEntityPos()).add(x, y, z);
                         if (mc.player.getBoundingBox().intersects(new Box(bp)) && !mc.world.isAir(bp))
                             sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.STOP_DESTROY_BLOCK, bp, Direction.UP));
                     }
@@ -192,7 +192,7 @@ public class Phase extends Module {
                     return;
 
                 int epSlot = findEPSlot();
-                int prevItem = mc.player.getInventory().selectedSlot;
+                int prevItem = mc.player.getInventory().getSelectedSlot();
 
                 if (epSlot != -1) {
                     InventoryUtility.switchTo(epSlot);
@@ -211,7 +211,7 @@ public class Phase extends Module {
     private int findEPSlot() {
         int epSlot = -1;
         if (mc.player.getMainHandStack().getItem() == Items.ENDER_PEARL) {
-            epSlot = mc.player.getInventory().selectedSlot;
+            epSlot = mc.player.getInventory().getSelectedSlot();
         }
         if (epSlot == -1) {
             for (int l = 0; l < 9; ++l) {
@@ -231,7 +231,7 @@ public class Phase extends Module {
     }
 
     public boolean playerInsideBlock() {
-        return !mc.world.isAir(BlockPos.ofFloored(mc.player.getPos()));
+        return !mc.world.isAir(BlockPos.ofFloored(mc.player.getEntityPos()));
     }
 
     @EventHandler

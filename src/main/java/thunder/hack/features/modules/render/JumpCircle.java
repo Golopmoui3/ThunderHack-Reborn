@@ -95,7 +95,7 @@ public class JumpCircle extends Module {
             float sizeAnim = circleScale.getValue() - (float) Math.pow(1 - ((c.timer.getPassedTimeMs() * (easeOut.getValue() ? 2f : 1f)) / 5000f), 4);
 
             stack.push();
-            stack.translate(c.pos().x - mc.getEntityRenderDispatcher().camera.getPos().getX(), c.pos().y - mc.getEntityRenderDispatcher().camera.getPos().getY(), c.pos().z - mc.getEntityRenderDispatcher().camera.getPos().getZ());
+            stack.translate(c.pos().x - mc.getEntityRenderDispatcher().camera.getCameraPos().getX(), c.pos().y - mc.getEntityRenderDispatcher().camera.getCameraPos().getY(), c.pos().z - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ());
             stack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(90));
             stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(sizeAnim * rotateSpeed.getValue() * 1000f));
             float scale = sizeAnim * 2f;

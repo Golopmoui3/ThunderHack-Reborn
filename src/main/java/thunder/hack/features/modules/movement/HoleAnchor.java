@@ -22,12 +22,12 @@ public class HoleAnchor extends Module {
     public void onPlayerUpdate(PlayerUpdateEvent e) {
         if (mc.player.getPitch() > pitch.getValue()) {
             if (
-                    validIndestructible(BlockPos.ofFloored(mc.player.getPos()).down(1))
-                            || validIndestructible(BlockPos.ofFloored(mc.player.getPos()).down(2))
-                            || validIndestructible(BlockPos.ofFloored(mc.player.getPos()).down(3))
-                            || validTwoBlockIndestructible(BlockPos.ofFloored(mc.player.getPos()).down(1))
-                            || validTwoBlockIndestructible(BlockPos.ofFloored(mc.player.getPos()).down(2))
-                            || validTwoBlockIndestructible(BlockPos.ofFloored(mc.player.getPos()).down(3))
+                    validIndestructible(BlockPos.ofFloored(mc.player.getEntityPos()).down(1))
+                            || validIndestructible(BlockPos.ofFloored(mc.player.getEntityPos()).down(2))
+                            || validIndestructible(BlockPos.ofFloored(mc.player.getEntityPos()).down(3))
+                            || validTwoBlockIndestructible(BlockPos.ofFloored(mc.player.getEntityPos()).down(1))
+                            || validTwoBlockIndestructible(BlockPos.ofFloored(mc.player.getEntityPos()).down(2))
+                            || validTwoBlockIndestructible(BlockPos.ofFloored(mc.player.getEntityPos()).down(3))
             ) {
                 if (!pull.getValue()) {
                     mc.player.setVelocity(0, mc.player.getVelocity().getY(), 0);

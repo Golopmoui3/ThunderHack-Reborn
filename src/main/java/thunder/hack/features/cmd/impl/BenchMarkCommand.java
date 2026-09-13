@@ -23,7 +23,7 @@ public class BenchMarkCommand extends Command {
             new Thread(() -> {
                 long time = System.currentTimeMillis();
 
-                BlockPos playerPos = BlockPos.ofFloored(mc.player.getPos());
+                BlockPos playerPos = BlockPos.ofFloored(mc.player.getEntityPos());
                 int r = 6;
 
                 for (int x = playerPos.getX() - r; x <= playerPos.getX() + r; x++)

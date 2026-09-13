@@ -31,7 +31,7 @@ public class LongJump extends Module {
 
     @EventHandler
     public void onMove(EventMove e) {
-        if (prevPosition != null && mc.player.getPos().squaredDistanceTo(prevPosition) > maxDistance.getPow2Value())
+        if (prevPosition != null && mc.player.getEntityPos().squaredDistanceTo(prevPosition) > maxDistance.getPow2Value())
             disable(isRu() ? "Прыжок выполнен! Отключаю.." : "Jump complete! Disabling..");
 
         if (MovementUtility.isMoving()) {
@@ -89,7 +89,7 @@ public class LongJump extends Module {
     }
 
     public void resetValues() {
-        prevPosition = mc.player.getPos();
+        prevPosition = mc.player.getEntityPos();
         ThunderHack.TICK_TIMER = 1f;
         plannedSpeed = 0;
         realSpeed = 0;

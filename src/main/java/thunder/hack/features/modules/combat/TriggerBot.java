@@ -68,7 +68,7 @@ public final class TriggerBot extends Module {
                         || (mc.player.isGliding() || ModuleManager.elytraPlus.isEnabled())
                         || mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
                         || mc.player.isHoldingOntoLadder()
-                        || mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos())).getBlock() == Blocks.COBWEB;
+                        || mc.world.getBlockState(BlockPos.ofFloored(mc.player.getEntityPos())).getBlock() == Blocks.COBWEB;
 
         if (mc.player.fallDistance > 1 && mc.player.fallDistance < 1.14)
             return false;

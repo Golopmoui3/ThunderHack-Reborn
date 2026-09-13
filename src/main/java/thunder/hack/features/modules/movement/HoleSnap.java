@@ -71,7 +71,7 @@ public class HoleSnap extends Module {
     private void onMove(EventMove event) {
         if (mc.player == null) return;
 
-        BlockPos bp = BlockPos.ofFloored(mc.player.getPos());
+        BlockPos bp = BlockPos.ofFloored(mc.player.getEntityPos());
 
         for (int i = 1; i < 5; i++) {
             if (!HoleUtility.isSingleHole(bp.down(i))) continue;
@@ -81,7 +81,7 @@ public class HoleSnap extends Module {
                     mc.player.getY(),
                     Math.floor(mc.player.getZ()) + 0.5
             );
-            if (center.distanceTo(mc.player.getPos()) < 0.15f) {
+            if (center.distanceTo(mc.player.getEntityPos()) < 0.15f) {
                 event.setX(0);
                 event.setZ(0);
                 event.cancel();
@@ -130,7 +130,7 @@ public class HoleSnap extends Module {
         if (mc.player == null || mode.getValue() != Mode.Yaw || hole == null)
             return;
 
-        mc.player.input.movementForward = 1;
+        mc.player.input.getMovementInput().y = 1;
     }
 
     private @Nullable BlockPos findHole() {
@@ -155,7 +155,7 @@ public class HoleSnap extends Module {
         BlockPos fbp = null;
 
         for (BlockPos bp : blocks) {
-            if (BlockPos.ofFloored(mc.player.getPos()).equals(bp) && onInHole.getValue()) {
+            if (BlockPos.ofFloored(mc.player.getEntityPos()).equals(bp) && onInHole.getValue()) {
                 disable(isRu() ? "Ты в холке! Отключаю.." : "You're in a hole already! Disabling..");
                 return null;
             }

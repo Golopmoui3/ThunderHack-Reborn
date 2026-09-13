@@ -119,7 +119,7 @@ public class MixinEntityLiving implements IEntityLiving {
     @ModifyVariable(method = "setSprinting", at = @At("HEAD"), ordinal = 0, argsOnly = true)
     private boolean setSprintingHook(boolean sprinting) {
         if (mc.player != null && mc.world != null && ModuleManager.waterSpeed.isEnabled() && ModuleManager.waterSpeed.mode.is(CancelResurface)) {
-            if (mc.player.isTouchingWater() || mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos().add(0, -0.5, 0))).getBlock() instanceof FluidBlock)
+            if (mc.player.isTouchingWater() || mc.world.getBlockState(BlockPos.ofFloored(mc.player.getEntityPos().add(0, -0.5, 0))).getBlock() instanceof FluidBlock)
                 return true;
         }
         return sprinting;

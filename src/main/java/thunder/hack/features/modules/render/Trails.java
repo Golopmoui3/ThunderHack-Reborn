@@ -258,8 +258,8 @@ public class Trails extends Module {
         Color c = lmode.getValue() == Mode.Sync ? HudEditor.getColor(mc.player.age % 360) : lcolor.getValue().getColorObject();
 
         for (PlayerEntity player : mc.world.getPlayers()) {
-            if (player.getPos().getZ() != player.lastZ || player.getPos().getX() != player.lastX && (!onlySelf.getValue())) {
-                ((IEntity) player).getTrails().add(new Trail(new Vec3d(player.lastX, player.lastY, player.lastZ), player.getPos(), c));
+            if (player.getEntityPos().getZ() != player.lastZ || player.getEntityPos().getX() != player.lastX && (!onlySelf.getValue())) {
+                ((IEntity) player).getTrails().add(new Trail(new Vec3d(player.lastX, player.lastY, player.lastZ), player.getEntityPos(), c));
                 if (players.is(Players.Particles)) {
                     for (int i = 0; i < amount.getValue(); i++) {
                         particles.add(new Particle(player.getX(), MathUtility.random((float) (player.getY() + player.getHeight()), (float) player.getY()), player.getZ(), c));
@@ -281,7 +281,7 @@ public class Trails extends Module {
         }
 
         if (Managers.PLAYER.currentPlayerSpeed != 0) {
-            ((IEntity) mc.player).getTrails().add(new Trail(new Vec3d(mc.player.lastX, mc.player.lastY, mc.player.lastZ), mc.player.getPos(), c));
+            ((IEntity) mc.player).getTrails().add(new Trail(new Vec3d(mc.player.lastX, mc.player.lastY, mc.player.lastZ), mc.player.getEntityPos(), c));
             if (players.is(Players.Particles)) {
                 for (int i = 0; i < amount.getValue(); i++) {
                     particles.add(new Particle(mc.player.getX(), MathUtility.random((float) (mc.player.getY() + mc.player.getHeight()), (float) mc.player.getY()), mc.player.getZ(), c));
@@ -305,9 +305,9 @@ public class Trails extends Module {
         }
 
         public Vec3d interpolate(float pt) {
-            double x = from.x + ((to.x - from.x) * pt) - mc.getEntityRenderDispatcher().camera.getPos().getX();
-            double y = from.y + ((to.y - from.y) * pt) - mc.getEntityRenderDispatcher().camera.getPos().getY();
-            double z = from.z + ((to.z - from.z) * pt) - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+            double x = from.x + ((to.x - from.x) * pt) - mc.getEntityRenderDispatcher().camera.getCameraPos().getX();
+            double y = from.y + ((to.y - from.y) * pt) - mc.getEntityRenderDispatcher().camera.getCameraPos().getY();
+            double z = from.z + ((to.z - from.z) * pt) - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ();
             return new Vec3d(x, y, z);
         }
 
@@ -424,9 +424,9 @@ public class Trails extends Module {
         public void render(MatrixStack matrixStack, BufferBuilder bufferBuilder) {
             update();
             float scale = starsScale.getValue() / 10f;
-            final double posX = x - mc.getEntityRenderDispatcher().camera.getPos().getX();
-            final double posY = y - mc.getEntityRenderDispatcher().camera.getPos().getY();
-            final double posZ = z - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+            final double posX = x - mc.getEntityRenderDispatcher().camera.getCameraPos().getX();
+            final double posY = y - mc.getEntityRenderDispatcher().camera.getCameraPos().getY();
+            final double posZ = z - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ();
 
             Camera camera = mc.gameRenderer.getCamera();
 

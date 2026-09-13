@@ -105,7 +105,7 @@ public final class ExplosionUtility {
 
                 if (toDamage <= 0f) toDamage = 0f;
                 else {
-                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(target.getArmorItems());
+                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(InventoryUtility.getArmorItems(target));
 
                     if (protAmount > 0)
                         toDamage = DamageUtil.getInflictedDamage(toDamage, protAmount);
@@ -164,7 +164,7 @@ public final class ExplosionUtility {
 
                 if (toDamage <= 0f) toDamage = 0f;
                 else {
-                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(target.getArmorItems());
+                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(InventoryUtility.getArmorItems(target));
 
                     if (protAmount > 0) toDamage = DamageUtil.getInflictedDamage(toDamage, protAmount);
                 }
@@ -257,7 +257,7 @@ public final class ExplosionUtility {
 
                 if (toDamage <= 0f) toDamage = 0f;
                 else {
-                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(target.getArmorItems());
+                    float protAmount = ModuleManager.autoCrystal.assumeBestArmor.getValue() ? 32f : getProtectionAmount(InventoryUtility.getArmorItems(target));
 
                     if (protAmount > 0) toDamage = DamageUtil.getInflictedDamage(toDamage, protAmount);
                 }
@@ -383,8 +383,8 @@ public final class ExplosionUtility {
     }
 
     public static int getProtectionAmount(ItemStack stack) {
-        int modifierBlast = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION).get(), stack);
-        int modifier = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.PROTECTION).get(), stack);
+        int modifierBlast = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION.getValue()).orElseThrow(), stack);
+        int modifier = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.PROTECTION.getValue()).orElseThrow(), stack);
         return modifierBlast * 2 + modifier;
     }
 }

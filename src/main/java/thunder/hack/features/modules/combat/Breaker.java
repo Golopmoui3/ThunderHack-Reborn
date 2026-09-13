@@ -58,7 +58,7 @@ public final class Breaker extends Module {
         if (target == null)
             return;
 
-        BlockPos burrow = BlockPos.ofFloored(target.getPos());
+        BlockPos burrow = BlockPos.ofFloored(target.getEntityPos());
         BlockState burrowState = mc.world.getBlockState(burrow);
 
         if (!pause.passedMs(600))
@@ -92,7 +92,7 @@ public final class Breaker extends Module {
             for (int y = 2; y <= 3; y++) {
                 BlockPos bp = BlockPos.ofFloored(target.getX(), target.getY() + y, target.getZ());
                 if (mc.world.getBlockState(bp).getBlock() == Blocks.OBSIDIAN
-                        && !bp.equals(BlockPos.ofFloored(target.getPos()).down())) {
+                        && !bp.equals(BlockPos.ofFloored(target.getEntityPos()).down())) {
                     if (ModuleManager.autoCrystal.getInteractResult(bp, new Vec3d(0.5f + bp.getX(), 1f + bp.getY(), 0.5f + bp.getZ())) == null)
                         continue;
                     BlockState currentState = mc.world.getBlockState(bp);
@@ -116,7 +116,7 @@ public final class Breaker extends Module {
         if (inBurrow) {
             list.add(new BreakData(burrow, 995));
             mc.world.setBlockState(burrow, Blocks.AIR.getDefaultState());
-        } else if (onlyIfHole.getValue() && !HoleUtility.isHole(BlockPos.ofFloored(target.getPos())))
+        } else if (onlyIfHole.getValue() && !HoleUtility.isHole(BlockPos.ofFloored(target.getEntityPos())))
             return;
 
         for (int x = -2; x <= 2; x++) {
@@ -131,7 +131,7 @@ public final class Breaker extends Module {
 
                     if ((mc.world.getBlockState(bp).getBlock() == Blocks.OBSIDIAN || mc.world.getBlockState(bp).getBlock() == Blocks.ENDER_CHEST)
                             && (mc.world.getBlockState(bp.down()).getBlock() == Blocks.OBSIDIAN || mc.world.getBlockState(bp.down()).getBlock() == Blocks.BEDROCK)
-                            && !bp.equals(BlockPos.ofFloored(target.getPos()).down())
+                            && !bp.equals(BlockPos.ofFloored(target.getEntityPos()).down())
                     ) {
                         if (ModuleManager.autoCrystal.getInteractResult(bp, new Vec3d(0.5f + bp.getX(), 1f + bp.getY(), 0.5f + bp.getZ())) == null)
                             continue;

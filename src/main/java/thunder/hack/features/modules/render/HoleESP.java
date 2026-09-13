@@ -128,7 +128,7 @@ public class HoleESP extends Module {
             positions.clear();
             return;
         }
-        BlockPos centerPos = BlockPos.ofFloored(mc.player.getPos());
+        BlockPos centerPos = BlockPos.ofFloored(mc.player.getEntityPos());
         List<Box> boxes = new ArrayList<>();
 
         for (int i = centerPos.getX() - rangeXZ.getValue(); i < centerPos.getX() + rangeXZ.getValue(); i++) {

@@ -31,19 +31,19 @@ public class WorldTweaks extends Module {
 
     @Override
     public void onDisable() {
-        mc.world.setTimeOfDay(oldTime);
+        mc.world.setTime(oldTime, oldTime, true);
     }
 
     @EventHandler
     private void onPacketReceive(PacketEvent.Receive event) {
         if (event.getPacket() instanceof WorldTimeUpdateS2CPacket && ctime.getValue()) {
-            oldTime = ((WorldTimeUpdateS2CPacket) event.getPacket()).getTime();
+            oldTime = ((WorldTimeUpdateS2CPacket) event.getPacket()).time();
             event.cancel();
         }
     }
 
     @Override
     public void onUpdate() {
-        if (ctime.getValue()) mc.world.setTimeOfDay(ctimeVal.getValue() * 1000);
+        if (ctime.getValue()) mc.world.setTime(mc.world.getTime(), ctimeVal.getValue() * 1000L, false);
     }
 }

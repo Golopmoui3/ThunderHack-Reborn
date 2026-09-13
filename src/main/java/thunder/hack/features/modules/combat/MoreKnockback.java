@@ -54,7 +54,7 @@ public class MoreKnockback extends Module {
                         || (mc.player.isGliding()
                         || ModuleManager.elytraPlus.isEnabled())
                         || mc.player.hasStatusEffect(StatusEffects.BLINDNESS)
-                        || mc.world.getBlockState(BlockPos.ofFloored(mc.player.getPos())).getBlock() == Blocks.COBWEB
+                        || mc.world.getBlockState(BlockPos.ofFloored(mc.player.getEntityPos())).getBlock() == Blocks.COBWEB
                         || mc.player.isInLava()
                         || mc.player.isSubmergedInWater();
 

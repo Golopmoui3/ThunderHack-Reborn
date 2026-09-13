@@ -74,7 +74,7 @@ public class Animations extends Module {
             flip = !flip;
     }
 
-    private void renderSwordAnimation(MatrixStack matrices, float f, float swingProgress, float equipProgress, Arm arm) {
+    public void renderSwordAnimation(MatrixStack matrices, float f, float swingProgress, float equipProgress, Arm arm) {
         if (arm == Arm.LEFT && (mode.getValue() == Mode.Eleven || mode.getValue() == Mode.Ten || mode.getValue() == Mode.Nine || mode.getValue() == Mode.Three || mode.getValue() == Mode.Thirteen || mode.getValue() == Mode.Fourteen)) {
             applyEquipOffset(matrices, arm, equipProgress);
             matrices.translate(-ModuleManager.viewModel.positionMainX.getValue(), ModuleManager.viewModel.positionMainY.getValue(), ModuleManager.viewModel.positionMainZ.getValue());
@@ -223,130 +223,8 @@ public class Animations extends Module {
 
 
     public void renderFirstPersonItemCustom(AbstractClientPlayerEntity player, float tickDelta, float pitch, Hand hand, float swingProgress, ItemStack item, float equipProgress, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
-        if (!player.isUsingSpyglass()) {
-            boolean bl = hand == Hand.MAIN_HAND;
-            Arm arm = bl ? player.getMainArm() : player.getMainArm().getOpposite();
-            matrices.push();
-
-            boolean bl2;
-            float f = 0;
-            float g;
-            float h;
-            float j;
-            if (item.isOf(Items.CROSSBOW)) {
-                bl2 = CrossbowItem.isCharged(item);
-                boolean bl3 = arm == Arm.RIGHT;
-                int i = bl3 ? 1 : -1;
-                if (player.isUsingItem() && player.getItemUseTimeLeft() > 0 && player.getActiveHand() == hand) {
-                    applyEquipOffset(matrices, arm, equipProgress);
-                    matrices.translate((float) i * -0.4785682F, -0.094387F, 0.05731531F);
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-11.935F));
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * 65.3F));
-                    matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * -9.785F));
-                    f = (float) item.getMaxUseTime(mc.player) - ((float) mc.player.getItemUseTimeLeft() - tickDelta + 1.0F);
-                    g = f / (float) CrossbowItem.getPullTime(item, mc.player);
-                    if (g > 1.0F) {
-                        g = 1.0F;
-                    }
-
-                    if (g > 0.1F) {
-                        h = MathHelper.sin((f - 0.1F) * 1.3F);
-                        j = g - 0.1F;
-                        float k = h * j;
-                        matrices.translate(k * 0.0F, k * 0.004F, k * 0.0F);
-                    }
-
-                    matrices.translate(g * 0.0F, g * 0.0F, g * 0.04F);
-                    matrices.scale(1.0F, 1.0F, 1.0F + g * 0.2F);
-                    matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees((float) i * 45.0F));
-                } else {
-                    f = -0.4F * MathHelper.sin(MathHelper.sqrt(swingProgress) * 3.1415927F);
-                    g = 0.2F * MathHelper.sin(MathHelper.sqrt(swingProgress) * 6.2831855F);
-                    h = -0.2F * MathHelper.sin(swingProgress * 3.1415927F);
-                    matrices.translate((float) i * f, g, h);
-                    applyEquipOffset(matrices, arm, equipProgress);
-                    applySwingOffset(matrices, arm, swingProgress);
-                    if (bl2 && swingProgress < 0.001F && bl) {
-                        matrices.translate((float) i * -0.641864F, 0.0F, 0.0F);
-                        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * 10.0F));
-                    }
-                }
-
-                EventHeldItemRenderer event = new EventHeldItemRenderer(hand, item, equipProgress, matrices);
-                ThunderHack.EVENT_BUS.post(event);
-                renderItem(player, item, bl3 ? ItemDisplayContext.FIRST_PERSON_RIGHT_HAND : ItemDisplayContext.FIRST_PERSON_LEFT_HAND, !bl3, matrices, vertexConsumers, light);
-            } else {
-                bl2 = arm == Arm.RIGHT;
-                int l;
-                float m = 0;
-                if (player.isUsingItem() && player.getItemUseTimeLeft() > 0 && player.getActiveHand() == hand) {
-                    l = bl2 ? 1 : -1;
-                    switch (item.getUseAction()) {
-                        case NONE, BLOCK -> applyEquipOffset(matrices, arm, equipProgress);
-                        case EAT, DRINK -> {
-                            applyEatOrDrinkTransformationCustom(matrices, tickDelta, arm, item);
-                            applyEquipOffset(matrices, arm, equipProgress);
-                        }
-                        case BOW -> {
-                            applyEquipOffset(matrices, arm, equipProgress);
-                            matrices.translate((float) l * -0.2785682F, 0.18344387F, 0.15731531F);
-                            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-13.935F));
-                            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) l * 35.3F));
-                            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) l * -9.785F));
-                            m = (float) item.getMaxUseTime(mc.player) - ((float) mc.player.getItemUseTimeLeft() - tickDelta + 1.0F);
-                            f = m / 20.0F;
-                            f = (f * f + f * 2.0F) / 3.0F;
-                            if (f > 1.0F) {
-                                f = 1.0F;
-                            }
-                            if (f > 0.1F) {
-                                g = MathHelper.sin((m - 0.1F) * 1.3F);
-                                h = f - 0.1F;
-                                j = g * h;
-                                matrices.translate(j * 0.0F, j * 0.004F, j * 0.0F);
-                            }
-                            matrices.translate(f * 0.0F, f * 0.0F, f * 0.04F);
-                            matrices.scale(1.0F, 1.0F, 1.0F + f * 0.2F);
-                            matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees((float) l * 45.0F));
-                        }
-                        case SPEAR -> {
-                            applyEquipOffset(matrices, arm, equipProgress);
-                            matrices.translate((float) l * -0.5F, 0.7F, 0.1F);
-                            matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(-55.0F));
-                            matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) l * 35.3F));
-                            matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) l * -9.785F));
-                            m = (float) item.getMaxUseTime(mc.player) - ((float) mc.player.getItemUseTimeLeft() - tickDelta + 1.0F);
-                            f = m / 10.0F;
-                            if (f > 1.0F) {
-                                f = 1.0F;
-                            }
-                            if (f > 0.1F) {
-                                g = MathHelper.sin((m - 0.1F) * 1.3F);
-                                h = f - 0.1F;
-                                j = g * h;
-                                matrices.translate(j * 0.0F, j * 0.004F, j * 0.0F);
-                            }
-                            matrices.translate(0.0F, 0.0F, f * 0.2F);
-                            matrices.scale(1.0F, 1.0F, 1.0F + f * 0.2F);
-                            matrices.multiply(RotationAxis.NEGATIVE_Y.rotationDegrees((float) l * 45.0F));
-                        }
-                        case BRUSH -> applyBrushTransformation(matrices, tickDelta, arm, item, equipProgress);
-                    }
-                } else if (player.isUsingRiptide()) {
-                    applyEquipOffset(matrices, arm, equipProgress);
-                    l = bl2 ? 1 : -1;
-                    matrices.translate((float) l * -0.4F, 0.8F, 0.3F);
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) l * 65.0F));
-                    matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) l * -85.0F));
-                } else {
-                    renderSwordAnimation(matrices, f, swingProgress, equipProgress, arm);
-                }
-                EventHeldItemRenderer event = new EventHeldItemRenderer(hand, item, equipProgress, matrices);
-                ThunderHack.EVENT_BUS.post(event);
-                renderItem(player, item, bl2 ? ItemDisplayContext.FIRST_PERSON_RIGHT_HAND : ItemDisplayContext.FIRST_PERSON_LEFT_HAND, !bl2, matrices, vertexConsumers, light);
-            }
-            matrices.pop();
-        }
+        // TODO(1.21.11): full custom first-person render replaced by the renderArmHoldingItem hook
+        //  (see MixinHeldItemRenderer) + renderSwordAnimation swing styles; this entry point is dormant.
     }
 
     private void applyBrushTransformation(MatrixStack matrices, float tickDelta, Arm arm, @NotNull ItemStack stack, float equipProgress) {
@@ -383,13 +261,6 @@ public class Animations extends Module {
         matrices.multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) i * g * -20.0F));
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(g * -80.0F));
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees((float) i * -45.0F));
-    }
-
-    public void renderItem(LivingEntity entity, ItemStack stack, ItemDisplayContext renderMode, boolean leftHanded, MatrixStack matrices, VertexConsumerProvider vertexConsumers, int light) {
-        if (stack.isEmpty()) {
-            return;
-        }
-        mc.getItemRenderer().renderItem(entity, stack, renderMode, leftHanded, matrices, vertexConsumers, entity.getWorld(), light, OverlayTexture.DEFAULT_UV, entity.getId() + renderMode.ordinal());
     }
 
     private void applyEatOrDrinkTransformationCustom(MatrixStack matrices, float tickDelta, Arm arm, @NotNull ItemStack stack) {

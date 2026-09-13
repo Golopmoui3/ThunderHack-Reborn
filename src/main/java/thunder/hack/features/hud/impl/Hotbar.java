@@ -51,7 +51,7 @@ public class Hotbar extends HudElement {
 
             Color c = HudEditor.hudStyle.is(HudEditor.HudStyle.Blurry) ? new Color(0x7C151515, true) : new Color(0x7C2F2F2F, true);
 
-            Render2DEngine.drawRect(matrices, i - 88 + playerEntity.getInventory().selectedSlot * 19.8f, mc.getWindow().getScaledHeight() - 24, 17, 17, HudEditor.hudRound.getValue(), 0.7f, c, c, c, c);
+            Render2DEngine.drawRect(matrices, i - 88 + playerEntity.getInventory().getSelectedSlot() * 19.8f, mc.getWindow().getScaledHeight() - 24, 17, 17, HudEditor.hudRound.getValue(), 0.7f, c, c, c, c);
         }
     }
 
@@ -76,7 +76,7 @@ public class Hotbar extends HudElement {
 
             for (int m = 0; m < 9; ++m) {
                 int n = i - 90 + m * 20 + 2;
-                if (m == mc.player.getInventory().selectedSlot)
+                if (m == mc.player.getInventory().getSelectedSlot())
                     renderHotbarItem(context, n, o - 7, playerEntity.getInventory().main.get(m));
                 else renderHotbarItem(context, n, o - 5, playerEntity.getInventory().main.get(m));
             }
@@ -87,7 +87,7 @@ public class Hotbar extends HudElement {
         if (!itemStack.isEmpty()) {
             context.getMatrices().pushMatrix();
             context.getMatrices().translate((float) (i + 8), (float) (j + 12), 0.0F);
-            context.getMatrices().scale(0.9f, 0.9f, 1.0F);
+            context.getMatrices().scale(0.9f, 0.9f);
             context.getMatrices().translate((float) (-(i + 8)), (float) (-(j + 12)), 0.0F);
             context.drawItem(itemStack, i, j);
             context.drawStackOverlay(mc.textRenderer, itemStack, i, j);

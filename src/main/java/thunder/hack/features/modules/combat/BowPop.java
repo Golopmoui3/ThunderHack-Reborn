@@ -83,8 +83,8 @@ public final class BowPop extends Module {
 
     private void spoof(double x, double y, double z, boolean ground) {
         if (rotation.getValue())
-            sendPacket(new PlayerMoveC2SPacket.Full(x, y, z, mc.player.getYaw(), mc.player.getPitch(), ground));
-        else sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, ground));
+            sendPacket(new PlayerMoveC2SPacket.Full(x, y, z, mc.player.getYaw(), mc.player.getPitch(), ground, false));
+        else sendPacket(new PlayerMoveC2SPacket.PositionAndOnGround(x, y, z, ground, false));
     }
 
     private int getRuns() {

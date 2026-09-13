@@ -23,7 +23,7 @@ public class ArmorHud extends HudElement {
     public void onRender2D(DrawContext context) {
         super.onRender2D(context);
         float xItemOffset = getPosX();
-        for (ItemStack itemStack : mc.player.getInventory().armor.reversed()) {
+        for (ItemStack itemStack : new ItemStack[]{mc.player.getEquippedStack(EquipmentSlot.HEAD), mc.player.getEquippedStack(EquipmentSlot.CHEST), mc.player.getEquippedStack(EquipmentSlot.LEGS), mc.player.getEquippedStack(EquipmentSlot.FEET)}) {
             if (itemStack.isEmpty()) continue;
 
             if (mode.is(Mode.V1)) {

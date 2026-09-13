@@ -222,7 +222,7 @@ public final class SpeedMine extends Module {
             int slot = getTool(position);
             if (slot != -1) {
                 ItemStack itemstack = mc.player.getInventory().getStack(slot);
-                int efficiencyModifier = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemstack);
+                int efficiencyModifier = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY.getValue()).orElseThrow(), itemstack);
                 if (efficiencyModifier > 0 && !itemstack.isEmpty()) {
                     digSpeed += (float) (StrictMath.pow(efficiencyModifier, 2) + 1);
                 }
@@ -262,7 +262,7 @@ public final class SpeedMine extends Module {
                 if (!(stack.getMaxDamage() - stack.getDamage() > 10))
                     continue;
 
-                final float digSpeed = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), stack);
+                final float digSpeed = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.EFFICIENCY.getValue()).orElseThrow(), stack);
                 final float destroySpeed = stack.getMiningSpeedMultiplier(mc.world.getBlockState(pos));
 
                 if (digSpeed + destroySpeed > currentFastest) {
@@ -308,7 +308,7 @@ public final class SpeedMine extends Module {
                 if (ExplosionUtility.getSelfExplosionDamage(action.getPos().toCenterPos().add(0, 0.5, 0), 0, false) > ModuleManager.autoCrystal.maxSelfDamage.getValue())
                     return null;
 
-                return ModuleManager.autoCrystal.getPlaceData(action.getPos(), null, mc.player.getPos());
+                return ModuleManager.autoCrystal.getPlaceData(action.getPos(), null, mc.player.getEntityPos());
             }
         }
         return null;
@@ -324,7 +324,7 @@ public final class SpeedMine extends Module {
                 if (ExplosionUtility.getSelfExplosionDamage(action.getPos().down().offset(dir).toCenterPos().add(0, 0.5, 0), 0, false) > ModuleManager.autoCrystal.maxSelfDamage.getValue())
                     continue;
 
-                AutoCrystal.PlaceData autoMineData = ModuleManager.autoCrystal.getPlaceData(action.getPos().down().offset(dir), null, mc.player.getPos());
+                AutoCrystal.PlaceData autoMineData = ModuleManager.autoCrystal.getPlaceData(action.getPos().down().offset(dir), null, mc.player.getEntityPos());
                 if (autoMineData != null) {
                     mc.world.setBlockState(action.getPos(), prevState);
                     return autoMineData;
@@ -334,7 +334,7 @@ public final class SpeedMine extends Module {
             float selfDmg = ExplosionUtility.getSelfExplosionDamage(action.getPos().toCenterPos().add(0, 0.5, 0), 0, false);
             mc.world.setBlockState(action.getPos(), prevState);
 
-            AutoCrystal.PlaceData autoMineData = ModuleManager.autoCrystal.getPlaceData(action.getPos(), null, mc.player.getPos());
+            AutoCrystal.PlaceData autoMineData = ModuleManager.autoCrystal.getPlaceData(action.getPos(), null, mc.player.getEntityPos());
             if (selfDmg > ModuleManager.autoCrystal.maxSelfDamage.getValue())
                 continue;
 
@@ -347,7 +347,7 @@ public final class SpeedMine extends Module {
     public boolean isBlockDrop(Entity ent) {
         if (ent instanceof ItemEntity && isOn() && ent.age < 3)
             for (MineAction a : actions)
-                if (a.getPos().toCenterPos().squaredDistanceTo(ent.getPos()) <= 1f)
+                if (a.getPos().toCenterPos().squaredDistanceTo(ent.getEntityPos()) <= 1f)
                     return true;
 
         return false;
@@ -406,7 +406,7 @@ public final class SpeedMine extends Module {
             }
 
             int pickSlot = getTool(pos);
-            int prevSlot = mc.player.getInventory().selectedSlot;
+            int prevSlot = mc.player.getInventory().getSelectedSlot();
 
             if (pickSlot == -1)
                 return false;
@@ -461,9 +461,9 @@ public final class SpeedMine extends Module {
         private void switchTo(int slot, int from) {
             if (switchMode.getValue() == SwitchMode.Alternative || slot >= 9) {
                 if (from == -1)
-                    clickSlot(slot < 9 ? slot + 36 : slot, mc.player.getInventory().selectedSlot, SlotActionType.SWAP);
+                    clickSlot(slot < 9 ? slot + 36 : slot, mc.player.getInventory().getSelectedSlot(), SlotActionType.SWAP);
                 else
-                    clickSlot(from < 9 ? from + 36 : from, mc.player.getInventory().selectedSlot, SlotActionType.SWAP);
+                    clickSlot(from < 9 ? from + 36 : from, mc.player.getInventory().getSelectedSlot(), SlotActionType.SWAP);
                 closeScreen();
             } else if (switchMode.is(SwitchMode.Silent)) InventoryUtility.switchToSilent(slot);
             else InventoryUtility.switchTo(slot);

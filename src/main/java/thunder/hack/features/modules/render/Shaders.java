@@ -58,7 +58,7 @@ public class Shaders extends Module {
         if (mc.player == null)
             return false;
 
-        if (mc.player.squaredDistanceTo(entity.getPos()) > maxRange.getPow2Value())
+        if (mc.player.squaredDistanceTo(entity.getEntityPos()) > maxRange.getPow2Value())
             return false;
 
         if (entity instanceof PlayerEntity) {

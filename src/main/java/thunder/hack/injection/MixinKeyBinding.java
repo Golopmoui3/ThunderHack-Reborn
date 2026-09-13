@@ -23,7 +23,7 @@ public abstract class MixinKeyBinding {
                 && mc.player != null
                 && mc.world != null
                 && ModuleManager.safeWalk.isEnabled()
-                && mc.player.isOnGround() && mc.world.getBlockState(new BlockPos((int) Math.floor(mc.player.getPos().getX()), (int) Math.floor(mc.player.getPos().getY()) - 1, (int) Math.floor(mc.player.getPos().getZ()))).isAir()
+                && mc.player.isOnGround() && mc.world.getBlockState(new BlockPos((int) Math.floor(mc.player.getEntityPos().getX()), (int) Math.floor(mc.player.getEntityPos().getY()) - 1, (int) Math.floor(mc.player.getEntityPos().getZ()))).isAir()
                 && !ModuleManager.scaffold.isEnabled()){
             cir.setReturnValue(true);
         }

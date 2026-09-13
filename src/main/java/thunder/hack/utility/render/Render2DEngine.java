@@ -286,7 +286,7 @@ public class Render2DEngine {
         try {
             ByteBuffer data = BufferUtils.createByteBuffer(content.length).put(content);
             data.flip();
-            NativeImageBackedTexture tex = new NativeImageBackedTexture(NativeImage.read(data));
+            NativeImageBackedTexture tex = new NativeImageBackedTexture(i.getId()::toString, NativeImage.read(data));
             mc.execute(() -> mc.getTextureManager().registerTexture(i.getId(), tex));
         } catch (Exception ignored) {
         }
@@ -649,6 +649,24 @@ public class Render2DEngine {
         state(context).addSimpleElement(new ColoredQuadGuiElementRenderState(
                 RenderPipelines.GUI, TextureSetup.empty(), pose,
                 0, 0, (int) len, 1, color, color, scissor()));
+    }
+
+    /**
+     * Arbitrary quad (e.g. ellipse arc segment) approximated as a rotated rect.
+     * Used where triangle strips/fans were used before - states only support axis-aligned quads.
+     */
+    public static void drawQuadStrip(DrawContext context, float x0, float y0, float x1, float y1, float x2, float y2, float x3, float y3, Color color) {
+        float dx = x3 - x0, dy = y3 - y0;
+        float len = (float) Math.hypot(dx, dy);
+        if (len < 0.5f) return;
+        float w = ((float) Math.hypot(x1 - x0, y1 - y0) + (float) Math.hypot(x2 - x3, y2 - y3)) / 2f;
+        Matrix3x2f pose = new Matrix3x2f(context.getMatrices());
+        pose.translate(x0, y0);
+        pose.rotate((float) Math.atan2(dy, dx));
+        int c = color.getRGB();
+        state(context).addSimpleElement(new ColoredQuadGuiElementRenderState(
+                RenderPipelines.GUI, TextureSetup.empty(), pose,
+                0, 0, (int) len, (int) Math.max(1, w), c, c, scissor()));
     }
 
     //http://www.java2s.com/example/java/2d-graphics/check-if-a-color-is-more-dark-than-light.html

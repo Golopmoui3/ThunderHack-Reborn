@@ -42,8 +42,8 @@ public class NotificationManager implements IManager {
 
         for (Notification n : Lists.newArrayList(notifications)) {
             startY = (float) (startY - n.getHeight() - 3f);
-            n.renderShaders(context.getMatrices(), startY + (isDefault() ? 0 : notifications.size() * 16));
-            n.render(context.getMatrices(), startY + (isDefault() ? 0 : notifications.size() * 16));
+            n.renderShaders(context, startY + (isDefault() ? 0 : notifications.size() * 16));
+            n.render(context, startY + (isDefault() ? 0 : notifications.size() * 16));
         }
     }
 

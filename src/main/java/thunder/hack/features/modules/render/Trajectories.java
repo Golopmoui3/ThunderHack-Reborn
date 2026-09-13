@@ -72,8 +72,8 @@ public class Trajectories extends Module {
         boolean prev_bob = mc.options.getBobView().getValue();
         mc.options.getBobView().setValue(false);
 
-        if ((offHand.getItem() instanceof CrossbowItem && EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.MULTISHOT.getRegistryRef()).getEntry(Enchantments.MULTISHOT).get(), offHand) != 0) ||
-                (mainHand.getItem() instanceof CrossbowItem && EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.MULTISHOT.getRegistryRef()).getEntry(Enchantments.MULTISHOT).get(), mainHand) != 0)) {
+        if ((offHand.getItem() instanceof CrossbowItem && EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.MULTISHOT.getRegistryRef()).getEntry(Enchantments.MULTISHOT.getValue()).orElseThrow(), offHand) != 0) ||
+                (mainHand.getItem() instanceof CrossbowItem && EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.MULTISHOT.getRegistryRef()).getEntry(Enchantments.MULTISHOT.getValue()).orElseThrow(), mainHand) != 0)) {
 
             calcTrajectory(hand == Hand.OFF_HAND ? offHand.getItem() : mainHand.getItem(), mc.player.getYaw() - 10);
             calcTrajectory(hand == Hand.OFF_HAND ? offHand.getItem() : mainHand.getItem(), mc.player.getYaw());

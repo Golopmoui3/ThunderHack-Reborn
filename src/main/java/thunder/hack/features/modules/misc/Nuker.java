@@ -141,7 +141,7 @@ public class Nuker extends Module {
 
         if (mode.getValue() == Mode.FastAF) {
             int intRange = (int) (Math.floor(range.getValue()) + 1);
-            Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getPos()).up()), intRange, intRange, intRange);
+            Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getEntityPos()).up()), intRange, intRange, intRange);
 
             for (BlockPos b : blocks_) {
                 if (flatten.getValue() && b.getY() < mc.player.getY())
@@ -202,7 +202,7 @@ public class Nuker extends Module {
 
     public BlockData getNukerBlockPos() {
         int intRange = (int) (Math.floor(range.getValue()) + 1);
-        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getPos()).up()), intRange, intRange, intRange);
+        Iterable<BlockPos> blocks_ = BlockPos.iterateOutwards(new BlockPos(BlockPos.ofFloored(mc.player.getEntityPos()).up()), intRange, intRange, intRange);
 
         for (BlockPos b : blocks_) {
             BlockState state = mc.world.getBlockState(b);

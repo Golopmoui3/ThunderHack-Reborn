@@ -85,24 +85,24 @@ public class LegitHelper extends Module {
             int anchorSlot = InventoryUtility.findItemInHotBar(Items.RESPAWN_ANCHOR).slot();
             if (glowSlot == -1 || anchorSlot == -1) return;
 
-            int prevSlot = mc.player.getInventory().selectedSlot;
+            int prevSlot = mc.player.getInventory().getSelectedSlot();
 
             Managers.ASYNC.run(() -> {
-                mc.player.getInventory().selectedSlot = anchorSlot;
+                mc.player.getInventory().setSelectedSlot(anchorSlot);
                 mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(anchorSlot));
             });
 
             Managers.ASYNC.run(() -> mc.executeSync(() -> ((IMinecraftClient) mc).idoItemUse()), anchorDelay.getValue());
 
             Managers.ASYNC.run(() -> {
-                mc.player.getInventory().selectedSlot = glowSlot;
+                mc.player.getInventory().setSelectedSlot(glowSlot);
                 mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(glowSlot));
             }, anchorDelay.getValue() * 2);
 
             Managers.ASYNC.run(() -> mc.executeSync(() -> ((IMinecraftClient) mc).idoItemUse()), anchorDelay.getValue() * 3L);
 
             Managers.ASYNC.run(() -> {
-                mc.player.getInventory().selectedSlot = prevSlot;
+                mc.player.getInventory().setSelectedSlot(prevSlot);
                 mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(prevSlot));
             }, anchorDelay.getValue() * 4);
 
@@ -125,10 +125,10 @@ public class LegitHelper extends Module {
                 return;
             }
 
-            int prevSlot = mc.player.getInventory().selectedSlot;
+            int prevSlot = mc.player.getInventory().getSelectedSlot();
 
             if (!obbyAtCrosshair) {
-                mc.player.getInventory().selectedSlot = obbySlot;
+                mc.player.getInventory().setSelectedSlot(obbySlot);
                 mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(obbySlot));
                 ((IMinecraftClient) mc).idoItemUse();
             }
@@ -137,14 +137,14 @@ public class LegitHelper extends Module {
                 if (!obbyAtCrosshair)
                     AsyncManager.sleep(crystalDelay.getValue());
 
-                mc.player.getInventory().selectedSlot = crystalSlot;
+                mc.player.getInventory().setSelectedSlot(crystalSlot);
                 mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(crystalSlot));
                 AsyncManager.sleep(crystalDelay.getValue());
                 ((IMinecraftClient) mc).idoItemUse();
                 lastCrystalVec = mc.crosshairTarget.getPos();
                 if (switchBack.getValue()) {
                     AsyncManager.sleep(crystalDelay.getValue());
-                    mc.player.getInventory().selectedSlot = prevSlot;
+                    mc.player.getInventory().setSelectedSlot(prevSlot);
                     mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(prevSlot));
                 }
             });
@@ -162,11 +162,11 @@ public class LegitHelper extends Module {
             if (axeSlot == -1)
                 return;
 
-            int prevSlot = mc.player.getInventory().selectedSlot;
+            int prevSlot = mc.player.getInventory().getSelectedSlot();
 
             Managers.ASYNC.run(() -> {
                 AsyncManager.sleep(breakerDelay.getValue());
-                mc.player.getInventory().selectedSlot = axeSlot;
+                mc.player.getInventory().setSelectedSlot(axeSlot);
                 mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(axeSlot));
                 AsyncManager.sleep(breakerDelay.getValue());
                 if (mc.crosshairTarget instanceof EntityHitResult ehr2)
@@ -175,7 +175,7 @@ public class LegitHelper extends Module {
 
                 if (swapBack.getValue()) {
                     AsyncManager.sleep(breakerDelay.getValue());
-                    mc.player.getInventory().selectedSlot = prevSlot;
+                    mc.player.getInventory().setSelectedSlot(prevSlot);
                     mc.getNetworkHandler().sendPacket(new UpdateSelectedSlotC2SPacket(prevSlot));
                 }
             });
@@ -205,7 +205,7 @@ public class LegitHelper extends Module {
         if (e.getEntity() instanceof EndCrystalEntity cr && e.getEntity().squaredDistanceTo(lastCrystalVec) < 4f) {
             lastCrystalVec = Vec3d.ZERO;
             if (changePitch.getValue()) {
-                float pitch = InteractionUtility.calculateAngle(cr.getPos().add(0, 0.15, 0))[1];
+                float pitch = InteractionUtility.calculateAngle(cr.getEntityPos().add(0, 0.15, 0))[1];
                 double gcdFix = (Math.pow(mc.options.getMouseSensitivity().getValue() * 0.6 + 0.2, 3.0)) * 1.2;
                 mc.player.setPitch((float) (pitch - (pitch - mc.player.getPitch()) % gcdFix));
             }
@@ -219,7 +219,6 @@ public class LegitHelper extends Module {
         if (crystalOptimizer.getValue() && event.getPacket() instanceof PlayerInteractEntityC2SPacket
                 && getInteractType(event.getPacket()) == Criticals.InteractType.ATTACK && getEntity(event.getPacket()) instanceof EndCrystalEntity c
                 && !ModuleManager.autoCrystal.isEnabled()) {
-            c.kill();
             c.setRemoved(Entity.RemovalReason.KILLED);
             c.onRemoved();
         }

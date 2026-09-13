@@ -48,7 +48,7 @@ public class AutoSex extends Module {
             target = Managers.COMBAT.getNearestTarget(targetRange.getValue());
             return;
         }
-        if (target.getPos().squaredDistanceTo(mc.player.getPos()) >= targetRange.getPow2Value()) {
+        if (target.getEntityPos().squaredDistanceTo(mc.player.getEntityPos()) >= targetRange.getPow2Value()) {
             target = null;
             return;
         }

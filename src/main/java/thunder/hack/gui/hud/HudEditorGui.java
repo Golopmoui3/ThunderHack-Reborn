@@ -58,13 +58,13 @@ public class HudEditorGui extends Screen {
 
         if (ModuleManager.clickGui.scrollMode.getValue() == ClickGui.scrollModeEn.Old) {
             for (AbstractCategory window : windows) {
-                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 264))
+                if (InputUtil.isKeyPressed(mc.getWindow(), 264))
                     window.setY(window.getY() + 2);
-                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 265))
+                if (InputUtil.isKeyPressed(mc.getWindow(), 265))
                     window.setY(window.getY() - 2);
-                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 262))
+                if (InputUtil.isKeyPressed(mc.getWindow(), 262))
                     window.setX(window.getX() + 2);
-                if (InputUtil.isKeyPressed(mc.getWindow().getHandle(), 263))
+                if (InputUtil.isKeyPressed(mc.getWindow(), 263))
                     window.setX(window.getX() - 2);
                 if (dWheel != 0)
                     window.setY((float) (window.getY() + dWheel));

@@ -105,8 +105,8 @@ public class FreeCam extends Module {
                 fakeY -= hspeed.getValue();
         }
 
-        mc.player.input.movementForward = 0;
-        mc.player.input.movementSideways = 0;
+        mc.player.input.getMovementInput().y = 0;
+        mc.player.input.getMovementInput().x = 0;
         mc.player.input.jumping = false;
         mc.player.input.sneaking = false;
     }

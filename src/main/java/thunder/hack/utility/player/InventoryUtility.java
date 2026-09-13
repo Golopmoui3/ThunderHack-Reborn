@@ -8,6 +8,7 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.DamageUtil;
 import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffects;
@@ -53,7 +54,7 @@ public final class InventoryUtility {
             ItemStack itemStack = mc.player.getInventory().getStack(b1 >= 36 ? b1 - 36 : b1);
             if (itemStack != null && itemStack.getItem() instanceof AxeItem axe) {
                 float f1 = axe.getComponents().get(DataComponentTypes.MAX_DAMAGE);
-                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS).get(), itemStack);
+                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS.getValue()).orElseThrow(), itemStack);
                 if (f1 > f) {
                     f = f1;
                     slot = b1;
@@ -76,7 +77,7 @@ public final class InventoryUtility {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
             if (itemStack != null && itemStack.isIn(ItemTags.PICKAXES)) {
                 float f1 = 0;
-                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemStack);
+                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY.getValue()).orElseThrow(), itemStack);
                 if (f1 > f) {
                     f = f1;
                     slot = b1;
@@ -97,7 +98,7 @@ public final class InventoryUtility {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
             if (itemStack != null && itemStack.isIn(ItemTags.PICKAXES)) {
                 float f1 = 0;
-                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemStack);
+                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY.getValue()).orElseThrow(), itemStack);
                 if (f1 > f) {
                     f = f1;
                     slot = b1;
@@ -118,7 +119,7 @@ public final class InventoryUtility {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
             if (itemStack != null && itemStack.isIn(ItemTags.PICKAXES)) {
                 float f1 = 0;
-                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemStack);
+                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY.getValue()).orElseThrow(), itemStack);
                 if (f1 > f) {
                     f = f1;
                     slot = b1;
@@ -158,7 +159,7 @@ public final class InventoryUtility {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
             if (itemStack != null && itemStack.isIn(ItemTags.SWORDS)) {
                 float f1 = itemStack.get(DataComponentTypes.MAX_DAMAGE);
-                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS).get(), itemStack);
+                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS.getValue()).orElseThrow(), itemStack);
                 if (f1 > f) {
                     f = f1;
                     slot = b1;
@@ -179,7 +180,7 @@ public final class InventoryUtility {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
             if (itemStack != null && itemStack.isIn(ItemTags.SWORDS)) {
                 float f1 = itemStack.get(DataComponentTypes.MAX_DAMAGE);
-                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS).get(), itemStack);
+                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS.getValue()).orElseThrow(), itemStack);
                 if (f1 > f) {
                     f = f1;
                     slot = b1;
@@ -201,7 +202,7 @@ public final class InventoryUtility {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
             if (itemStack != null && itemStack.getItem() instanceof AxeItem axe) {
                 float f1 = axe.getComponents().get(DataComponentTypes.MAX_DAMAGE);
-                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS).get(), itemStack);
+                f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS.getValue()).orElseThrow(), itemStack);
                 if (f1 > f) {
                     f = f1;
                     slot = b1;
@@ -215,7 +216,7 @@ public final class InventoryUtility {
 
 
     public static int getElytra() {
-        for (ItemStack stack : mc.player.getInventory().armor)
+        for (ItemStack stack : InventoryUtility.getArmorItems(mc.player))
             if (stack.getItem() == Items.ELYTRA && stack.getDamage() < 430)
                 return -2;
 
@@ -294,7 +295,7 @@ public final class InventoryUtility {
     }
 
     public static void saveSlot() {
-        cachedSlot = mc.player.getInventory().selectedSlot;
+        cachedSlot = mc.player.getInventory().getSelectedSlot();
     }
 
     public static void returnSlot() {
@@ -306,17 +307,17 @@ public final class InventoryUtility {
     public static void saveAndSwitchTo(int slot) {
         saveSlot();
         if (mc.player == null || mc.getNetworkHandler() == null) return;
-        if (mc.player.getInventory().selectedSlot == slot && Managers.PLAYER.serverSideSlot == slot)
+        if (mc.player.getInventory().getSelectedSlot() == slot && Managers.PLAYER.serverSideSlot == slot)
             return;
-        mc.player.getInventory().selectedSlot = slot;
+        mc.player.getInventory().setSelectedSlot(slot);
         ((IInteractionManager) mc.interactionManager).syncSlot();
     }
 
     public static void switchTo(int slot) {
         if (mc.player == null || mc.getNetworkHandler() == null) return;
-        if (mc.player.getInventory().selectedSlot == slot && Managers.PLAYER.serverSideSlot == slot)
+        if (mc.player.getInventory().getSelectedSlot() == slot && Managers.PLAYER.serverSideSlot == slot)
             return;
-        mc.player.getInventory().selectedSlot = slot;
+        mc.player.getInventory().setSelectedSlot(slot);
         ((IInteractionManager) mc.interactionManager).syncSlot();
     }
 
@@ -334,7 +335,7 @@ public final class InventoryUtility {
                 || mainHandStack.isIn(ItemTags.PICKAXES)
                 || mainHand instanceof AxeItem
                 || mainHand instanceof ShovelItem) {
-            return new SearchInvResult(mc.player.getInventory().selectedSlot, true, mc.player.getMainHandStack());
+            return new SearchInvResult(mc.player.getInventory().getSelectedSlot(), true, mc.player.getMainHandStack());
         }
 
         return findInHotBar(
@@ -418,6 +419,17 @@ public final class InventoryUtility {
      * 1.21.11 removed the ArmorItem class (armor is data-driven now).
      * An armor piece is any equippable item for a body armor slot.
      */
+    /**
+     * 1.21.11 removed LivingEntity#getArmorItems (equipment refactor).
+     */
+    public static List<ItemStack> getArmorItems(LivingEntity entity) {
+        return List.of(
+                entity.getEquippedStack(EquipmentSlot.FEET),
+                entity.getEquippedStack(EquipmentSlot.LEGS),
+                entity.getEquippedStack(EquipmentSlot.CHEST),
+                entity.getEquippedStack(EquipmentSlot.HEAD));
+    }
+
     public static EquipmentSlot getArmorSlot(ItemStack stack) {
         EquippableComponent equippable = stack.get(DataComponentTypes.EQUIPPABLE);
         EquipmentSlot slot = equippable == null ? null : equippable.slot();

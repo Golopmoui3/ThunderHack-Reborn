@@ -223,11 +223,11 @@ public class ThunderGui extends Screen {
         Render2DEngine.drawRound(context, main_posX + 5, main_posY + 5, 90, 30, 7f, ThunderHackGui.getColorByTheme(1));
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().scale(0.85f, 0.85f, 1);
+        context.getMatrices().scale(0.85f, 0.85f);
         context.getMatrices().translate((main_posX + 10) / 0.85, (main_posY + 15) / 0.85, 0);
         FontRenderers.thglitch.drawString(context, "THUNDERHACK", 0, 0, ThunderHackGui.getColorByTheme(2).getRGB());
         context.getMatrices().translate(-(main_posX + 10) / 0.85, -(main_posY + 15) / 0.85, 0);
-        context.getMatrices().scale(1, 1, 1);
+        context.getMatrices().scale(1, 1);
         context.getMatrices().popMatrix();
 
         FontRenderers.settings.drawString(context, "recode v" + ThunderHack.VERSION, main_posX + 91 - (FontRenderers.settings.getStringWidth("recode v" + ThunderHack.VERSION)), main_posY + 30, ThunderHackGui.getColorByTheme(3).getRGB());

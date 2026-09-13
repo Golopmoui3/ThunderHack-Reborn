@@ -37,10 +37,10 @@ public class AutoTool extends Module {
             return;
 
         if (getTool(pos) != -1 && mc.options.attackKey.isPressed()) {
-            lastItem.add(mc.player.getInventory().selectedSlot);
+            lastItem.add(mc.player.getInventory().getSelectedSlot());
 
             if (silent.getValue()) mc.player.networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(getTool(pos)));
-            else mc.player.getInventory().selectedSlot = getTool(pos);
+            else mc.player.getInventory().setSelectedSlot(getTool(pos));
 
             itemIndex = getTool(pos);
             swap = true;
@@ -49,7 +49,7 @@ public class AutoTool extends Module {
         } else if (swap && !lastItem.isEmpty() && System.currentTimeMillis() >= swapDelay + 300 && swapBack.getValue()) {
             if (silent.getValue())
                 mc.player.networkHandler.sendPacket(new UpdateSelectedSlotC2SPacket(lastItem.get(0)));
-            else mc.player.getInventory().selectedSlot = lastItem.get(0);
+            else mc.player.getInventory().setSelectedSlot(lastItem.get(0));
 
             itemIndex = lastItem.get(0);
             lastItem.clear();
@@ -66,12 +66,12 @@ public class AutoTool extends Module {
                 if (!(mc.player.getInventory().getStack(i).getMaxDamage() - mc.player.getInventory().getStack(i).getDamage() > 10) && saveItem.getValue())
                     continue;
 
-                final float digSpeed = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), stack);
+                final float digSpeed = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY.getValue()).orElseThrow(), stack);
                 final float destroySpeed = stack.getMiningSpeedMultiplier(mc.world.getBlockState(pos));
 
                 if (mc.world.getBlockState(pos).getBlock() instanceof AirBlock) return -1;
                 if (mc.world.getBlockState(pos).getBlock() instanceof EnderChestBlock && echestSilk.getValue()) {
-                    if (EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SILK_TOUCH.getRegistryRef()).getEntry(Enchantments.SILK_TOUCH).get(), stack) > 0 && digSpeed + destroySpeed > CurrentFastest) {
+                    if (EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SILK_TOUCH.getRegistryRef()).getEntry(Enchantments.SILK_TOUCH.getValue()).orElseThrow(), stack) > 0 && digSpeed + destroySpeed > CurrentFastest) {
                         CurrentFastest = digSpeed + destroySpeed;
                         index = i;
                     }

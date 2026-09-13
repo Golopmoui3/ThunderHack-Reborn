@@ -1,15 +1,23 @@
 package thunder.hack.features.modules.render;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
+import com.mojang.blaze3d.vertex.VertexFormat;
 import net.minecraft.block.AirBlock;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
+import net.minecraft.client.render.BufferBuilder;
+import net.minecraft.client.render.Tessellator;
+import net.minecraft.client.render.VertexFormats;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.Entity;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.player.PlayerEntity;
+import net.minecraft.util.Identifier;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.RotationAxis;
+import net.minecraft.util.math.Vec3d;
+import org.joml.Matrix4f;
 import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.features.modules.Module;
 import thunder.hack.features.modules.client.HudEditor;
@@ -18,6 +26,8 @@ import thunder.hack.setting.impl.ColorSetting;
 import thunder.hack.utility.math.MathUtility;
 import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.Render3DEngine;
+import thunder.hack.utility.render.TextureStorage;
+import thunder.hack.utility.render.ThunderRenderLayers;
 import thunder.hack.utility.render.animation.AnimationUtility;
 
 import java.awt.*;
@@ -174,9 +184,9 @@ public class HitParticles extends Module {
             float size = starsScale.getValue();
             float scale = mode.is(Mode.Text) ? 0.025f * size : 0.07f;
 
-            final double posX = Render2DEngine.interpolate(px, x, Render3DEngine.getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getX();
-            final double posY = Render2DEngine.interpolate(py, y, Render3DEngine.getTickDelta()) + 0.1 - mc.getEntityRenderDispatcher().camera.getPos().getY();
-            final double posZ = Render2DEngine.interpolate(pz, z, Render3DEngine.getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+            final double posX = Render2DEngine.interpolate(px, x, Render3DEngine.getTickDelta()) - mc.getEntityRenderDispatcher().camera.getCameraPos().getX();
+            final double posY = Render2DEngine.interpolate(py, y, Render3DEngine.getTickDelta()) + 0.1 - mc.getEntityRenderDispatcher().camera.getCameraPos().getY();
+            final double posZ = Render2DEngine.interpolate(pz, z, Render3DEngine.getTickDelta()) - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ();
 
             matrixStack.push();
             matrixStack.translate(posX, posY, posZ);
@@ -196,19 +206,41 @@ public class HitParticles extends Module {
 
             switch (mode.getValue()) {
                 case Orbiz -> {
-                    drawOrbiz(matrixStack, 0.0f, 0.3, color);
-                    drawOrbiz(matrixStack, -0.1f, 0.5, color);
-                    drawOrbiz(matrixStack, -0.2f, 0.7, color);
+                    drawFan(matrixStack, 0.0f, 0.3, color);
+                    drawFan(matrixStack, -0.1f, 0.5, color);
+                    drawFan(matrixStack, -0.2f, 0.7, color);
                 }
-                case Stars -> drawStar(matrixStack, color, size);
-                case Hearts -> drawHeart(matrixStack, color, size);
-                case Bloom -> drawBloom(matrixStack, color, size);
+                case Stars -> drawBillboardTextured(matrixStack, TextureStorage.star, size, color);
+                case Hearts -> drawBillboardTextured(matrixStack, TextureStorage.heart, size, color);
+                case Bloom -> drawBillboardTextured(matrixStack, TextureStorage.firefly, size, color);
                 case Text ->
-                        FontRenderers.sf_medium.drawCenteredString(matrixStack, MathUtility.round2(health) + " ", 0, 0, (health > 0 ? colorH.getValue() : colorD.getValue()).getColorObject());
+                        Render3DEngine.drawTextIn3D(MathUtility.round2(health) + " ", new Vec3d(x, y, z), 0, 0, 0, (health > 0 ? colorH.getValue() : colorD.getValue()).getColorObject());
             }
 
             matrixStack.scale(0.8f, 0.8f, 0.8f);
             matrixStack.pop();
+        }
+
+        private void drawFan(MatrixStack matrices, float z, double r, Color c) {
+            Matrix4f m = matrices.peek().getPositionMatrix();
+            BufferBuilder bb = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_FAN, VertexFormats.POSITION_COLOR);
+            for (int i = 0; i <= 20; i++) {
+                final float x2 = (float) (Math.sin(((i * 56.548656f) / 180f)) * r);
+                final float y2 = (float) (Math.cos(((i * 56.548656f) / 180f)) * r);
+                bb.vertex(m, x2, y2, z).color(c.getRed() / 255f, c.getGreen() / 255f, c.getBlue() / 255f, 0.4f);
+            }
+            Render2DEngine.endBuildingFan(bb);
+        }
+
+        private void drawBillboardTextured(MatrixStack matrices, Identifier id, float scale, Color c) {
+            Matrix4f m = matrices.peek().getPositionMatrix();
+            BufferBuilder bb = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
+            float r = c.getRed() / 255f, g = c.getGreen() / 255f, b = c.getBlue() / 255f, a = c.getAlpha() / 255f;
+            bb.vertex(m, 0, 0, 0).texture(0f, 0f).color(r, g, b, a);
+            bb.vertex(m, scale, 0, 0).texture(1f, 0f).color(r, g, b, a);
+            bb.vertex(m, scale, scale, 0).texture(1f, 1f).color(r, g, b, a);
+            bb.vertex(m, 0, scale, 0).texture(0f, 1f).color(r, g, b, a);
+            ThunderRenderLayers.guiTextured(id).draw(bb.end());
         }
 
         private boolean posBlock(double x, double y, double z) {

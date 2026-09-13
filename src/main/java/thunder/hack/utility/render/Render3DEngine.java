@@ -133,12 +133,12 @@ public class Render3DEngine {
     }
 
     public static void setFilledBoxVertexes(@NotNull BufferBuilder bufferBuilder, Matrix4f m, @NotNull Box box, @NotNull Color c) {
-        float minX = (float) (box.minX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float minY = (float) (box.minY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float minZ = (float) (box.minZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
-        float maxX = (float) (box.maxX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float maxY = (float) (box.maxY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float maxZ = (float) (box.maxZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
+        float minX = (float) (box.minX - mc.getEntityRenderDispatcher().camera.getCameraPos().getX());
+        float minY = (float) (box.minY - mc.getEntityRenderDispatcher().camera.getCameraPos().getY());
+        float minZ = (float) (box.minZ - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ());
+        float maxX = (float) (box.maxX - mc.getEntityRenderDispatcher().camera.getCameraPos().getX());
+        float maxY = (float) (box.maxY - mc.getEntityRenderDispatcher().camera.getCameraPos().getY());
+        float maxZ = (float) (box.maxZ - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ());
 
         bufferBuilder.vertex(m, minX, minY, minZ).color(c.getRGB());
         bufferBuilder.vertex(m, maxX, minY, minZ).color(c.getRGB());
@@ -187,12 +187,12 @@ public class Render3DEngine {
     }
 
     public static void setFilledSidePoints(BufferBuilder buffer, Matrix4f matrix, Box box, Color c, Direction dir) {
-        float minX = (float) (box.minX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float minY = (float) (box.minY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float minZ = (float) (box.minZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
-        float maxX = (float) (box.maxX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float maxY = (float) (box.maxY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float maxZ = (float) (box.maxZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
+        float minX = (float) (box.minX - mc.getEntityRenderDispatcher().camera.getCameraPos().getX());
+        float minY = (float) (box.minY - mc.getEntityRenderDispatcher().camera.getCameraPos().getY());
+        float minZ = (float) (box.minZ - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ());
+        float maxX = (float) (box.maxX - mc.getEntityRenderDispatcher().camera.getCameraPos().getX());
+        float maxY = (float) (box.maxY - mc.getEntityRenderDispatcher().camera.getCameraPos().getY());
+        float maxZ = (float) (box.maxZ - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ());
 
         if (dir == Direction.DOWN) {
             buffer.vertex(matrix, minX, minY, minZ).color(c.getRGB());
@@ -264,12 +264,12 @@ public class Render3DEngine {
     }
 
     public static void setFilledFadePoints(Box box, BufferBuilder buffer, Matrix4f posMatrix, Color c, Color c1) {
-        float minX = (float) (box.minX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float minY = (float) (box.minY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float minZ = (float) (box.minZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
-        float maxX = (float) (box.maxX - mc.getEntityRenderDispatcher().camera.getPos().getX());
-        float maxY = (float) (box.maxY - mc.getEntityRenderDispatcher().camera.getPos().getY());
-        float maxZ = (float) (box.maxZ - mc.getEntityRenderDispatcher().camera.getPos().getZ());
+        float minX = (float) (box.minX - mc.getEntityRenderDispatcher().camera.getCameraPos().getX());
+        float minY = (float) (box.minY - mc.getEntityRenderDispatcher().camera.getCameraPos().getY());
+        float minZ = (float) (box.minZ - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ());
+        float maxX = (float) (box.maxX - mc.getEntityRenderDispatcher().camera.getCameraPos().getX());
+        float maxY = (float) (box.maxY - mc.getEntityRenderDispatcher().camera.getCameraPos().getY());
+        float maxZ = (float) (box.maxZ - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ());
 
         if (ModuleManager.holeESP.culling.getValue())
             GlStateManager._enableCull();
@@ -391,7 +391,7 @@ public class Render3DEngine {
         }
     }
 
-    public static void drawHoleOutline(@NotNull Box box, Color color, float lineWidth) {
+    public static void drawHoleOutline(@NotNull Box box, Color color, float width) {
         setupRender();
         MatrixStack matrices = matrixFrom(box.minX, box.minY, box.minZ);
         Tessellator tessellator = Tessellator.getInstance();
@@ -447,7 +447,7 @@ public class Render3DEngine {
         matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
         matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
 
-        matrices.translate(x - camera.getPos().x, y - camera.getPos().y, z - camera.getPos().z);
+        matrices.translate(x - camera.getCameraPos().x, y - camera.getCameraPos().y, z - camera.getCameraPos().z);
 
         return matrices;
     }
@@ -466,11 +466,11 @@ public class Render3DEngine {
         ArrayList<Vec3d> vecs2 = new ArrayList<>();
 
         double x = target.lastX + (target.getX() - target.lastX) * getTickDelta()
-                - mc.getEntityRenderDispatcher().camera.getPos().getX();
+                - mc.getEntityRenderDispatcher().camera.getCameraPos().getX();
         double y = target.lastY + (target.getY() - target.lastY) * getTickDelta()
-                - mc.getEntityRenderDispatcher().camera.getPos().getY();
+                - mc.getEntityRenderDispatcher().camera.getCameraPos().getY();
         double z = target.lastZ + (target.getZ() - target.lastZ) * getTickDelta()
-                - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+                - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ();
 
 
         double height = target.getHeight();
@@ -550,7 +550,7 @@ public class Render3DEngine {
         stack.pop();
     }
 
-    public static void renderCrosses(@NotNull Box box, Color color, float lineWidth) {
+    public static void renderCrosses(@NotNull Box box, Color color, float width) {
         setupRender();
         MatrixStack matrices = matrixFrom(box.minX, box.minY, box.minZ);
         GlStateManager._disableCull();
@@ -558,8 +558,8 @@ public class Render3DEngine {
 
         box = box.offset(new Vec3d(box.minX, box.minY, box.minZ).negate());
 
-        vertexLine(matrices, buffer, (float) box.maxX, (float) box.minY, (float) box.minZ, (float) box.minX, (float) box.minY, (float) box.maxZ, color, lineWidth);
-        vertexLine(matrices, buffer, (float) box.minX, (float) box.minY, (float) box.minZ, (float) box.maxX, (float) box.minY, (float) box.maxZ, color, lineWidth);
+        vertexLine(matrices, buffer, (float) box.maxX, (float) box.minY, (float) box.minZ, (float) box.minX, (float) box.minY, (float) box.maxZ, color, width);
+        vertexLine(matrices, buffer, (float) box.minX, (float) box.minY, (float) box.minZ, (float) box.maxX, (float) box.minY, (float) box.maxZ, color, width);
 
         Render2DEngine.endBuildingLines(buffer);
         GlStateManager._enableCull();
@@ -655,9 +655,9 @@ public class Render3DEngine {
     public static void drawCircle3D(MatrixStack stack, Entity ent, float radius, int color, int points, boolean hudColor, int colorOffset) {
         setupRender();
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL_LINE_WIDTH);
-        double x = ent.lastX + (ent.getX() - ent.lastX) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-        double y = ent.lastY + (ent.getY() - ent.lastY) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getY();
-        double z = ent.lastZ + (ent.getZ() - ent.lastZ) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+        double x = ent.lastX + (ent.getX() - ent.lastX) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getX();
+        double y = ent.lastY + (ent.getY() - ent.lastY) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getY();
+        double z = ent.lastZ + (ent.getZ() - ent.lastZ) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ();
         stack.push();
         stack.translate(x, y, z);
 
@@ -681,10 +681,10 @@ public class Render3DEngine {
         double cs = prevCircleStep + (circleStep - prevCircleStep) * getTickDelta();
         double prevSinAnim = absSinAnimation(cs - 0.45f);
         double sinAnim = absSinAnimation(cs);
-        double x = target.lastX + (target.getX() - target.lastX) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getX();
-        double y = target.lastY + (target.getY() - target.lastY) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getY() + prevSinAnim * target.getHeight();
-        double z = target.lastZ + (target.getZ() - target.lastZ) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getZ();
-        double nextY = target.lastY + (target.getY() - target.lastY) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getPos().getY() + sinAnim * target.getHeight();
+        double x = target.lastX + (target.getX() - target.lastX) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getX();
+        double y = target.lastY + (target.getY() - target.lastY) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getY() + prevSinAnim * target.getHeight();
+        double z = target.lastZ + (target.getZ() - target.lastZ) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ();
+        double nextY = target.lastY + (target.getY() - target.lastY) * getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getY() + sinAnim * target.getHeight();
         stack.push();
         setupRender();
         GlStateManager._disableCull();
@@ -715,9 +715,9 @@ public class Render3DEngine {
     public static void renderGhosts(int espLength, int factor, float shaking, float amplitude, Entity target) {
         Camera camera = mc.gameRenderer.getCamera();
 
-        double tPosX = Render2DEngine.interpolate(target.lastX, target.getX(), Render3DEngine.getTickDelta()) - camera.getPos().x;
-        double tPosY = Render2DEngine.interpolate(target.lastY, target.getY(), Render3DEngine.getTickDelta()) - camera.getPos().y;
-        double tPosZ = Render2DEngine.interpolate(target.lastZ, target.getZ(), Render3DEngine.getTickDelta()) - camera.getPos().z;
+        double tPosX = Render2DEngine.interpolate(target.lastX, target.getX(), Render3DEngine.getTickDelta()) - camera.getCameraPos().x;
+        double tPosY = Render2DEngine.interpolate(target.lastY, target.getY(), Render3DEngine.getTickDelta()) - camera.getCameraPos().y;
+        double tPosZ = Render2DEngine.interpolate(target.lastZ, target.getZ(), Render3DEngine.getTickDelta()) - camera.getCameraPos().z;
         float iAge = (float) Render2DEngine.interpolate(target.age - 1, target.age, Render3DEngine.getTickDelta());
 
         GlStateManager._enableBlend();
@@ -775,9 +775,9 @@ public class Render3DEngine {
     }
 
     public static Vec3d interpolatePos(float prevposX, float prevposY, float prevposZ, float posX, float posY, float posZ) {
-        double x = prevposX + ((posX - prevposX) * getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getX();
-        double y = prevposY + ((posY - prevposY) * getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getY();
-        double z = prevposZ + ((posZ - prevposZ) * getTickDelta()) - mc.getEntityRenderDispatcher().camera.getPos().getZ();
+        double x = prevposX + ((posX - prevposX) * getTickDelta()) - mc.getEntityRenderDispatcher().camera.getCameraPos().getX();
+        double y = prevposY + ((posY - prevposY) * getTickDelta()) - mc.getEntityRenderDispatcher().camera.getCameraPos().getY();
+        double z = prevposZ + ((posZ - prevposZ) * getTickDelta()) - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ();
         return new Vec3d(x, y, z);
     }
 

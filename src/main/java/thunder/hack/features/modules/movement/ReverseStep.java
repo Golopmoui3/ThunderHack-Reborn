@@ -28,7 +28,7 @@ public class ReverseStep extends Module {
     public void onEntitySync(EventSync eventPlayerUpdateWalking) {
         if (ModuleManager.packetFly.isEnabled()) return;
 
-        BlockPos playerPos = BlockPos.ofFloored(mc.player.getPos());
+        BlockPos playerPos = BlockPos.ofFloored(mc.player.getEntityPos());
 
         if (pauseIfShift.getValue() && mc.options.sneakKey.isPressed()) {
             disableTimer();

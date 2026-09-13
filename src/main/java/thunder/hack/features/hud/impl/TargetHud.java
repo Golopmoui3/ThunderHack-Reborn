@@ -7,6 +7,7 @@ import net.minecraft.client.network.AbstractClientPlayerEntity;
 import net.minecraft.client.render.GameRenderer;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.LivingEntity;
+import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.effect.StatusEffect;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
@@ -18,7 +19,9 @@ import net.minecraft.scoreboard.ScoreboardObjective;
 import net.minecraft.scoreboard.number.StyledNumberFormat;
 import net.minecraft.text.MutableText;
 import net.minecraft.util.Colors;
+import net.minecraft.client.render.entity.EntityRenderer;
 import net.minecraft.util.Identifier;
+import org.joml.Matrix3x2fStack;
 import org.lwjgl.opengl.GL40C;
 import thunder.hack.core.manager.client.ModuleManager;
 import thunder.hack.gui.font.FontRenderers;
@@ -183,9 +186,10 @@ public class TargetHud extends HudElement {
         Render2DEngine.drawRect(context, getPosX() + 50, getPosY() + 30, MathUtility.clamp((int) (60 * (health / target.getMaxHealth())), 0, 60), 10, color.getValue().getColorObject().brighter().brighter().brighter());
 
         if (target instanceof PlayerEntity) {
-            Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkin().body());
+            Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkin().body().texturePath());
         } else {
-            Render2DEngine.bindTexture(mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
+            EntityRenderer renderer = mc.getEntityRenderDispatcher().getRenderer(target);
+            Render2DEngine.bindTexture(renderer.getTexture(renderer.getAndUpdateRenderState(target, (float) Render3DEngine.getTickDelta())));
         }
 
         Render2DEngine.renderTexture(context, getPosX() + 3.5f + hurtPercent, getPosY() + 3.5f + hurtPercent, 40 - hurtPercent * 2, 40 - hurtPercent * 2, 8, 8, 8, 8, 64, 64);
@@ -218,21 +222,22 @@ public class TargetHud extends HudElement {
 
         // Бошка
         if (target instanceof PlayerEntity) {
-            Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkin().body());
+            Render2DEngine.bindTexture(((AbstractClientPlayerEntity) target).getSkin().body().texturePath());
         } else {
-            Render2DEngine.bindTexture(mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
+            EntityRenderer renderer = mc.getEntityRenderDispatcher().getRenderer(target);
+            Render2DEngine.bindTexture(renderer.getTexture(renderer.getAndUpdateRenderState(target, (float) Render3DEngine.getTickDelta())));
         }
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().translate(getPosX() + 3.5f + 20, getPosY() + 3.5f + 20, 0);
-        context.getMatrices().scale(1 - hurtPercent / 15f, 1 - hurtPercent / 15f, 1f);
-        context.getMatrices().translate(-(getPosX() + 3.5f + 20), -(getPosY() + 3.5f + 20), 0);
+        context.getMatrices().translate(getPosX() + 3.5f + 20, getPosY() + 3.5f + 20);
+        context.getMatrices().scale(1 - hurtPercent / 15f, 1 - hurtPercent / 15f);
+        context.getMatrices().translate(-(getPosX() + 3.5f + 20), -(getPosY() + 3.5f + 20));
         GlStateManager._enableBlend();
-        RenderSystem.colorMask(false, false, false, true);
-        RenderSystem.clearColor(0.0F, 0.0F, 0.0F, 0.0F);
-        RenderSystem.clear(GL40C.GL_COLOR_BUFFER_BIT, false);
-        RenderSystem.colorMask(true, true, true, true);
-        Render2DEngine.renderRoundedQuadInternal(context.getMatrices().peek().getPositionMatrix(), animationFactor, animationFactor, animationFactor, animationFactor, getPosX() + 3.5f, getPosY() + 3.5f, getPosX() + 3.5f + 40, getPosY() + 3.5f + 40, 7, 10);
+        GlStateManager._colorMask(false, false, false, true);
+        GL40C.glClearColor(0.0F, 0.0F, 0.0F, 0.0F);
+        GlStateManager._clear(GL40C.GL_COLOR_BUFFER_BIT);
+        GlStateManager._colorMask(true, true, true, true);
+        Render2DEngine.renderRoundedQuad(context, new Color(animationFactor, animationFactor, animationFactor, animationFactor), getPosX() + 3.5f, getPosY() + 3.5f, getPosX() + 3.5f + 40, getPosY() + 3.5f + 40, 7, 10);
         RenderSystem.blendFunc(GL40C.GL_DST_ALPHA, GL40C.GL_ONE_MINUS_DST_ALPHA);
         Render2DEngine.renderTexture(context, getPosX() + 3.5f, getPosY() + 3.5f, 40, 40, 8, 8, 8, 8, 64, 64);
         Render2DEngine.renderTexture(context, getPosX() + 3.5f, getPosY() + 3.5f, 40, 40, 40, 8, 8, 8, 64, 64);
@@ -259,14 +264,14 @@ public class TargetHud extends HudElement {
         if (target instanceof PlayerEntity) {
 
             //Броня
-            List<ItemStack> armor = ((PlayerEntity) target).getInventory().armor;
-            ItemStack[] items = new ItemStack[]{target.getMainHandStack(), armor.get(3), armor.get(2), armor.get(1), armor.get(0), target.getOffHandStack()};
+            PlayerEntity targetPlayer = (PlayerEntity) target;
+            ItemStack[] items = new ItemStack[]{target.getMainHandStack(), targetPlayer.getEquippedStack(EquipmentSlot.HEAD), targetPlayer.getEquippedStack(EquipmentSlot.CHEST), targetPlayer.getEquippedStack(EquipmentSlot.LEGS), targetPlayer.getEquippedStack(EquipmentSlot.FEET), target.getOffHandStack()};
 
             float xItemOffset = getPosX() + 48;
             for (ItemStack itemStack : items) {
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(xItemOffset, getPosY() + 15, 0);
-                context.getMatrices().scale(0.75f, 0.75f, 0.75f);
+                context.getMatrices().scale(0.75f, 0.75f);
                 context.drawItem(itemStack, 0, 0);
                 context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
                 context.getMatrices().popMatrix();
@@ -299,7 +304,7 @@ public class TargetHud extends HudElement {
 
         context.getMatrices().pushMatrix();
         context.getMatrices().translate(getPosX() + 2.5 + 15, getPosY() + 2.5 + 15, 0);
-        context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f, 1f);
+        context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f);
         context.getMatrices().translate(-(getPosX() + 2.5 + 15), -(getPosY() + 2.5 + 15), 0);
         GlStateManager._enableBlend();
         RenderSystem.colorMask(false, false, false, true);
@@ -330,14 +335,14 @@ public class TargetHud extends HudElement {
 
         if (target instanceof PlayerEntity) {
             //Броня
-            List<ItemStack> armor = ((PlayerEntity) target).getInventory().armor;
-            ItemStack[] items = new ItemStack[]{target.getMainHandStack(), armor.get(3), armor.get(2), armor.get(1), armor.get(0), target.getOffHandStack()};
+            PlayerEntity targetPlayer2 = (PlayerEntity) target;
+            ItemStack[] items = new ItemStack[]{target.getMainHandStack(), targetPlayer2.getEquippedStack(EquipmentSlot.HEAD), targetPlayer2.getEquippedStack(EquipmentSlot.CHEST), targetPlayer2.getEquippedStack(EquipmentSlot.LEGS), targetPlayer2.getEquippedStack(EquipmentSlot.FEET), target.getOffHandStack()};
 
             float xItemOffset = getPosX() + 38;
             for (ItemStack itemStack : items) {
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(xItemOffset, getPosY() + 13, 0);
-                context.getMatrices().scale(0.5f, 0.5f, 0.5f);
+                context.getMatrices().scale(0.5f, 0.5f);
                 context.drawItem(itemStack, 0, 0);
                 context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
                 context.getMatrices().popMatrix();
@@ -426,7 +431,7 @@ public class TargetHud extends HudElement {
 
         context.getMatrices().pushMatrix();
         context.getMatrices().translate(getPosX() + 2.5 + 15, getPosY() + 2.5 + 15, 0);
-        context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f, 1f);
+        context.getMatrices().scale(1 - hurtPercent / 20f, 1 - hurtPercent / 20f);
         context.getMatrices().translate(-(getPosX() + 2.5 + 15), -(getPosY() + 2.5 + 15), 0);
         GlStateManager._enableBlend();
         RenderSystem.colorMask(false, false, false, true);
@@ -466,7 +471,7 @@ public class TargetHud extends HudElement {
                 if (itemStack.isEmpty()) continue;
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(xItemOffset, getPosY() + 35, 0);
-                context.getMatrices().scale(0.75f, 0.75f, 0.75f);
+                context.getMatrices().scale(0.75f, 0.75f);
                 context.drawItem(itemStack, 0, 0);
                 context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
 
@@ -480,12 +485,13 @@ public class TargetHud extends HudElement {
     }
 
     private void celestialArmor(DrawContext context, PlayerEntity target, float posX, float posY) {
+        ItemStack[] armor = new ItemStack[]{target.getEquippedStack(EquipmentSlot.FEET), target.getEquippedStack(EquipmentSlot.LEGS), target.getEquippedStack(EquipmentSlot.CHEST), target.getEquippedStack(EquipmentSlot.HEAD)};
         for (int i = 0; i < 4; i++)
-            if (!target.getInventory().armor.get(3 - i).isEmpty()) {
+            if (!armor[3 - i].isEmpty()) {
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(posX + (i > 1 ? 138 : 118), posY + (i % 2 == 0 ? 5 : 26), 0);
-                context.drawItem(target.getInventory().armor.get(3 - i), 0, 0);
-                context.drawStackOverlay(mc.textRenderer, target.getInventory().armor.get(3 - i), 0, 0);
+                context.getMatrices().translate(posX + (i > 1 ? 138 : 118), posY + (i % 2 == 0 ? 5 : 26));
+                context.drawItem(armor[3 - i], 0, 0);
+                context.drawStackOverlay(mc.textRenderer, armor[3 - i], 0, 0);
                 context.getMatrices().popMatrix();
             }
     }
@@ -495,7 +501,7 @@ public class TargetHud extends HudElement {
             if (!(i == 0 ? target.getMainHandStack() : target.getOffHandStack()).isEmpty()) {
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(posX + (i == 0 ? 50 : 77), posY + 14, 0);
-                context.getMatrices().scale(0.75f, 0.75f, 1f);
+                context.getMatrices().scale(0.75f, 0.75f);
                 context.drawItem((i == 0 ? target.getMainHandStack() : target.getOffHandStack()), 0, 0);
                 context.getMatrices().popMatrix();
                 FontRenderers.settings.drawString(context, "x" + (i == 0 ? target.getMainHandStack() : target.getOffHandStack()).getCount(), posX + (i == 0 ? 50 : 77) + 12, posY + 21, -1);
@@ -538,10 +544,10 @@ public class TargetHud extends HudElement {
         } else return (absorp.getValue()) ? target.getHealth() + target.getAbsorptionAmount() : target.getHealth();
     }
 
-    public static void sizeAnimation(MatrixStack matrixStack, double width, double height, double animation) {
-        matrixStack.translate(width, height, 0);
-        matrixStack.scale((float) animation, (float) animation, 1);
-        matrixStack.translate(-width, -height, 0);
+    public static void sizeAnimation(Matrix3x2fStack matrixStack, double width, double height, double animation) {
+        matrixStack.translate((float) width, (float) height);
+        matrixStack.scale((float) animation, (float) animation);
+        matrixStack.translate((float) -width, (float) -height);
     }
 
     public static String getPotionName(StatusEffect p) {
