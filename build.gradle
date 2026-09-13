@@ -1,12 +1,12 @@
 plugins {
-	id 'fabric-loom' version '1.7-SNAPSHOT'
+	id 'net.fabricmc.fabric-loom-remap' version "${loom_version}"
 	id 'maven-publish'
 }
 
-sourceCompatibility = JavaVersion.VERSION_21
-targetCompatibility = JavaVersion.VERSION_21
-
-archivesBaseName = project.archives_base_name
+// Gradle 9: archivesBaseName removed, use base.archivesName
+base {
+	archivesName = project.archives_base_name
+}
 version = project.mod_version
 group = project.maven_group
 
@@ -48,7 +48,8 @@ dependencies {
 
 	libImpl("meteordevelopment:orbit:${project.orbit_version}")
 
-	modCompileOnly "meteordevelopment:baritone:1.21-SNAPSHOT"
+	// Baritone (Meteor fork) matching the Minecraft version, compile-time only
+	modCompileOnly "meteordevelopment:baritone:${project.baritone_version}"
 
 	libImpl("io.netty:netty-handler-proxy:${project.netty_version}") { transitive = false }
 	libImpl("io.netty:netty-codec-socks:${project.netty_version}") { transitive = false }
@@ -77,11 +78,14 @@ tasks.withType(JavaCompile).configureEach {
 
 java {
 	withSourcesJar()
+
+	sourceCompatibility = JavaVersion.VERSION_21
+	targetCompatibility = JavaVersion.VERSION_21
 }
 
 jar {
 	from("LICENSE") {
-		rename { "${it}_${project.archivesBaseName}"}
+		rename { "${it}_${project.archives_base_name}"}
 	}
 	from {
 		configurations.libImpl.collect { it.isDirectory() ? it : zipTree(it) }

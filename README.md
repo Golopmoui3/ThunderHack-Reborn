@@ -2,54 +2,85 @@
     <img src="https://i.imgur.com/ZiJ0r7y.png" style="width: 69%">
 </p>
 
-> [!WARNING]
-> Work on ThunderHack Recode is completely stopped, 
-> it will be replaced by CatLean, a new free client
-> with closed source code and higher quality modules,
-> you can follow CatLean in my [Discord server](https://discord.gg/PvBhPWdkVD)
-
-<div align="center">
-<img src="https://cdn.discordapp.com/attachments/934396624111824900/1230019159027617792/furro.gif?ex=6631cb9c&is=661f569c&hm=b6cee2cd9b6ec238f54c80dcfc421f2c8ecd3f750f2f61a62087d1e01d201e4d&" style="width: 69%">
-</div>
-
-
 <div align="center">
 
-[![Discord Mine](https://img.shields.io/discord/1140266441082404924?label=discord&logo=discord&logoColor=white)](https://discord.gg/PvBhPWdkVD)
+[![Build](https://github.com/Golopmoui3/ThunderHack-Reborn/actions/workflows/gradle.yml/badge.svg)](https://github.com/Golopmoui3/ThunderHack-Reborn/actions/workflows/gradle.yml)
+![Minecraft](https://img.shields.io/badge/minecraft-1.21.11-brightgreen)
+![Loader](https://img.shields.io/badge/fabric--loader-%3E%3D0.19.5-blue)
+![Java](https://img.shields.io/badge/java-21-orange)
+![License](https://img.shields.io/badge/license-GPL--3.0-red)
 
 </div>
 
+# ⚡ ThunderHack Reborn
 
-# Cya 04.04.23 - 9.10.24 project!
-<div align="center">
-<img src="assets/U03-01-20-U12-05-01-14.png">
-</div>
+Community continuation of the legendary **ThunderHack Recode** by Pan4ur (archived, was stuck on 1.21),
+retargeted to **Minecraft Fabric 1.21.11** — the last version with Yarn mappings.
+
+Client for Crystal / Sword PvP: KillAura, AutoCrystal, Surround, HoleSnap, ESP, speed, flight,
+ClickGUI (`P`), HUD editor, configs, macros, waypoints, proxy support and more.
+
+> Based on [Pan4ur/ThunderHack-Recode](https://github.com/Pan4ur/ThunderHack-Recode) v1.7 (GPL-3.0).
+> Original development is stopped; this fork keeps the code alive on modern versions.
 
 ## Information
 
-- Minecraft version: ```Fabric``` 1.21 (or whatever version's the latest)
-- Default ClickGui keybind - **```P```** (<--- it is not, you should go to the Discord server and ask for the real keybind)
+- Minecraft version: ```Fabric``` 1.21.11
+- Default ClickGui keybind - **```P```**
 - Default prefix - **```@```**
 - Middle click the module to bind it.
-- Be aware Expensive, DoxWare 2.0, gumballoff, Treoderia "Recode", Deluxe Client, and Quick Client are both ratted and renames of this client.
 
-## Requires these mods:
+## Requirements
 
-- [FabricApi 1.21](https://www.curseforge.com/minecraft/mc-mods/fabric-api/files/5531908)
-- [Java 21+](https://www.oracle.com/java/technologies/javase/jdk21-archive-downloads.html)
+- [Java 21+](https://adoptium.net/temurin/releases/?version=21)
+- [Fabric Loader 0.19.5+](https://fabricmc.net/use/installer/) for Minecraft 1.21.11
+- [Fabric API 0.141.6+1.21.11](https://modrinth.com/mod/fabric-api/versions?g=1.21.11)
+- Optional: [Baritone](https://github.com/MeteorDevelopment/meteor-client) `1.21.11` build (Meteor fork) for `Goto`, auto-pause in Aura etc.
+- Recommended for FPS: Sodium + Lithium + FerriteCore (1.21.11 builds)
 
-## Recommended to read:
+## Install / Установка
 
-- [Performance guide for Minecraft 1.20.4+ Clients](https://gist.github.com/HexedHero/aab340a84db51913cb1106c2d85f4e4f)
-- [Setup guide by @DevilishRak](https://thunderguidemc.vercel.app/)
+1. Install **Java 21**, **Fabric Loader 1.21.11** (vanilla launcher or any custom launcher).
+2. Put **Fabric API** (1.21.11 build) into the `mods` folder.
+3. Download `thunderhack-reborn-*.jar` from
+   [Releases](https://github.com/Golopmoui3/ThunderHack-Reborn/releases) (tag `latest`, built by CI)
+   and put it into `mods`.
+4. (Optional) add Baritone for Minecraft 1.21.11 into `mods`.
+5. Launch the game with the Fabric 1.21.11 profile. Press `P` for ClickGUI, type `@help` in chat.
+
+## Build from source
+
+```bash
+git clone https://github.com/Golopmoui3/ThunderHack-Reborn.git
+cd ThunderHack-Reborn
+./gradlew build
+# jar: build/libs/thunderhack-reborn-*.jar (without -sources)
+```
+
+Toolchain: Gradle 9.5.1, Loom-remap 1.17, Yarn `1.21.11+build.6`, Java 21.
+
+To update Yarn renames semi-automatically (code is Yarn-based):
+
+```bash
+./gradlew migrateMappings --mappings "1.21.11+build.6"
+```
+
+## Roadmap
+
+- [x] Rebrand + buildscript for 1.21.11 (Loader 0.19.5, Fabric API 0.141.6, Baritone 1.21.11-SNAPSHOT)
+- [ ] `migrateMappings` Yarn 1.21 → 1.21.11 rename pass
+- [ ] Fix 1.21 → 1.21.11 vanilla API breakages (compile + runtime check in dev client)
+- [ ] CI release jar verification in-game
+- [ ] (later) migration to Mojang mappings → Minecraft 26.x
 
 ## Credits
 
-- [Ai_24](https://www.youtube.com/@Ai_24) for cool showcase
-- [KiLAB Gaming](https://www.youtube.com/@KiLABGaming) for complete overview
+- [Pan4ur](https://github.com/Pan4ur) and **06ED** — original ThunderHack Recode
 - [@meteordevelopment](https://github.com/meteordevelopment) for orbit
 - [@ladysnake](https://github.com/ladysnake) for satin
 - [@0x3C50](https://github.com/0x3C50/Renderer) for the renderer
+- [Ai_24](https://www.youtube.com/@Ai_24) for cool showcase
+- [KiLAB Gaming](https://www.youtube.com/@KiLABGaming) for complete overview
 
 ## Screenshots
 <details>
@@ -70,11 +101,12 @@
 ![image](assets/5.gif)
 </details>
 
-![image](https://github.com/Pan4ur/ThunderHack-Recode/assets/82473048/1e56338f-58a1-4759-8234-858878bdde3f)
-
 ## Addons
 
 ### Resources
 
-- [Addon Template](https://github.com/cvs0/ThunderHack-Recode-Addon-Template) by cvs0
-- [ThunderHack Addon Docs (COMING SOON)]()
+- [Addon Template](https://github.com/cvs0/ThunderHack-Recode-Addon-Template) by cvs0 (needs update for Reborn API)
+
+## License
+
+GPL-3.0, see [LICENSE](LICENSE).

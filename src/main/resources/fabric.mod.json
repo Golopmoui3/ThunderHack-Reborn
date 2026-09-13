@@ -1,10 +1,10 @@
 {
   "schemaVersion": 1,
   "id": "thunderhack",
-  "version": "1.7",
+  "version": "2.0",
   "icon": "icon.png",
-  "name": "ThunderHack",
-  "description": "Player Assistance Mod",
+  "name": "ThunderHack Reborn",
+  "description": "Player Assistance Mod for Crystal / Sword PvP (community continuation of ThunderHack Recode, retargeted to 1.21.11)",
   "authors": [
     {
       "name": "pan4ur",
@@ -28,16 +28,16 @@
     ]
   },
   "contact": {
-    "sources": "https://github.com/Pan4ur/ThunderHack-Recode",
-    "homepage": "https://thunderhack-site.vercel.app",
-    "issues": "https://github.com/Pan4ur/ThunderHack-Recode/issues"
+    "sources": "https://github.com/Golopmoui3/ThunderHack-Reborn",
+    "homepage": "https://github.com/Golopmoui3/ThunderHack-Reborn",
+    "issues": "https://github.com/Golopmoui3/ThunderHack-Reborn/issues"
   },
   "mixins": [
     "thunderhack.mixins.json"
   ],
   "depends": {
-    "fabricloader": ">=0.15.11",
-    "minecraft": "~1.21",
+    "fabricloader": ">=0.19.5",
+    "minecraft": "~1.21.11",
     "java": ">=21"
   },
   "suggests": {
