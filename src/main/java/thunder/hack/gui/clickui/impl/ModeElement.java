@@ -1,5 +1,7 @@
 package thunder.hack.gui.clickui.impl;
 
+import net.minecraft.client.gl.RenderPipelines;
+
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
@@ -48,13 +50,13 @@ public class ModeElement extends AbstractElement {
         matrixStack.translate(-tx, -ty, 0);
 
         matrixStack.translate((x + width - 14), y + 4.5f, 0);
-        context.drawTexture(TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6);
         matrixStack.translate(-(x + width - 14), -y - 4.5f, 0);
 
         matrixStack.pop();
 
         if (setting.group != null)
-            Render2DEngine.drawRect(context.getMatrices(), x + 4, y, 1f, 17, HudEditor.getColor(1));
+            Render2DEngine.drawRect(context, x + 4, y, 1f, 17, HudEditor.getColor(1));
 
 
         FontRenderers.sf_medium_mini.drawString(matrixStack, setting2.getName(), (setting.group != null ? 2f : 0f) + (x + 6), (y + wheight / 2 - (6 / 2f)) + 3, new Color(-1).getRGB());

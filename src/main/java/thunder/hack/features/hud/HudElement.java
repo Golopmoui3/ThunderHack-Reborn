@@ -62,7 +62,7 @@ public class HudElement extends Module {
                         }
 
                 if (finalX != 0 || finalY != 0)
-                    Render2DEngine.drawRound(context.getMatrices(), finalX == 0 ? getHitX() : finalX, finalY == 0 ? getHitY() : finalY, width, height, 3, new Color(0x7B2F2F2F, true));
+                    Render2DEngine.drawRound(context, finalX == 0 ? getHitX() : finalX, finalY == 0 ? getHitY() : finalY, width, height, 3, new Color(0x7B2F2F2F, true));
 
                 if (finalX != 0)
                     Render2DEngine.drawLine(finalX, 0, finalX, mc.getWindow().getScaledHeight(), -1);
@@ -88,7 +88,7 @@ public class HudElement extends Module {
             }
             anyHovered = true;
         }
-        // Render2DEngine.drawRect(context.getMatrices(),getPosX(), getPosY(), width, height, Color.RED);
+        // Render2DEngine.drawRect(context,getPosX(), getPosY(), width, height, Color.RED);
     }
 
     @EventHandler

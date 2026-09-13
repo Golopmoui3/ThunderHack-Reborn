@@ -1,6 +1,9 @@
 package thunder.hack.features.modules.render;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.model.ModelPart;
@@ -62,24 +65,22 @@ public class Chams extends Module {
     private static final float SINE_45_DEGREES = (float) Math.sin(0.7853981633974483);
 
     public void renderCrystal(EndCrystalEntity endCrystalEntity, float f, float g, MatrixStack matrixStack, int i, ModelPart core, ModelPart frame) {
-        RenderSystem.enableBlend();
+        GlStateManager._enableBlend();
         if (alternativeBlending.getValue())
-            RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-        else RenderSystem.defaultBlendFunc();
-        RenderSystem.disableCull();
-        RenderSystem.disableDepthTest();
+            GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
+        else GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager._disableCull();
+        GlStateManager._disableDepthTest();
         BufferBuilder buffer;
 
         if (crystalMode.getValue() != CMode.One) {
             if (crystalMode.getValue() == CMode.Three) {
-                RenderSystem.setShaderTexture(0, crystalTexture);
+                Render2DEngine.bindTexture(crystalTexture);
             } else {
-                RenderSystem.setShaderTexture(0, TextureStorage.crystalTexture2);
+                Render2DEngine.bindTexture(TextureStorage.crystalTexture2);
             }
-            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         } else {
-            RenderSystem.setShader(GameRenderer::getPositionProgram);
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         }
 
@@ -87,7 +88,6 @@ public class Chams extends Module {
         float h = staticCrystal.getValue() ? -1.4f : EndCrystalEntityRenderer.getYOffset(endCrystalEntity, g);
         float j = ((float) endCrystalEntity.endCrystalAge + g) * 3.0f;
         matrixStack.push();
-        RenderSystem.setShaderColor(crystalColor.getValue().getGlRed(), crystalColor.getValue().getGlGreen(), crystalColor.getValue().getGlBlue(), crystalColor.getValue().getGlAlpha());
         matrixStack.scale(2.0f, 2.0f, 2.0f);
         matrixStack.translate(0.0f, -0.5f, 0.0f);
         int k = OverlayTexture.DEFAULT_UV;
@@ -106,27 +106,24 @@ public class Chams extends Module {
         matrixStack.pop();
         matrixStack.pop();
         Render2DEngine.endBuilding(buffer);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.disableBlend();
-        RenderSystem.enableDepthTest();
-        RenderSystem.enableCull();
+        GlStateManager._disableBlend();
+        GlStateManager._enableDepthTest();
+        GlStateManager._enableCull();
     }
 
     public void renderPlayer(PlayerEntity pe, float f, float g, MatrixStack matrixStack, int i, EntityModel model, CallbackInfo ci, Runnable post) {
-        RenderSystem.enableBlend();
+        GlStateManager._enableBlend();
         if (alternativeBlending.getValue())
-            RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-        else RenderSystem.defaultBlendFunc();
-        RenderSystem.enableCull();
-        RenderSystem.disableDepthTest();
+            GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
+        else GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
+        GlStateManager._enableCull();
+        GlStateManager._disableDepthTest();
         BufferBuilder buffer;
 
         if (!simple.getValue()) {
-            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) pe).getSkin().body());
-            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+            Render2DEngine.bindTexture(((AbstractClientPlayerEntity) pe).getSkin().body());
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         } else {
-            RenderSystem.setShader(GameRenderer::getPositionProgram);
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         }
 
@@ -136,9 +133,7 @@ public class Chams extends Module {
         matrixStack.push();
 
         if (Managers.FRIEND.isFriend(pe)) {
-            RenderSystem.setShaderColor(friendColor.getValue().getGlRed(), friendColor.getValue().getGlGreen(), friendColor.getValue().getGlBlue(), friendColor.getValue().getGlAlpha());
         } else {
-            RenderSystem.setShaderColor(playerColor.getValue().getGlRed(), playerColor.getValue().getGlGreen(), playerColor.getValue().getGlBlue(), playerColor.getValue().getGlAlpha());
         }
 
         model.handSwingProgress = pe.getHandSwingProgress(g);
@@ -197,11 +192,10 @@ public class Chams extends Module {
         int p = LivingEntityRenderer.getOverlay(pe, 0);
         model.render(matrixStack, buffer, i, p);
         Render2DEngine.endBuilding(buffer);
-        RenderSystem.disableBlend();
-        RenderSystem.disableCull();
+        GlStateManager._disableBlend();
+        GlStateManager._disableCull();
         matrixStack.pop();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.enableDepthTest();
+        GlStateManager._enableDepthTest();
         if (!playerTexture.getValue()) {
             ci.cancel();
             post.run();
@@ -280,6 +274,5 @@ public class Chams extends Module {
     @EventHandler
     public void onRenderHands(EventHeldItemRenderer e) {
         if (handItems.getValue())
-            RenderSystem.setShaderColor(handItemsColor.getValue().getRed() / 255f, handItemsColor.getValue().getGreen() / 255f, handItemsColor.getValue().getBlue() / 255f, handItemsColor.getValue().getAlpha() / 255f);
     }
 }

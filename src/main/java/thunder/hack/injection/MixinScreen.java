@@ -115,7 +115,7 @@ public abstract class MixinScreen {
     public void renderPanoramaBackgroundHook(DrawContext context, float delta, CallbackInfo ci) {
         if (ClientSettings.customPanorama.getValue() && mc.world == null) {
             ci.cancel();
-            Render2DEngine.drawMainMenuShader(context.getMatrices(), 0, 0, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
+            Render2DEngine.drawMainMenuShader(context, 0, 0, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
         }
     }
 

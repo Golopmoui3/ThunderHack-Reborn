@@ -1,4 +1,7 @@
 package thunder.hack.features.hud.impl;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -28,17 +31,16 @@ public class AutoCrystalInfo extends HudElement {
     public void onRender2D(DrawContext context) {
         super.onRender2D(context);
 
-        Render2DEngine.drawHudBase(context.getMatrices(), getPosX(), getPosY(), getWidth(), getHeight(), HudEditor.hudRound.getValue());
+        Render2DEngine.drawHudBase(context, getPosX(), getPosY(), getWidth(), getHeight(), HudEditor.hudRound.getValue());
 
         Color c1 = HudEditor.getColor(0).darker().darker().darker();
         Color c2 = HudEditor.getColor(0);
 
-        Render2DEngine.drawRect(context.getMatrices(), getPosX() + 2, getPosY() + 14, 96, 64, HudEditor.hudRound.getValue(), 0.4f,
+        Render2DEngine.drawRect(context, getPosX() + 2, getPosY() + 14, 96, 64, HudEditor.hudRound.getValue(), 0.4f,
                 c1, c1, c1, c1);
 
-        FontRenderers.sf_bold.drawGradientString(context.getMatrices(), "AutoCrystal Info", getPosX() + 2, getPosY() + 4, 10);
+        FontRenderers.sf_bold.drawGradientString(context, "AutoCrystal Info", getPosX() + 2, getPosY() + 4, 10);
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
 
@@ -63,29 +65,29 @@ public class AutoCrystalInfo extends HudElement {
 
         Render2DEngine.endBuilding(bufferBuilder2);
 
-        FontRenderers.sf_bold_mini.drawString(context.getMatrices(), max + "", getPosX() + 100, getPosY() + 16, HudEditor.textColor.getValue().getRawColor());
+        FontRenderers.sf_bold_mini.drawString(context, max + "", getPosX() + 100, getPosY() + 16, HudEditor.textColor.getValue().getRawColor());
 
         if (!speeds.isEmpty())
-            FontRenderers.sf_bold_mini.drawString(context.getMatrices(), speeds.getLast() + "", getPosX() + 100, getPosY() + 80 - (55f * ((float) speeds.getLast() / (float) max)), HudEditor.textColor.getValue().getRawColor());
+            FontRenderers.sf_bold_mini.drawString(context, speeds.getLast() + "", getPosX() + 100, getPosY() + 80 - (55f * ((float) speeds.getLast() / (float) max)), HudEditor.textColor.getValue().getRawColor());
 
-        FontRenderers.sf_bold_mini.drawString(context.getMatrices(), min + "", getPosX() + 100, getPosY() + 72, HudEditor.textColor.getValue().getRawColor());
+        FontRenderers.sf_bold_mini.drawString(context, min + "", getPosX() + 100, getPosY() + 72, HudEditor.textColor.getValue().getRawColor());
 
         boolean isNull = ModuleManager.autoCrystal.getCurrentData() == null;
 
-        FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "Target: " + Formatting.GRAY + (AutoCrystal.target == null ? "null" : AutoCrystal.target.getName().getString()), getPosX() + 113, getPosY() + 16, HudEditor.textColor.getValue().getRawColor());
+        FontRenderers.sf_bold_mini.drawString(context, "Target: " + Formatting.GRAY + (AutoCrystal.target == null ? "null" : AutoCrystal.target.getName().getString()), getPosX() + 113, getPosY() + 16, HudEditor.textColor.getValue().getRawColor());
 
         int calc = (int) ModuleManager.autoCrystal.getCalcTime();
         float efficiency = (isNull ? 0 : MathUtility.round2(ModuleManager.autoCrystal.getCurrentData().damage() / ModuleManager.autoCrystal.getCurrentData().selfDamage()));
 
-        FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "Calc delay: " + getCalcColor(calc) + calc + "ms", getPosX() + 113, getPosY() + 24, HudEditor.textColor.getValue().getRawColor());
-        FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "Side: " + Formatting.GRAY + (isNull ? "null" : ModuleManager.autoCrystal.getCurrentData().bhr().getSide()), getPosX() + 113, getPosY() + 32, HudEditor.textColor.getValue().getRawColor());
-        FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "Damage: " + Formatting.GRAY + (isNull ? "null" : MathUtility.round2(ModuleManager.autoCrystal.getCurrentData().damage())), getPosX() + 113, getPosY() + 40, HudEditor.textColor.getValue().getRawColor());
-        FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "Self: " + Formatting.GRAY + (isNull ? "null" : MathUtility.round2(ModuleManager.autoCrystal.getCurrentData().selfDamage())), getPosX() + 113, getPosY() + 48, HudEditor.textColor.getValue().getRawColor());
-        FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "Overr. dmg: " + Formatting.GRAY + (isNull ? "null" : ModuleManager.autoCrystal.getCurrentData().overrideDamage()), getPosX() + 113, getPosY() + 56, HudEditor.textColor.getValue().getRawColor());
-        FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "Efficiency: " + getEfficiencyColor(efficiency) + efficiency, getPosX() + 113, getPosY() + 64, HudEditor.textColor.getValue().getRawColor());
-        FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "Pause: " + ModuleManager.autoCrystal.getPauseState(), getPosX() + 113, getPosY() + 72, HudEditor.textColor.getValue().getRawColor());
+        FontRenderers.sf_bold_mini.drawString(context, "Calc delay: " + getCalcColor(calc) + calc + "ms", getPosX() + 113, getPosY() + 24, HudEditor.textColor.getValue().getRawColor());
+        FontRenderers.sf_bold_mini.drawString(context, "Side: " + Formatting.GRAY + (isNull ? "null" : ModuleManager.autoCrystal.getCurrentData().bhr().getSide()), getPosX() + 113, getPosY() + 32, HudEditor.textColor.getValue().getRawColor());
+        FontRenderers.sf_bold_mini.drawString(context, "Damage: " + Formatting.GRAY + (isNull ? "null" : MathUtility.round2(ModuleManager.autoCrystal.getCurrentData().damage())), getPosX() + 113, getPosY() + 40, HudEditor.textColor.getValue().getRawColor());
+        FontRenderers.sf_bold_mini.drawString(context, "Self: " + Formatting.GRAY + (isNull ? "null" : MathUtility.round2(ModuleManager.autoCrystal.getCurrentData().selfDamage())), getPosX() + 113, getPosY() + 48, HudEditor.textColor.getValue().getRawColor());
+        FontRenderers.sf_bold_mini.drawString(context, "Overr. dmg: " + Formatting.GRAY + (isNull ? "null" : ModuleManager.autoCrystal.getCurrentData().overrideDamage()), getPosX() + 113, getPosY() + 56, HudEditor.textColor.getValue().getRawColor());
+        FontRenderers.sf_bold_mini.drawString(context, "Efficiency: " + getEfficiencyColor(efficiency) + efficiency, getPosX() + 113, getPosY() + 64, HudEditor.textColor.getValue().getRawColor());
+        FontRenderers.sf_bold_mini.drawString(context, "Pause: " + ModuleManager.autoCrystal.getPauseState(), getPosX() + 113, getPosY() + 72, HudEditor.textColor.getValue().getRawColor());
 
-        Render2DEngine.drawRect(context.getMatrices(), getPosX() + 110.5f, getPosY() + 12, 0.5f, 65, new Color(0x44FFFFFF, true));
+        Render2DEngine.drawRect(context, getPosX() + 110.5f, getPosY() + 12, 0.5f, 65, new Color(0x44FFFFFF, true));
 
         setBounds(getPosX(), getPosY(), getWidth(), getHeight());
     }

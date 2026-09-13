@@ -47,7 +47,7 @@ public class AutoTpAccept extends Module {
     public void onRender2D(DrawContext context) {
         if (duo.getValue() && tpTask != null) {
             String text = (isRu() ? "Ждем таргета " : "Awaiting target ") + MathUtility.round((timeOut.getValue() * 1000 - (System.currentTimeMillis() - tpTask.time())) / 1000f, 1);
-            FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), text, mc.getWindow().getScaledWidth() / 2f, mc.getWindow().getScaledHeight() / 2f + 30, HudEditor.getColor(1).getRGB());
+            FontRenderers.sf_bold.drawCenteredString(context, text, mc.getWindow().getScaledWidth() / 2f, mc.getWindow().getScaledHeight() / 2f + 30, HudEditor.getColor(1).getRGB());
         }
     }
 

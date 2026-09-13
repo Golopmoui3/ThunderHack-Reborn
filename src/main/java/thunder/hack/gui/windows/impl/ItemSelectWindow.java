@@ -1,4 +1,7 @@
 package thunder.hack.gui.windows.impl;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -62,10 +65,9 @@ public class ItemSelectWindow extends WindowBase {
         super.render(context, mouseX, mouseY);
         boolean hover1 = Render2DEngine.isHovered(mouseX, mouseY, getX() + getWidth() - 90, getY() + 3, 70, 10);
 
-        Render2DEngine.drawRect(context.getMatrices(), getX() + getWidth() - 90, getY() + 3, 70, 10, hover1 ? new Color(0xC5838383, true) : new Color(0xC5575757, true));
-        FontRenderers.sf_medium_mini.drawString(context.getMatrices(), search, getX() + getWidth() - 86, getY() + 7, new Color(0xD5D5D5).getRGB());
+        Render2DEngine.drawRect(context, getX() + getWidth() - 90, getY() + 3, 70, 10, hover1 ? new Color(0xC5838383, true) : new Color(0xC5575757, true));
+        FontRenderers.sf_medium_mini.drawString(context, search, getX() + getWidth() - 86, getY() + 7, new Color(0xD5D5D5).getRGB());
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
         int tabColor1 = allTab ? new Color(0xD5D5D5).getRGB() : Color.GRAY.getRGB();
         int tabColor2 = allTab ? Color.GRAY.getRGB() : new Color(0xBDBDBD).getRGB();
@@ -82,38 +84,38 @@ public class ItemSelectWindow extends WindowBase {
         bufferBuilder.vertex(getX() + getWidth() - 1, getY() + 29, 0f).color(Color.DARK_GRAY.getRGB());
         BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
 
-        FontRenderers.sf_medium_mini.drawString(context.getMatrices(), "All", getX() + 25, getY() + 25, tabColor1);
-        FontRenderers.sf_medium_mini.drawString(context.getMatrices(), "Selected", getX() + 60, getY() + 25, tabColor2);
+        FontRenderers.sf_medium_mini.drawString(context, "All", getX() + 25, getY() + 25, tabColor1);
+        FontRenderers.sf_medium_mini.drawString(context, "Selected", getX() + 60, getY() + 25, tabColor2);
 
         if (!allTab && itemPlates.isEmpty()) {
-            FontRenderers.sf_medium.drawCenteredString(context.getMatrices(), isRu() ? "Тут пока пусто" : "It's empty here yet",
+            FontRenderers.sf_medium.drawCenteredString(context, isRu() ? "Тут пока пусто" : "It's empty here yet",
                     getX() + getWidth() / 2f, getY() + getHeight() / 2f, new Color(0xBDBDBD).getRGB());
         }
 
-        Render2DEngine.addWindow(context.getMatrices(), getX(), getY() + 30, getX() + getWidth(), getY() + getHeight() - 1, 1f);
+        Render2DEngine.addWindow(context, getX(), getY() + 30, getX() + getWidth(), getY() + getHeight() - 1, 1f);
 
         for (ItemPlate itemPlate : (allTab ? allItems : itemPlates)) {
             if (itemPlate.offset + getY() + 25 + getScrollOffset() > getY() + getHeight() || itemPlate.offset + getScrollOffset() + getY() + 10 < getY())
                 continue;
 
-            context.getMatrices().push();
+            context.getMatrices().pushMatrix();
             context.getMatrices().translate(getX() + 6, itemPlate.offset + getY() + 32 + getScrollOffset(), 0);
             context.drawItem(itemPlate.item().getDefaultStack(), 0, 0);
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
 
-            FontRenderers.sf_medium.drawString(context.getMatrices(), I18n.translate(itemPlate.key()), getX() + 26, itemPlate.offset + getY() + 38 + getScrollOffset(), new Color(0xBDBDBD).getRGB());
+            FontRenderers.sf_medium.drawString(context, I18n.translate(itemPlate.key()), getX() + 26, itemPlate.offset + getY() + 38 + getScrollOffset(), new Color(0xBDBDBD).getRGB());
 
             boolean hover2 = Render2DEngine.isHovered(mouseX, mouseY, getX() + getWidth() - 20, itemPlate.offset + getY() + 35 + getScrollOffset(), 11, 11);
 
-            Render2DEngine.drawRect(context.getMatrices(), getX() + getWidth() - 20, itemPlate.offset + getY() + 35 + getScrollOffset(), 11, 11,
+            Render2DEngine.drawRect(context, getX() + getWidth() - 20, itemPlate.offset + getY() + 35 + getScrollOffset(), 11, 11,
                     hover2 ? new Color(0xC57A7A7A, true) : new Color(0xC5575757, true));
 
             boolean selected = itemPlates.stream().anyMatch(sI -> Objects.equals(sI.key, itemPlate.key));
 
             if (allTab && !selected) {
-                FontRenderers.categories.drawString(context.getMatrices(), "+", getX() + getWidth() - 17, itemPlate.offset + getY() + 39 + getScrollOffset(), -1);
+                FontRenderers.categories.drawString(context, "+", getX() + getWidth() - 17, itemPlate.offset + getY() + 39 + getScrollOffset(), -1);
             } else {
-                FontRenderers.icons.drawString(context.getMatrices(), "w", getX() + getWidth() - 19.5f, itemPlate.offset + getY() + 39 + getScrollOffset(), -1);
+                FontRenderers.icons.drawString(context, "w", getX() + getWidth() - 19.5f, itemPlate.offset + getY() + 39 + getScrollOffset(), -1);
             }
         }
         setMaxElementsHeight((allTab ? allItems : itemPlates).size() * 20);

@@ -81,13 +81,13 @@ public class HitParticles extends Module {
     }
 
     public void onRender3D(MatrixStack stack) {
-        RenderSystem.disableDepthTest();
+        GlStateManager._disableDepthTest();
         if (mc.player != null && mc.world != null) {
             for (Particle particle : particles) {
                 particle.render(stack);
             }
         }
-        RenderSystem.enableDepthTest();
+        GlStateManager._enableDepthTest();
     }
 
     public class Particle {

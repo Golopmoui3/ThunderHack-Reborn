@@ -1,4 +1,7 @@
 package thunder.hack.features.hud.impl;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import com.google.common.collect.Lists;
 import com.mojang.blaze3d.systems.RenderSystem;
@@ -58,20 +61,20 @@ public class RadarRewrite extends HudElement {
         float middleH = mc.getWindow().getScaledHeight() * getY();
 
         MSAAFramebuffer.use(false, () -> {
-            context.getMatrices().push();
+            context.getMatrices().pushMatrix();
             renderCompass(context.getMatrices(), middleW + CRadius.getValue(), middleH + CRadius.getValue());
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
 
             int color = 0;
 
-            context.getMatrices().push();
+            context.getMatrices().pushMatrix();
             context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue(), 0);
             context.getMatrices().multiply(RotationAxis.POSITIVE_X.rotationDegrees(90f / Math.abs(90f / MathUtility.clamp(mc.player.getPitch(), pitchLock.getValue(), 90f)) - 102));
             context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()), 0);
 
             for (PlayerEntity e : Lists.newArrayList(mc.world.getPlayers())) {
                 if (e != mc.player) {
-                    context.getMatrices().push();
+                    context.getMatrices().pushMatrix();
                     float yaw = getRotations(e) - mc.player.getYaw();
                     context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue(), 0.0F);
                     context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw));
@@ -84,15 +87,15 @@ public class RadarRewrite extends HudElement {
                         case Astolfo -> Render2DEngine.astolfo(false, 1).getRGB();
                     };
 
-                    Render2DEngine.drawTracerPointer(context.getMatrices(), middleW + CRadius.getValue(), middleH - xOffset.getValue() + CRadius.getValue(), width.getValue() * 5F, tracerWidth.getValue(), down.getValue(), true, glow.getValue(), color);
+                    Render2DEngine.drawTracerPointer(context, middleW + CRadius.getValue(), middleH - xOffset.getValue() + CRadius.getValue(), width.getValue() * 5F, tracerWidth.getValue(), down.getValue(), true, glow.getValue(), color);
 
                     context.getMatrices().translate(middleW + CRadius.getValue(), middleH + CRadius.getValue(), 0.0F);
                     context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-yaw));
                     context.getMatrices().translate(-(middleW + CRadius.getValue()), -(middleH + CRadius.getValue()), 0.0F);
-                    context.getMatrices().pop();
+                    context.getMatrices().popMatrix();
                 }
             }
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
         });
         setBounds(getPosX(), getPosY(),(int) (CRadius.getValue() * 2), (int) (CRadius.getValue() * 2));
     }
@@ -121,10 +124,8 @@ public class RadarRewrite extends HudElement {
             start = endOffset;
         }
 
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        GlStateManager._enableBlend();
 
-        RenderSystem.setShader(GameRenderer::getPositionColorProgram);
         BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
         float radius = CRadius.getValue() - margin;
@@ -142,7 +143,7 @@ public class RadarRewrite extends HudElement {
         }
 
         Render2DEngine.endBuilding(bufferBuilder);
-        RenderSystem.disableBlend();
+        GlStateManager._disableBlend();
 
         if (!Objects.equals(direction, ""))
             FontRenderers.getModulesRenderer().drawString(matrices, direction, (x - 2 + Math.cos((start - 15) * Math.PI / 180) * (radius / ry)), (y - 1 + Math.sin((start - 15) * Math.PI / 180) * (radius / rx)), -1);

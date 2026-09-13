@@ -148,9 +148,9 @@ public class ClickGUI extends Screen {
         ClickGui.Image image = ModuleManager.clickGui.image.getValue();
 
         if (image != ClickGui.Image.None) {
-            RenderSystem.setShaderTexture(0, image.file);
+            Render2DEngine.bindTexture(image.file);
 
-            Render2DEngine.renderTexture(context.getMatrices(),
+            Render2DEngine.renderTexture(context,
 
                     mc.getWindow().getScaledWidth() - image.fileWidth * imageAnimation.getAnimationd(),
                     mc.getWindow().getScaledHeight() - image.fileHeight,
@@ -173,7 +173,7 @@ public class ClickGUI extends Screen {
 
         if (Module.fullNullCheck())
             renderBackground(context, mouseX, mouseY, delta);
-        //   Render2DEngine.drawMainMenuShader(context.getMatrices(), 0, 0, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
+        //   Render2DEngine.drawMainMenuShader(context, 0, 0, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
 
         if (ModuleManager.clickGui.scrollMode.getValue() == ClickGui.scrollModeEn.Old) {
             for (AbstractCategory window : windows) {
@@ -196,13 +196,13 @@ public class ClickGUI extends Screen {
         windows.forEach(w -> w.render(context, mouseX, mouseY, delta));
 
         if (!Objects.equals(currentDescription, "") && ModuleManager.clickGui.descriptions.getValue()) {
-            Render2DEngine.drawHudBase(context.getMatrices(), mouseX + 7, mouseY + 5, FontRenderers.sf_medium.getStringWidth(currentDescription) + 6, 11, 1f, false);
-            FontRenderers.sf_medium.drawString(context.getMatrices(), currentDescription, mouseX + 10, mouseY + 8, HudEditor.getColor(0).getRGB());
+            Render2DEngine.drawHudBase(context, mouseX + 7, mouseY + 5, FontRenderers.sf_medium.getStringWidth(currentDescription) + 6, 11, 1f, false);
+            FontRenderers.sf_medium.drawString(context, currentDescription, mouseX + 10, mouseY + 8, HudEditor.getColor(0).getRGB());
             currentDescription = "";
         }
 
         if (ModuleManager.clickGui.tips.getValue() && !close)
-            FontRenderers.sf_medium.drawString(context.getMatrices(),
+            FontRenderers.sf_medium.drawString(context,
                     isRu() ? "Щелкните левой кнопкой мыши, чтобы включить модуль." +
                             "\nЩелкните правой кнопкой мыши, чтобы открыть настройки модуля." +
                             "\nЩелкните колёсиком мыши, чтобы привязать модуль" +

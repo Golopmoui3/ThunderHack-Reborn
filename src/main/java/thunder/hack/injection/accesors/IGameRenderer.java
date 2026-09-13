@@ -9,5 +9,5 @@ import org.spongepowered.asm.mixin.gen.Invoker;
 @Mixin(GameRenderer.class)
 public interface IGameRenderer {
     @Invoker("renderHand")
-    void irenderHand(Camera camera, float tickDelta, Matrix4f matrix4f);
+    void irenderHand(float tickDelta, boolean sleeping, Matrix4f matrix4f);
 }

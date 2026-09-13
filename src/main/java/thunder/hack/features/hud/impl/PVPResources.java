@@ -20,18 +20,18 @@ public class PVPResources extends HudElement {
 
     public void onRender2D(DrawContext context) {
         super.onRender2D(context);
-        Render2DEngine.drawHudBase(context.getMatrices(), getPosX(), getPosY(), 50, 50, HudEditor.hudRound.getValue());
+        Render2DEngine.drawHudBase(context, getPosX(), getPosY(), 50, 50, HudEditor.hudRound.getValue());
 
         setBounds(getPosX(), getPosY(), 50, 50);
 
         if (HudEditor.hudStyle.is(HudEditor.HudStyle.Blurry)) {
-            Render2DEngine.drawRectDumbWay(context.getMatrices(), getPosX(), getPosY() + 24.5f, getPosX() + 50, getPosY() + 25, new Color(0x54FFFFFF, true));
-            Render2DEngine.drawRectDumbWay(context.getMatrices(), getPosX() + 24.5f, getPosY() - 1, getPosX() + 25, getPosY() + 49, new Color(0x54FFFFFF, true));
+            Render2DEngine.drawRectDumbWay(context, getPosX(), getPosY() + 24.5f, getPosX() + 50, getPosY() + 25, new Color(0x54FFFFFF, true));
+            Render2DEngine.drawRectDumbWay(context, getPosX() + 24.5f, getPosY() - 1, getPosX() + 25, getPosY() + 49, new Color(0x54FFFFFF, true));
         } else {
-            Render2DEngine.horizontalGradient(context.getMatrices(), getPosX() + 2, getPosY() + 24.5f, getPosX() + 26, getPosY() + 25, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
-            Render2DEngine.horizontalGradient(context.getMatrices(), getPosX() + 26, getPosY() + 24.5f, getPosX() + 48, getPosY() + 25, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
-            Render2DEngine.verticalGradient(context.getMatrices(), getPosX() + 25.5f, getPosY() + 2, getPosX() + 26, getPosY() + 23, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
-            Render2DEngine.verticalGradient(context.getMatrices(), getPosX() + 25.5f, getPosY() + 23, getPosX() + 26, getPosY() + 48, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
+            Render2DEngine.horizontalGradient(context, getPosX() + 2, getPosY() + 24.5f, getPosX() + 26, getPosY() + 25, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
+            Render2DEngine.horizontalGradient(context, getPosX() + 26, getPosY() + 24.5f, getPosX() + 48, getPosY() + 25, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
+            Render2DEngine.verticalGradient(context, getPosX() + 25.5f, getPosY() + 2, getPosX() + 26, getPosY() + 23, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
+            Render2DEngine.verticalGradient(context, getPosX() + 25.5f, getPosY() + 23, getPosX() + 26, getPosY() + 48, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
         }
 
         int totemCount = getItemCount(Items.TOTEM_OF_UNDYING);
@@ -50,11 +50,11 @@ public class PVPResources extends HudElement {
             int offsetX = i % 2 * 25;
             int offsetY = i / 2 * 25;
             context.drawItem(list.get(i), (int) (getPosX() + offsetX + 4), (int) (getPosY() + offsetY + 4));
-            context.getMatrices().push();
+            context.getMatrices().pushMatrix();
             context.getMatrices().translate(0, 0, 151);
-            Render2DEngine.drawBlurredShadow(context.getMatrices(), getPosX() + offsetX + 8, getPosY() + offsetY + 8, 9, 9, 12, Color.BLACK);
-            FontRenderers.sf_medium.drawCenteredString(context.getMatrices(), String.valueOf(list.get(i).getCount()), (int) (getPosX() + offsetX + 12), (int) (getPosY() + offsetY + 11f), HudEditor.textColor.getValue().getColor());
-            context.getMatrices().pop();
+            Render2DEngine.drawBlurredShadow(context, getPosX() + offsetX + 8, getPosY() + offsetY + 8, 9, 9, 12, Color.BLACK);
+            FontRenderers.sf_medium.drawCenteredString(context, String.valueOf(list.get(i).getCount()), (int) (getPosX() + offsetX + 12), (int) (getPosY() + offsetY + 11f), HudEditor.textColor.getValue().getColor());
+            context.getMatrices().popMatrix();
         }
     }
 

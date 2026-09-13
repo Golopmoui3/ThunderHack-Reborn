@@ -1,5 +1,7 @@
 package thunder.hack.gui.mainmenu;
 
+import net.minecraft.client.gl.RenderPipelines;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
@@ -64,38 +66,36 @@ public class CreditsScreen extends Screen {
         float halfOfHeight = mc.getWindow().getScaledHeight() / 2f;
         float globalOffset = (contributors.size() * 150) / 2f;
 
-        //  Render2DEngine.drawMainMenuShader(context.getMatrices(), 0, 0, halfOfWidth * 2f, halfOfHeight * 2);
+        //  Render2DEngine.drawMainMenuShader(context, 0, 0, halfOfWidth * 2f, halfOfHeight * 2);
         renderBackground(context, mouseX, mouseY, delta);
 
-        RenderSystem.enableBlend();
-        RenderSystem.defaultBlendFunc();
+        GlStateManager._enableBlend();
+        GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
         int offset = 0;
 
         for (Contributor contributor : contributors) {
             float cX = halfOfWidth + offset - globalOffset + scroll;
             float cY = halfOfHeight - 120;
-            Render2DEngine.drawHudBase(context.getMatrices(), cX, cY, 140, 240, 20, false);
-            FontRenderers.sf_medium.drawGradientString(context.getMatrices(), contributor.name, (cX + 70) - FontRenderers.sf_medium.getStringWidth(contributor.name) / 2f, halfOfHeight - 57, 30);
-            FontRenderers.sf_medium.drawCenteredString(context.getMatrices(), contributor.role, cX + 70, halfOfHeight - 48, new Color(0x818181).getRGB());
+            Render2DEngine.drawHudBase(context, cX, cY, 140, 240, 20, false);
+            FontRenderers.sf_medium.drawGradientString(context, contributor.name, (cX + 70) - FontRenderers.sf_medium.getStringWidth(contributor.name) / 2f, halfOfHeight - 57, 30);
+            FontRenderers.sf_medium.drawCenteredString(context, contributor.role, cX + 70, halfOfHeight - 48, new Color(0x818181).getRGB());
 
-            Render2DEngine.horizontalGradient(context.getMatrices(), cX + 2, cY + 90, cX + 70, cY + 91, Render2DEngine.injectAlpha(new Color(-1), 0), new Color(-1));
-            Render2DEngine.horizontalGradient(context.getMatrices(), cX + 70, cY + 90, cX + 138, cY + 91, new Color(-1), Render2DEngine.injectAlpha(new Color(-1), 0));
-            Render2DEngine.drawRound(context.getMatrices(), cX + 5, cY + 100, 130, 130, 8, new Color(0x73000000, true));
-            FontRenderers.sf_medium.drawString(context.getMatrices(), contributor.description, cX + 10, cY + 108, new Color(0x818182).getRGB());
+            Render2DEngine.horizontalGradient(context, cX + 2, cY + 90, cX + 70, cY + 91, Render2DEngine.injectAlpha(new Color(-1), 0), new Color(-1));
+            Render2DEngine.horizontalGradient(context, cX + 70, cY + 90, cX + 138, cY + 91, new Color(-1), Render2DEngine.injectAlpha(new Color(-1), 0));
+            Render2DEngine.drawRound(context, cX + 5, cY + 100, 130, 130, 8, new Color(0x73000000, true));
+            FontRenderers.sf_medium.drawString(context, contributor.description, cX + 10, cY + 108, new Color(0x818182).getRGB());
 
             if (contributor.avatar != null)
-                context.drawTexture(contributor.avatar, (int) (cX + 70 - 24), (int) (halfOfHeight - 110), 48, 48, 0, 0, 96, 96, 96, 96);
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, contributor.avatar, (int) (cX + 70 - 24), (int) (halfOfHeight - 110), 48, 48, 0, 0, 96, 96, 96, 96);
 
             if (Render2DEngine.isHovered(mouseX, mouseY, cX, cY, 140, 240) && !Objects.equals(contributor.clickAction, ""))
-                Render2DEngine.drawRound(context.getMatrices(), cX, cY, 140, 240, 8, new Color(0x5FFFFFF, true));
+                Render2DEngine.drawRound(context, cX, cY, 140, 240, 8, new Color(0x5FFFFFF, true));
 
             offset += 150;
         }
-        RenderSystem.disableBlend();
-        Render2DEngine.drawHudBase(context.getMatrices(), mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 30, 30, 5, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 60, mc.getWindow().getScaledHeight() - 60, 40, 40) ? 0.7f : 1f);
-        RenderSystem.setShaderColor(1f, 1f, 1f, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 30, 30) ? 0.7f : 1f);
-        context.drawTexture(TextureStorage.thTeam, mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 30, 30, 0, 0, 30, 30, 30, 30);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        GlStateManager._disableBlend();
+        Render2DEngine.drawHudBase(context, mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 30, 30, 5, Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 60, mc.getWindow().getScaledHeight() - 60, 40, 40) ? 0.7f : 1f);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.thTeam, mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 30, 30, 0, 0, 30, 30, 30, 30);
     }
 
 

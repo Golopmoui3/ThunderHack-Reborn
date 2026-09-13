@@ -1,6 +1,6 @@
 package thunder.hack.gui.clickui;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.resource.language.I18n;
@@ -102,36 +102,36 @@ public class ModuleButton extends AbstractButton {
         float offsetY = 0;
 
         if (isOpen()) {
-            Render2DEngine.drawGuiBase(context.getMatrices(), x + 4, y + 2f, width - 8, height + (float) getElementsHeight(), 1f, 0);
-            Render2DEngine.addWindow(context.getMatrices(), new Render2DEngine.Rectangle(x + 1, y + height - 2, width + x - 2, (float) (height + y + 1f + getElementsHeight())));
+            Render2DEngine.drawGuiBase(context, x + 4, y + 2f, width - 8, height + (float) getElementsHeight(), 1f, 0);
+            Render2DEngine.addWindow(context, new Render2DEngine.Rectangle(x + 1, y + height - 2, width + x - 2, (float) (height + y + 1f + getElementsHeight())));
 
             if (mc.player != null && ModuleManager.clickGui.gear.getValue().isEnabled()) {
-                Render2DEngine.addWindow(context.getMatrices(), new Render2DEngine.Rectangle(x, y + height + 1, (width) + x + 6, (float) ((height) + y + 1f + getElementsHeight())));
+                Render2DEngine.addWindow(context, new Render2DEngine.Rectangle(x, y + height + 1, (width) + x + 6, (float) ((height) + y + 1f + getElementsHeight())));
                 float px = x + 4 + (width - 8) / 2f;
                 float py = y + 12f + (height + (float) getElementsHeight()) / 2f;
                 int gScale = ModuleManager.clickGui.gearScale.getValue();
-                context.getMatrices().push();
+                context.getMatrices().pushMatrix();
                 context.getMatrices().translate(px, py, 0.0F);
                 context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(gearAnimation.getValue()));
                 context.getMatrices().translate(-px, -py, 0.0F);
-                RenderSystem.setShaderTexture(0, TextureStorage.Gear);
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-                Render2DEngine.renderGradientTexture(context.getMatrices(), px - gScale / 2f, py - gScale / 2f, gScale, gScale, 0, 0, gScale, gScale, gScale, gScale,
+                Render2DEngine.bindTexture(TextureStorage.Gear);
+                GlStateManager._enableBlend();
+                GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
+                Render2DEngine.renderGradientTexture(context, px - gScale / 2f, py - gScale / 2f, gScale, gScale, 0, 0, gScale, gScale, gScale, gScale,
                         Render2DEngine.injectAlpha(HudEditor.getColor(270).darker(), 110),
                         Render2DEngine.injectAlpha(HudEditor.getColor(0).darker(), 110),
                         Render2DEngine.injectAlpha(HudEditor.getColor(180).darker(), 110),
                         Render2DEngine.injectAlpha(HudEditor.getColor(90).darker(), 110));
-                RenderSystem.disableBlend();
+                GlStateManager._disableBlend();
                 context.getMatrices().translate(px, py, 0.0F);
                 context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) Render2DEngine.interpolate(mc.player.age - 1, mc.player.age, Render3DEngine.getTickDelta()) * -4f));
                 context.getMatrices().translate(-px, -py, 0.0F);
-                context.getMatrices().pop();
+                context.getMatrices().popMatrix();
                 Render2DEngine.popWindow();
             }
 
             if (Render2DEngine.isHovered(mouseX, mouseY, x + 4, y + height - 12f, width - 8, height + (float) getElementsHeight())) {
-                Render2DEngine.drawBlurredShadow(context.getMatrices(), mouseX - 10, mouseY - 10, 20, 20, 40, HudEditor.getColor(270));
+                Render2DEngine.drawBlurredShadow(context, mouseX - 10, mouseY - 10, 20, 20, 40, HudEditor.getColor(270));
             }
 
             for (AbstractElement element : elements) {
@@ -159,22 +159,22 @@ public class ModuleButton extends AbstractButton {
                 offsetY += element.getHeight();
             }
 
-            context.getMatrices().push();
+            context.getMatrices().pushMatrix();
             TargetHud.sizeAnimation(context.getMatrices(), x + width / 2f + 6, y + height / 2f - 12, ticksOpened < 5 ? Math.clamp(category_animation / offsetY, 0f, 1f) : 1f);
             elements.forEach(e -> {
                 if (e.isVisible())
                     e.render(context, mouseX, mouseY, delta);
             });
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
 
-            Render2DEngine.drawBlurredShadow(context.getMatrices(), x + 3, y + height, width - 6, 3, 13, HudEditor.getColor(1));
+            Render2DEngine.drawBlurredShadow(context, x + 3, y + height, width - 6, 3, 13, HudEditor.getColor(1));
             if (!module.isEnabled())
-                Render2DEngine.draw2DGradientRect(context.getMatrices(), x + 4, y + height - 1f, x + 3f + width - 7f, 3f + y + height, Render2DEngine.applyOpacity(HudEditor.getColor(0), 0), HudEditor.getColor(0), Render2DEngine.applyOpacity(HudEditor.getColor(90), 0), HudEditor.getColor(90));
+                Render2DEngine.draw2DGradientRect(context, x + 4, y + height - 1f, x + 3f + width - 7f, 3f + y + height, Render2DEngine.applyOpacity(HudEditor.getColor(0), 0), HudEditor.getColor(0), Render2DEngine.applyOpacity(HudEditor.getColor(90), 0), HudEditor.getColor(90));
             Render2DEngine.popWindow();
         } else {
             if (hovered) {
-                Render2DEngine.addWindow(context.getMatrices(), x + 1, y, x + width - 2, y + height, 1.);
-                Render2DEngine.drawBlurredShadow(context.getMatrices(), mouseX - 10, mouseY - 10, 20, 20, 35, HudEditor.getColor(270));
+                Render2DEngine.addWindow(context, x + 1, y, x + width - 2, y + height, 1.);
+                Render2DEngine.drawBlurredShadow(context, mouseX - 10, mouseY - 10, 20, 20, 35, HudEditor.getColor(270));
                 Render2DEngine.popWindow();
             }
         }
@@ -182,26 +182,26 @@ public class ModuleButton extends AbstractButton {
         category_animation = fast(category_animation, offsetY, 20);
 
         if (animation < 0.05)
-            Render2DEngine.drawRect(context.getMatrices(), x + 4f, y + 1f, width - 8, height - 2, Render2DEngine.applyOpacity(HudEditor.plateColor.getValue().getColorObject().darker(), 0.15f));
+            Render2DEngine.drawRect(context, x + 4f, y + 1f, width - 8, height - 2, Render2DEngine.applyOpacity(HudEditor.plateColor.getValue().getColorObject().darker(), 0.15f));
         else {
 
             switch (ModuleManager.clickGui.gradientMode.getValue()) {
                 case both -> {
-                    Render2DEngine.draw2DGradientRect(context.getMatrices(), x + 4, y + 1f, x + 4 + width - 8, y + 1f + height - 2,
+                    Render2DEngine.draw2DGradientRect(context, x + 4, y + 1f, x + 4 + width - 8, y + 1f + height - 2,
                             Render2DEngine.applyOpacity(HudEditor.getColor(270), animation * 2f),
                             Render2DEngine.applyOpacity(HudEditor.getColor(0), animation * 2f),
                             Render2DEngine.applyOpacity(HudEditor.getColor(180), animation),
                             Render2DEngine.applyOpacity(HudEditor.getColor(90), animation));
                 }
                 case UpsideDown -> {
-                    Render2DEngine.draw2DGradientRect(context.getMatrices(), x + 4, y + 1f, x + 4 + width - 8, y + 1f + height - 2,
+                    Render2DEngine.draw2DGradientRect(context, x + 4, y + 1f, x + 4 + width - 8, y + 1f + height - 2,
                             Render2DEngine.applyOpacity(HudEditor.getColor(270), animation * 2f),
                             Render2DEngine.applyOpacity(HudEditor.getColor(0), animation * 2f),
                             Render2DEngine.applyOpacity(HudEditor.getColor(270), animation),
                             Render2DEngine.applyOpacity(HudEditor.getColor(0), animation));
                 }
                 case LeftToRight -> {
-                    Render2DEngine.draw2DGradientRect(context.getMatrices(), x + 4, y + 1f, x + 4 + width - 8, y + 1f + height - 2,
+                    Render2DEngine.draw2DGradientRect(context, x + 4, y + 1f, x + 4 + width - 8, y + 1f + height - 2,
                             Render2DEngine.applyOpacity(HudEditor.getColor(270), animation * 2f),
                             Render2DEngine.applyOpacity(HudEditor.getColor(270), animation * 2f),
                             Render2DEngine.applyOpacity(HudEditor.getColor(0), animation),
@@ -211,21 +211,21 @@ public class ModuleButton extends AbstractButton {
         }
 
         if (!module.getBind().getBind().equalsIgnoreCase("none") && !binding)
-            FontRenderers.sf_medium_modules.drawString(context.getMatrices(), getSbind(), x + width - 11 - FontRenderers.sf_medium_modules.getStringWidth(getSbind()), y + 6, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
+            FontRenderers.sf_medium_modules.drawString(context, getSbind(), x + width - 11 - FontRenderers.sf_medium_modules.getStringWidth(getSbind()), y + 6, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
 
         if (binding)
-            FontRenderers.sf_medium_modules.drawString(context.getMatrices(), holdbind ? (Formatting.GRAY + "Toggle / " + Formatting.RESET + "Hold") : (Formatting.RESET + "Toggle " + Formatting.GRAY + "/ Hold"), x + width - 11 - FontRenderers.sf_medium_modules.getStringWidth("Toggle/Hold"), iy + 2, Render2DEngine.applyOpacity(Color.WHITE.getRGB(), animation2));
+            FontRenderers.sf_medium_modules.drawString(context, holdbind ? (Formatting.GRAY + "Toggle / " + Formatting.RESET + "Hold") : (Formatting.RESET + "Toggle " + Formatting.GRAY + "/ Hold"), x + width - 11 - FontRenderers.sf_medium_modules.getStringWidth("Toggle/Hold"), iy + 2, Render2DEngine.applyOpacity(Color.WHITE.getRGB(), animation2));
 
         if (hovered && InputUtil.isKeyPressed(mc.getWindow().getHandle(), InputUtil.GLFW_KEY_LEFT_SHIFT)) {
-            FontRenderers.sf_medium_modules.drawString(context.getMatrices(), "Drawn " + (module.isDrawn() ? Formatting.GREEN + "TRUE" : Formatting.RED + "FALSE"), ix + 1f, iy + 2, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
+            FontRenderers.sf_medium_modules.drawString(context, "Drawn " + (module.isDrawn() ? Formatting.GREEN + "TRUE" : Formatting.RED + "FALSE"), ix + 1f, iy + 2, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
         } else {
             if (binding)
-                FontRenderers.sf_medium_modules.drawString(context.getMatrices(), "PressKey", ix, iy + 2, module.isEnabled() ? Render2DEngine.applyOpacity(HudEditor.textColor2.getValue().getColor(), animation2) : Render2DEngine.applyOpacity(HudEditor.textColor.getValue().getColor(), animation2));
+                FontRenderers.sf_medium_modules.drawString(context, "PressKey", ix, iy + 2, module.isEnabled() ? Render2DEngine.applyOpacity(HudEditor.textColor2.getValue().getColor(), animation2) : Render2DEngine.applyOpacity(HudEditor.textColor.getValue().getColor(), animation2));
             else {
                 if (ModuleManager.clickGui.textSide.getValue() == ClickGui.TextSide.Left)
-                    FontRenderers.sf_medium_modules.drawString(context.getMatrices(), module.getName(), ix + 2, iy + 2, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
+                    FontRenderers.sf_medium_modules.drawString(context, module.getName(), ix + 2, iy + 2, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
                 else
-                    FontRenderers.sf_medium_modules.drawCenteredString(context.getMatrices(), module.getName(), ix + getWidth() / 2 - 4, iy + 2, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
+                    FontRenderers.sf_medium_modules.drawCenteredString(context, module.getName(), ix + getWidth() / 2 - 4, iy + 2, module.isEnabled() ? HudEditor.textColor2.getValue().getColor() : HudEditor.textColor.getValue().getColor());
             }
         }
     }

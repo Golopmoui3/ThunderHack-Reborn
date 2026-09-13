@@ -1,5 +1,7 @@
 package thunder.hack.gui.thundergui.components;
 
+import net.minecraft.client.gl.RenderPipelines;
+
 import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.texture.NativeImage;
@@ -110,38 +112,38 @@ public class FriendComponent {
         if ((posY > ThunderGui.getInstance().main_posY + ThunderGui.getInstance().height) || posY < ThunderGui.getInstance().main_posY) {
             return;
         }
-        Render2DEngine.drawRound(context.getMatrices(), posX + 5, posY, 285, 30, 4f, Render2DEngine.applyOpacity(new Color(44, 35, 52, 255), getFadeFactor()));
+        Render2DEngine.drawRound(context, posX + 5, posY, 285, 30, 4f, Render2DEngine.applyOpacity(new Color(44, 35, 52, 255), getFadeFactor()));
 
         if (first_open) {
-            Render2DEngine.addWindow(context.getMatrices(), posX + 5, posY, posX + 5 + 285, posY + 30, 1f);
-            Render2DEngine.drawBlurredShadow(context.getMatrices(), MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
+            Render2DEngine.addWindow(context, posX + 5, posY, posX + 5 + 285, posY + 30, 1f);
+            Render2DEngine.drawBlurredShadow(context, MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
             Render2DEngine.popWindow();
             first_open = false;
         }
 
         if (isHovered(MouseX, MouseY)) {
-            Render2DEngine.addWindow(context.getMatrices(), posX + 5, posY, posX + 5 + 285, posY + 30, 1f);
-            Render2DEngine.drawBlurredShadow(context.getMatrices(), MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
+            Render2DEngine.addWindow(context, posX + 5, posY, posX + 5 + 285, posY + 30, 1f);
+            Render2DEngine.drawBlurredShadow(context, MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
             Render2DEngine.popWindow();
         }
 
-        Render2DEngine.drawRound(context.getMatrices(), posX + 266, posY + 8, 14, 14, 2f, Render2DEngine.applyOpacity(new Color(25, 20, 30, 255), getFadeFactor()));
+        Render2DEngine.drawRound(context, posX + 266, posY + 8, 14, 14, 2f, Render2DEngine.applyOpacity(new Color(25, 20, 30, 255), getFadeFactor()));
 
         if (Render2DEngine.isHovered(MouseX, MouseY, posX + 268, posY + 10, 10, 10)) {
-            Render2DEngine.drawRound(context.getMatrices(), posX + 268, posY + 10, 10, 10, 2f, Render2DEngine.applyOpacity(new Color(65, 1, 13, 255), getFadeFactor()));
+            Render2DEngine.drawRound(context, posX + 268, posY + 10, 10, 10, 2f, Render2DEngine.applyOpacity(new Color(65, 1, 13, 255), getFadeFactor()));
         } else {
-            Render2DEngine.drawRound(context.getMatrices(), posX + 268, posY + 10, 10, 10, 2f, Render2DEngine.applyOpacity(new Color(94, 1, 18, 255), getFadeFactor()));
+            Render2DEngine.drawRound(context, posX + 268, posY + 10, 10, 10, 2f, Render2DEngine.applyOpacity(new Color(94, 1, 18, 255), getFadeFactor()));
         }
-        FontRenderers.icons.drawString(context.getMatrices(), "w", posX + 268, posY + 13, Render2DEngine.applyOpacity(-1, getFadeFactor()));
+        FontRenderers.icons.drawString(context, "w", posX + 268, posY + 13, Render2DEngine.applyOpacity(-1, getFadeFactor()));
 
 
-        context.drawTexture(Objects.requireNonNullElse(head, TextureStorage.crackedSkin), posX + 10, posY + 3, 0, 0, 22, 22, 22, 22);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, Objects.requireNonNullElse(head, TextureStorage.crackedSkin), posX + 10, posY + 3, 0, 0, 22, 22, 22, 22);
 
-        FontRenderers.modules.drawString(context.getMatrices(), name, posX + 37, posY + 6, Render2DEngine.applyOpacity(-1, getFadeFactor()));
+        FontRenderers.modules.drawString(context, name, posX + 37, posY + 6, Render2DEngine.applyOpacity(-1, getFadeFactor()));
 
         boolean online = mc.player.networkHandler.getPlayerList().stream().map(p -> p.getProfile().getName()).toList().contains(name);
 
-        FontRenderers.settings.drawString(context.getMatrices(), online ? "online" : "offline", posX + 37, posY + 17, online ? Render2DEngine.applyOpacity(new Color(0xFF0B7A00, true).getRGB(), getFadeFactor()) : Render2DEngine.applyOpacity(new Color(0xFFBDBDBD, true).getRGB(), getFadeFactor()));
+        FontRenderers.settings.drawString(context, online ? "online" : "offline", posX + 37, posY + 17, online ? Render2DEngine.applyOpacity(new Color(0xFF0B7A00, true).getRGB(), getFadeFactor()) : Render2DEngine.applyOpacity(new Color(0xFFBDBDBD, true).getRGB(), getFadeFactor()));
     }
 
     private float getFadeFactor() {

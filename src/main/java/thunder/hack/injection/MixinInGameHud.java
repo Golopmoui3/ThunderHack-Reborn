@@ -9,6 +9,7 @@ import thunder.hack.core.manager.client.ModuleManager;
 import thunder.hack.features.hud.impl.Hotbar;
 import thunder.hack.gui.windows.WindowsScreen;
 import thunder.hack.features.modules.Module;
+import thunder.hack.utility.render.Render2DEngine;
 import net.minecraft.client.gui.hud.InGameHud;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -23,6 +24,7 @@ public abstract class MixinInGameHud {
     @Inject(at = @At(value = "HEAD"), method = "render")
     public void renderHook(DrawContext context, RenderTickCounter tickCounter, CallbackInfo ci) {
         if(Module.fullNullCheck()) return;
+        Render2DEngine.flushTextQueue(context);
         Managers.MODULE.onRender2D(context);
         Managers.NOTIFICATION.onRender2D(context);
     }

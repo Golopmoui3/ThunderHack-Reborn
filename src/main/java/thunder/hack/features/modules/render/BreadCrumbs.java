@@ -1,4 +1,7 @@
 package thunder.hack.features.modules.render;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
@@ -36,12 +39,10 @@ public class BreadCrumbs extends Module {
         Render3DEngine.setupRender();
 
         if (throughWalls.getValue())
-            RenderSystem.disableDepthTest();
+            GlStateManager._disableDepthTest();
 
-        RenderSystem.disableCull();
-        RenderSystem.lineWidth(1f);
-        RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL);
+        GlStateManager._disableCull();
+        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL_LINE_WIDTH);
 
         for (int i = 0; i < positions.size(); i++) {
             Vec3d vec1 = null;
@@ -54,15 +55,15 @@ public class BreadCrumbs extends Module {
                 Color c = lmode.getValue() == Mode.Sync ? HudEditor.getColor(i) : color.getValue().getColorObject();
                 if (i < 10) c = Render2DEngine.injectAlpha(c, (int) (c.getAlpha() * (i / 10f)));
                 MatrixStack matrices = Render3DEngine.matrixFrom(vec1.getX(), vec1.getY(), vec1.getZ());
-                Render3DEngine.vertexLine(matrices, buffer, 0f, 0f, 0f, (float) (vec2.getX() - vec1.getX()), (float) (vec2.getY() - vec1.getY()), (float) (vec2.getZ() - vec1.getZ()), c);
+                Render3DEngine.vertexLine(matrices, buffer, 0f, 0f, 0f, (float) (vec2.getX() - vec1.getX()), (float) (vec2.getY() - vec1.getY()), (float) (vec2.getZ() - vec1.getZ()), c, 1f);
             }
         }
 
-        Render2DEngine.endBuilding(buffer);
+        Render2DEngine.endBuildingLines(buffer);
 
-        RenderSystem.enableCull();
+        GlStateManager._enableCull();
         if (throughWalls.getValue())
-            RenderSystem.enableDepthTest();
+            GlStateManager._enableDepthTest();
         Render3DEngine.endRender();
     }
 

@@ -39,7 +39,7 @@ public class Hotbar extends HudElement {
                 Render2DEngine.drawHudBase(matrices, i - 111, mc.getWindow().getScaledHeight() - 25, 201, 20, HudEditor.hudRound.getValue());
 
                 if (HudEditor.hudStyle.is(HudEditor.HudStyle.Blurry)) {
-                    Render2DEngine.drawRect(context.getMatrices(), i - 109 + 18, mc.getWindow().getScaledHeight() - 23, 0.5f, 15, new Color(0x44FFFFFF, true));
+                    Render2DEngine.drawRect(context, i - 109 + 18, mc.getWindow().getScaledHeight() - 23, 0.5f, 15, new Color(0x44FFFFFF, true));
                 } else {
                     Render2DEngine.verticalGradient(matrices, i - 109 + 18, mc.getWindow().getScaledHeight() - 22 + 1 - 4, i - 108 + 18 - 0.5f, mc.getWindow().getScaledHeight() - 11 + 1 - 4, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
                     Render2DEngine.verticalGradient(matrices, i - 109 + 18, mc.getWindow().getScaledHeight() - 11 - 4, i - 108 + 18 - 0.5f, mc.getWindow().getScaledHeight() - 5, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
@@ -85,13 +85,13 @@ public class Hotbar extends HudElement {
 
     private static void renderHotbarItem(DrawContext context, int i, int j, ItemStack itemStack) {
         if (!itemStack.isEmpty()) {
-            context.getMatrices().push();
+            context.getMatrices().pushMatrix();
             context.getMatrices().translate((float) (i + 8), (float) (j + 12), 0.0F);
             context.getMatrices().scale(0.9f, 0.9f, 1.0F);
             context.getMatrices().translate((float) (-(i + 8)), (float) (-(j + 12)), 0.0F);
             context.drawItem(itemStack, i, j);
             context.drawStackOverlay(mc.textRenderer, itemStack, i, j);
-            context.getMatrices().pop();
+            context.getMatrices().popMatrix();
         }
     }
 

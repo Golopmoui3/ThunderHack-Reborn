@@ -1,4 +1,7 @@
 package thunder.hack.features.modules.movement;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
@@ -416,9 +419,8 @@ public class ElytraPlus extends Module {
         if (mode.is(Mode.FireWork) && grim.getValue().isEnabled() && fireWorkExtender.getValue() && flying && flightZonePos != null) {
             stack.push();
             Render3DEngine.setupRender();
-            RenderSystem.disableCull();
+            GlStateManager._disableCull();
             Tessellator tessellator = Tessellator.getInstance();
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
             BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
             float cos;
@@ -430,7 +432,7 @@ public class ElytraPlus extends Module {
                 bufferBuilder.vertex(stack.peek().getPositionMatrix(), cos, (float) ((float) 128 - mc.getEntityRenderDispatcher().camera.getPos().getY()), sin).color(Render2DEngine.injectAlpha(HudEditor.getColor(i), 0).getRGB());
             }
             Render2DEngine.endBuilding(bufferBuilder);
-            RenderSystem.enableCull();
+            GlStateManager._enableCull();
             Render3DEngine.endRender();
             stack.pop();
         }
@@ -442,7 +444,7 @@ public class ElytraPlus extends Module {
                 if (pingTimer.passedMs(1000)) {
                     int timeS = (int) MathUtility.round2(((float) (50000 - pingTimer.getPassedTimeMs()) / 1000f));
                     int dist = (int) (83f - Math.sqrt(PlayerUtility.getSquaredDistance2D(flightZonePos)));
-                    FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), isRu() ? ("Осталось " + timeS + " секунд и " + dist + " метров") : (timeS + " seconds and " + dist + " meters left"),
+                    FontRenderers.sf_bold.drawCenteredString(context, isRu() ? ("Осталось " + timeS + " секунд и " + dist + " метров") : (timeS + " seconds and " + dist + " meters left"),
                             mc.getWindow().getScaledWidth() / 2f, mc.getWindow().getScaledHeight() / 2f + 30f, -1);
                 }
             }

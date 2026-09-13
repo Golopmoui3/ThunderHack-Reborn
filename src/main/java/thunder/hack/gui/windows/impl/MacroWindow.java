@@ -59,11 +59,11 @@ public class MacroWindow extends WindowBase {
 
         boolean hover1 = Render2DEngine.isHovered(mouseX, mouseY, getX() + getWidth() - 90, getY() + 3, 70, 10);
 
-        Render2DEngine.drawRectWithOutline(context.getMatrices(), getX() + getWidth() - 90, getY() + 3, 70, 10, hover1 ? hoveredColor : color, color2);
-        FontRenderers.sf_medium_mini.drawString(context.getMatrices(), search, getX() + getWidth() - 86, getY() + 7, new Color(0xD5D5D5).getRGB());
+        Render2DEngine.drawRectWithOutline(context, getX() + getWidth() - 90, getY() + 3, 70, 10, hover1 ? hoveredColor : color, color2);
+        FontRenderers.sf_medium_mini.drawString(context, search, getX() + getWidth() - 86, getY() + 7, new Color(0xD5D5D5).getRGB());
 
         if (macroPlates.isEmpty()) {
-            FontRenderers.sf_medium.drawCenteredString(context.getMatrices(), isRu() ? "Тут пока пусто" : "It's empty here yet",
+            FontRenderers.sf_medium.drawCenteredString(context, isRu() ? "Тут пока пусто" : "It's empty here yet",
                     getX() + getWidth() / 2f, getY() + getHeight() / 2f, new Color(0xBDBDBD).getRGB());
         }
 
@@ -81,41 +81,41 @@ public class MacroWindow extends WindowBase {
         {
             // Name
             boolean hover2 = Render2DEngine.isHovered(mouseX, mouseY, nameX, getY() + 19, nameWidth, 11);
-            Render2DEngine.drawRectWithOutline(context.getMatrices(), nameX, getY() + 19, nameWidth, 11, hover2 ? hoveredColor : color, color2);
-            FontRenderers.sf_medium.drawString(context.getMatrices(), addName + (listeningId == -3 && listeningType == ListeningType.Name ? blink : "")
+            Render2DEngine.drawRectWithOutline(context, nameX, getY() + 19, nameWidth, 11, hover2 ? hoveredColor : color, color2);
+            FontRenderers.sf_medium.drawString(context, addName + (listeningId == -3 && listeningType == ListeningType.Name ? blink : "")
                     , nameX + 2, getY() + 23, new Color(0xBDBDBD).getRGB());
 
             // Bind
             boolean hover3 = Render2DEngine.isHovered(mouseX, mouseY, bindX, getY() + 19, bindWidth, 11);
-            Render2DEngine.drawRectWithOutline(context.getMatrices(), bindX, getY() + 19, bindWidth, 11, hover3 ? hoveredColor : color, color2);
-            FontRenderers.sf_medium.drawCenteredString(context.getMatrices(), getSbind(addBind) + (listeningId == -3 && listeningType == ListeningType.Bind ? blink : "")
+            Render2DEngine.drawRectWithOutline(context, bindX, getY() + 19, bindWidth, 11, hover3 ? hoveredColor : color, color2);
+            FontRenderers.sf_medium.drawCenteredString(context, getSbind(addBind) + (listeningId == -3 && listeningType == ListeningType.Bind ? blink : "")
                     , bindX + 13.5f, getY() + 23, textColor);
 
             // Text
             boolean hover4 = Render2DEngine.isHovered(mouseX, mouseY, textX, getY() + 19, textWidth, 11);
-            Render2DEngine.drawRectWithOutline(context.getMatrices(), textX, getY() + 19, textWidth, 11, hover4 ? hoveredColor : color, color2);
-            FontRenderers.sf_medium.drawString(context.getMatrices(), addText + (listeningId == -3 && listeningType == ListeningType.Text ? blink : "")
+            Render2DEngine.drawRectWithOutline(context, textX, getY() + 19, textWidth, 11, hover4 ? hoveredColor : color, color2);
+            FontRenderers.sf_medium.drawString(context, addText + (listeningId == -3 && listeningType == ListeningType.Text ? blink : "")
                     , textX + 2, getY() + 23, new Color(0xBDBDBD).getRGB());
 
             // Add
             boolean hover5 = Render2DEngine.isHovered(mouseX, mouseY, getX() + getWidth() - 15, getY() + 19, 11, 11);
-            Render2DEngine.drawRectWithOutline(context.getMatrices(), getX() + getWidth() - 15, getY() + 19, 11, 11, hover5 ? hoveredColor : color, color2);
-            FontRenderers.categories.drawString(context.getMatrices(), "+", getX() + getWidth() - 12, getY() + 23, -1);
+            Render2DEngine.drawRectWithOutline(context, getX() + getWidth() - 15, getY() + 19, 11, 11, hover5 ? hoveredColor : color, color2);
+            FontRenderers.categories.drawString(context, "+", getX() + getWidth() - 12, getY() + 23, -1);
         }
 
-        Render2DEngine.horizontalGradient(context.getMatrices(), getX() + 2, getY() + 33f, getX() + 2 + getWidth() / 2f - 2, getY() + 33.5f, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
-        Render2DEngine.horizontalGradient(context.getMatrices(), getX() + 2 + getWidth() / 2f - 2, getY() + 33f, getX() + 2 + getWidth() - 4, getY() + 33.5f, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
+        Render2DEngine.horizontalGradient(context, getX() + 2, getY() + 33f, getX() + 2 + getWidth() / 2f - 2, getY() + 33.5f, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
+        Render2DEngine.horizontalGradient(context, getX() + 2 + getWidth() / 2f - 2, getY() + 33f, getX() + 2 + getWidth() - 4, getY() + 33.5f, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
 
-        //   FontRenderers.sf_medium.drawString(context.getMatrices(), "      Name        l   Bind   l                         Text   ",
+        //   FontRenderers.sf_medium.drawString(context, "      Name        l   Bind   l                         Text   ",
         //          getX() + 13, getY() + 40, new Color(0xBDBDBD).getRGB());
 
 
-        FontRenderers.sf_medium.drawCenteredString(context.getMatrices(), "Name", nameX + nameWidth / 2f, getY() + 40, textColor);
-        FontRenderers.sf_medium.drawCenteredString(context.getMatrices(), "l   Bind   l", bindX + bindWidth / 2f, getY() + 40, textColor);
-        FontRenderers.sf_medium.drawCenteredString(context.getMatrices(), "Text", textX + textWidth / 2f, getY() + 40, textColor);
+        FontRenderers.sf_medium.drawCenteredString(context, "Name", nameX + nameWidth / 2f, getY() + 40, textColor);
+        FontRenderers.sf_medium.drawCenteredString(context, "l   Bind   l", bindX + bindWidth / 2f, getY() + 40, textColor);
+        FontRenderers.sf_medium.drawCenteredString(context, "Text", textX + textWidth / 2f, getY() + 40, textColor);
 
 
-        Render2DEngine.addWindow(context.getMatrices(), getX(), getY() + 50, getX() + getWidth(), getY() + getHeight() - 1, 1f);
+        Render2DEngine.addWindow(context, getX(), getY() + 50, getX() + getWidth(), getY() + getHeight() - 1, 1f);
 
         int id = 0;
         for (MacroPlate macroPlate : macroPlates) {
@@ -125,27 +125,27 @@ public class MacroWindow extends WindowBase {
 
             // Name
             boolean hover2 = Render2DEngine.isHovered(mouseX, mouseY, nameX, macroPlate.offset + getY() + 36 + getScrollOffset(), nameWidth, 11);
-            Render2DEngine.drawRectWithOutline(context.getMatrices(), nameX, macroPlate.offset + getY() + 36 + getScrollOffset(), nameWidth, 11, hover2 ? hoveredColor : color, color2);
-            FontRenderers.sf_medium.drawString(context.getMatrices(), macroPlate.macro().getName() + (macroPlate.id() == listeningId && listeningType == ListeningType.Name ? blink : "")
+            Render2DEngine.drawRectWithOutline(context, nameX, macroPlate.offset + getY() + 36 + getScrollOffset(), nameWidth, 11, hover2 ? hoveredColor : color, color2);
+            FontRenderers.sf_medium.drawString(context, macroPlate.macro().getName() + (macroPlate.id() == listeningId && listeningType == ListeningType.Name ? blink : "")
                     , nameX + 2, macroPlate.offset + getY() + 40 + getScrollOffset(), textColor);
 
             // Bind
             boolean hover3 = Render2DEngine.isHovered(mouseX, mouseY, bindX, macroPlate.offset + getY() + 36 + getScrollOffset(), bindWidth, 11);
-            Render2DEngine.drawRectWithOutline(context.getMatrices(), bindX, macroPlate.offset + getY() + 36 + getScrollOffset(), bindWidth, 11, hover3 ? hoveredColor : color, color2);
-            FontRenderers.sf_medium.drawCenteredString(context.getMatrices(), getSbind(toString(macroPlate.macro().getBind())) + (macroPlate.id() == listeningId && listeningType == ListeningType.Bind ? blink : "")
+            Render2DEngine.drawRectWithOutline(context, bindX, macroPlate.offset + getY() + 36 + getScrollOffset(), bindWidth, 11, hover3 ? hoveredColor : color, color2);
+            FontRenderers.sf_medium.drawCenteredString(context, getSbind(toString(macroPlate.macro().getBind())) + (macroPlate.id() == listeningId && listeningType == ListeningType.Bind ? blink : "")
                     , bindX + 13.5f, macroPlate.offset + getY() + 40 + getScrollOffset(), textColor);
 
             // Text
             boolean hover4 = Render2DEngine.isHovered(mouseX, mouseY, textX, macroPlate.offset + getY() + 36 + getScrollOffset(), textWidth, 11);
-            Render2DEngine.drawRectWithOutline(context.getMatrices(), textX, macroPlate.offset + getY() + 36 + getScrollOffset(), textWidth, 11, hover4 ? hoveredColor : color, color2);
-            FontRenderers.sf_medium.drawString(context.getMatrices(), macroPlate.macro().getText() + (macroPlate.id() == listeningId && listeningType == ListeningType.Text ? blink : "")
+            Render2DEngine.drawRectWithOutline(context, textX, macroPlate.offset + getY() + 36 + getScrollOffset(), textWidth, 11, hover4 ? hoveredColor : color, color2);
+            FontRenderers.sf_medium.drawString(context, macroPlate.macro().getText() + (macroPlate.id() == listeningId && listeningType == ListeningType.Text ? blink : "")
                     , textX + 2, macroPlate.offset + getY() + 40 + getScrollOffset(), textColor);
 
             // Delete
             boolean hover5 = Render2DEngine.isHovered(mouseX, mouseY, getX() + getWidth() - 15, macroPlate.offset + getY() + 36 + getScrollOffset(), 11, 11);
-            Render2DEngine.drawRectWithOutline(context.getMatrices(), getX() + getWidth() - 15, macroPlate.offset + getY() + 36 + getScrollOffset(), 11, 11, hover5 ? hoveredColor : color, color2);
-            FontRenderers.icons.drawString(context.getMatrices(), "w", getX() + getWidth() - 15, macroPlate.offset + getY() + 40 + getScrollOffset(), -1);
-            FontRenderers.sf_medium_mini.drawString(context.getMatrices(), id + ".", getX() + 3, macroPlate.offset + getY() + 41 + getScrollOffset(), textColor);
+            Render2DEngine.drawRectWithOutline(context, getX() + getWidth() - 15, macroPlate.offset + getY() + 36 + getScrollOffset(), 11, 11, hover5 ? hoveredColor : color, color2);
+            FontRenderers.icons.drawString(context, "w", getX() + getWidth() - 15, macroPlate.offset + getY() + 40 + getScrollOffset(), -1);
+            FontRenderers.sf_medium_mini.drawString(context, id + ".", getX() + 3, macroPlate.offset + getY() + 41 + getScrollOffset(), textColor);
         }
         setMaxElementsHeight(macroPlates.size() * 20);
         Render2DEngine.popWindow();

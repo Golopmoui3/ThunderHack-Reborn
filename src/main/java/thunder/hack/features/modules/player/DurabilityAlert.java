@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.player;
 
+import net.minecraft.client.gl.RenderPipelines;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.entity.player.PlayerEntity;
@@ -56,12 +58,10 @@ public class DurabilityAlert extends Module {
 
     public void onRender2D(DrawContext context) {
         if (need_alert) {
-            FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), isRu() ? "Срочно чини броню!" : "Fix your armor right now!", (float) mc.getWindow().getScaledWidth() / 2f, (float) mc.getWindow().getScaledHeight() / 3f, new Color(0xFFDF00).getRGB());
+            FontRenderers.sf_bold.drawCenteredString(context, isRu() ? "Срочно чини броню!" : "Fix your armor right now!", (float) mc.getWindow().getScaledWidth() / 2f, (float) mc.getWindow().getScaledHeight() / 3f, new Color(0xFFDF00).getRGB());
 
             Color c1 = new Color(0xFFDF00);
-            RenderSystem.setShaderColor(c1.getRed() / 255f, c1.getGreen() / 255f, c1.getBlue() / 255f, 1f);
-            context.drawTexture(TextureStorage.brokenShield, (int) (mc.getWindow().getScaledWidth() / 2f - 40), (int) (mc.getWindow().getScaledHeight() / 3f - 120), 80, 80, 0, 0, 80, 80, 80, 80);
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.brokenShield, (int) (mc.getWindow().getScaledWidth() / 2f - 40), (int) (mc.getWindow().getScaledHeight() / 3f - 120), 80, 80, 0, 0, 80, 80, 80, 80);
         }
     }
 

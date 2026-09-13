@@ -1,6 +1,9 @@
 package thunder.hack.features.hud.impl;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
@@ -75,33 +78,32 @@ public class Crosshair extends Module {
                 Color c1 = colorMode.getValue() == ColorMode.Sync ? HudEditor.hcolor1.getValue().getColorObject() : color.getValue().getColorObject();
                 Color c2 = colorMode.getValue() == ColorMode.Sync ? HudEditor.acolor.getValue().getColorObject() : color.getValue().getColorObject();
 
-                Render2DEngine.drawArc(context.getMatrices(), xAnim - 25, yAnim - 25, 50, 50, 0.05f, 0.12f, 0,
+                Render2DEngine.drawArc(context, xAnim - 25, yAnim - 25, 50, 50, 0.05f, 0.12f, 0,
                         Render2DEngine.interpolateFloat(prevProgress, progress, Render3DEngine.getTickDelta()), c1, c2);
                 prevProgress = progress;
             }
             case WiseTree -> {
                 Color color = this.color.getValue().getColorObject();
-                context.getMatrices().push();
+                context.getMatrices().pushMatrix();
                 context.getMatrices().translate(xAnim, yAnim, 0);
                 context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotation((System.currentTimeMillis() % 70000) / 70000f * 360f));
                 context.getMatrices().translate(-xAnim, -yAnim, 0);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 0.75f, yAnim - 5, 1.5f, 10, color);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 5, yAnim - 0.75f, 10, 1.5f, color);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim, yAnim - 5, 5, 1.5f, color);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 5, yAnim + 4, 5.25f, 1.5f, color);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 5f, yAnim - 5, 1.5f, 4.25f, color);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim + 3.5f, yAnim, 1.5f, 5.5f, color);
-                context.getMatrices().pop();
+                Render2DEngine.drawRect(context, xAnim - 0.75f, yAnim - 5, 1.5f, 10, color);
+                Render2DEngine.drawRect(context, xAnim - 5, yAnim - 0.75f, 10, 1.5f, color);
+                Render2DEngine.drawRect(context, xAnim, yAnim - 5, 5, 1.5f, color);
+                Render2DEngine.drawRect(context, xAnim - 5, yAnim + 4, 5.25f, 1.5f, color);
+                Render2DEngine.drawRect(context, xAnim - 5f, yAnim - 5, 1.5f, 4.25f, color);
+                Render2DEngine.drawRect(context, xAnim + 3.5f, yAnim, 1.5f, 5.5f, color);
+                context.getMatrices().popMatrix();
             }
             case Dot -> {
-                context.getMatrices().push();
+                context.getMatrices().pushMatrix();
                 context.getMatrices().translate(xAnim + 4, yAnim + 4, 0);
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-                RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+                GlStateManager._enableBlend();
+                GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
                 BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
-                RenderSystem.setShaderTexture(0, TextureStorage.firefly);
+                Render2DEngine.bindTexture(TextureStorage.firefly);
                 Color color1 = colorMode.getValue() == ColorMode.Sync ? HudEditor.getColor(1) : color.getValue().getColorObject();
                 Matrix4f posMatrix = context.getMatrices().peek().getPositionMatrix();
                 bufferBuilder.vertex(posMatrix, 0, -8f, 0).texture(0f, 1f).color(color1.getRGB());
@@ -109,9 +111,9 @@ public class Crosshair extends Module {
                 bufferBuilder.vertex(posMatrix, -8f, 0, 0).texture(1f, 0).color(color1.getRGB());
                 bufferBuilder.vertex(posMatrix, 0, 0, 0).texture(0, 0).color(color1.getRGB());
                 BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
-                RenderSystem.defaultBlendFunc();
-                RenderSystem.disableBlend();
-                context.getMatrices().pop();
+                GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
+                GlStateManager._disableBlend();
+                context.getMatrices().popMatrix();
             }
             case Default -> {
                 Color color = this.color.getValue().getColorObject();
@@ -120,22 +122,22 @@ public class Crosshair extends Module {
                 prevProgress = progress;
 
                 if (!t.getValue()) {
-                    Render2DEngine.drawRect(context.getMatrices(), xAnim - 1, yAnim - 6 + offset, 2, 4, Color.BLACK);
-                    Render2DEngine.drawRect(context.getMatrices(), xAnim - 0.5f, yAnim - 5.5f + offset, 1, 3, color);
+                    Render2DEngine.drawRect(context, xAnim - 1, yAnim - 6 + offset, 2, 4, Color.BLACK);
+                    Render2DEngine.drawRect(context, xAnim - 0.5f, yAnim - 5.5f + offset, 1, 3, color);
                 }
 
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 1, yAnim + 2 - offset, 2, 4, Color.BLACK);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 0.5f, yAnim + 2.5f - offset, 1, 3, color);
+                Render2DEngine.drawRect(context, xAnim - 1, yAnim + 2 - offset, 2, 4, Color.BLACK);
+                Render2DEngine.drawRect(context, xAnim - 0.5f, yAnim + 2.5f - offset, 1, 3, color);
 
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 6 + offset, yAnim - 1, 4, 2, Color.BLACK);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim - 5.5f + offset, yAnim - 0.5f, 3, 1, color);
+                Render2DEngine.drawRect(context, xAnim - 6 + offset, yAnim - 1, 4, 2, Color.BLACK);
+                Render2DEngine.drawRect(context, xAnim - 5.5f + offset, yAnim - 0.5f, 3, 1, color);
 
-                Render2DEngine.drawRect(context.getMatrices(), xAnim + 2 - offset, yAnim - 1, 4, 2, Color.BLACK);
-                Render2DEngine.drawRect(context.getMatrices(), xAnim + 2.5f - offset, yAnim - 0.5f, 3, 1, color);
+                Render2DEngine.drawRect(context, xAnim + 2 - offset, yAnim - 1, 4, 2, Color.BLACK);
+                Render2DEngine.drawRect(context, xAnim + 2.5f - offset, yAnim - 0.5f, 3, 1, color);
 
                 if (dot.getValue()) {
-                    Render2DEngine.drawRect(context.getMatrices(), xAnim - 1f, yAnim - 1f, 2, 2, Color.BLACK);
-                    Render2DEngine.drawRect(context.getMatrices(), xAnim - .5f, yAnim - .5f, 1, 1, color);
+                    Render2DEngine.drawRect(context, xAnim - 1f, yAnim - 1f, 2, 2, Color.BLACK);
+                    Render2DEngine.drawRect(context, xAnim - .5f, yAnim - .5f, 1, 1, color);
                 }
             }
         }

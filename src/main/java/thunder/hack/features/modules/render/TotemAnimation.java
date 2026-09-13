@@ -1,5 +1,6 @@
 package thunder.hack.features.modules.render;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
@@ -48,10 +49,10 @@ public class TotemAnimation extends Module {
             float progressCubed = animationProgress * progressSquared;
             float oscillationFactor = 10.25F * progressCubed * progressSquared - 24.95F * progressSquared * progressSquared + 25.5F * progressCubed - 13.8F * progressSquared + 4.0F * animationProgress;
             float oscillationRadians = oscillationFactor * 3.1415927F;
-            RenderSystem.enableDepthTest();
-            RenderSystem.disableCull();
-            RenderSystem.enableBlend();
-            RenderSystem.defaultBlendFunc();
+            GlStateManager._enableDepthTest();
+            GlStateManager._disableCull();
+            GlStateManager._enableBlend();
+            GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
             MatrixStack matrixStack = new MatrixStack();
             matrixStack.push();
             float adjustedProgress = ((float) elapsedTime + tickDelta);
@@ -106,15 +107,14 @@ public class TotemAnimation extends Module {
             }
 
             VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f - animationProgress);
+            // TODO(1.21.11): no global shader tint anymore; totem draws untinted for now
             mc.getItemRenderer().renderItem(floatingItem, ItemDisplayContext.FIXED, 15728880, OverlayTexture.DEFAULT_UV, matrixStack, immediate, mc.world, 0);
             matrixStack.pop();
             immediate.draw();
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
 
-            RenderSystem.disableBlend();
-            RenderSystem.enableCull();
-            RenderSystem.disableDepthTest();
+            GlStateManager._disableBlend();
+            GlStateManager._enableCull();
+            GlStateManager._disableDepthTest();
         }
     }
 

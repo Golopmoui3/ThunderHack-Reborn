@@ -199,22 +199,22 @@ public class XRay extends Module {
             float posX = mc.getWindow().getScaledWidth() / 2f - 68;
             float posY = mc.getWindow().getScaledHeight() / 2f + 68;
 
-            Render2DEngine.drawGradientBlurredShadow(context.getMatrices(), posX + 2, posY + 2, 133, 44, 14, HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90));
-            Render2DEngine.renderRoundedGradientRect(context.getMatrices(), HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90), posX, posY, 137, 47.5f, 9);
-            Render2DEngine.drawRound(context.getMatrices(), posX + 0.5f, posY + 0.5f, 136f, 46, 9, Render2DEngine.injectAlpha(Color.BLACK, 220));
+            Render2DEngine.drawGradientBlurredShadow(context, posX + 2, posY + 2, 133, 44, 14, HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90));
+            Render2DEngine.renderRoundedGradientRect(context, HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(90), posX, posY, 137, 47.5f, 9);
+            Render2DEngine.drawRound(context, posX + 0.5f, posY + 0.5f, 136f, 46, 9, Render2DEngine.injectAlpha(Color.BLACK, 220));
 
-            Render2DEngine.drawGradientRound(context.getMatrices(), posX + 4, posY + 32, 129, 11, 4f, HudEditor.getColor(0).darker().darker(), HudEditor.getColor(0).darker().darker().darker().darker(), HudEditor.getColor(0).darker().darker().darker().darker(), HudEditor.getColor(0).darker().darker().darker().darker());
+            Render2DEngine.drawGradientRound(context, posX + 4, posY + 32, 129, 11, 4f, HudEditor.getColor(0).darker().darker(), HudEditor.getColor(0).darker().darker().darker().darker(), HudEditor.getColor(0).darker().darker().darker().darker(), HudEditor.getColor(0).darker().darker().darker().darker());
 
-            Render2DEngine.renderRoundedGradientRect(context.getMatrices(), HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(0), HudEditor.getColor(270), posX + 4, posY + 32, (int) MathHelper.clamp((129 * ((float) done / Math.max((float) all, 1))), 8, 129), 11, 4f);
+            Render2DEngine.renderRoundedGradientRect(context, HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(0), HudEditor.getColor(270), posX + 4, posY + 32, (int) MathHelper.clamp((129 * ((float) done / Math.max((float) all, 1))), 8, 129), 11, 4f);
 
-            FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), (int) ((float) done / (float) all * 100) + "%", posX + 68, posY + 35f, -1);
-            FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), "XRay", posX + 68, posY + 7, -1);
+            FontRenderers.sf_bold.drawCenteredString(context, (int) ((float) done / (float) all * 100) + "%", posX + 68, posY + 35f, -1);
+            FontRenderers.sf_bold.drawCenteredString(context, "XRay", posX + 68, posY + 7, -1);
             double time = 0;
             try {
                 time = MathUtility.round((all - done) * ((1000. / FrameRateCounter.INSTANCE.getFps() + delay.getValue()) / 1000f), 1);
             } catch (NumberFormatException ignored) {
             }
-            FontRenderers.sf_bold.drawCenteredString(context.getMatrices(), done + " / " + all + (isRu() ? " Осталось: " : " Estimated time: ") + time + "s", posX + 68, posY + 18, -1);
+            FontRenderers.sf_bold.drawCenteredString(context, done + " / " + all + (isRu() ? " Осталось: " : " Estimated time: ") + time + "s", posX + 68, posY + 18, -1);
 
         }
     }

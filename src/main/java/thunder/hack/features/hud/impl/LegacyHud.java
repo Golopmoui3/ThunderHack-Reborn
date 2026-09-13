@@ -213,8 +213,8 @@ public class LegacyHud extends Module {
                 case SF -> adapter = FontRenderers.sf_medium;
                 default -> adapter = FontRenderers.modules;
             }
-            adapter.drawString(context.getMatrices(), str.replace(Formatting.WHITE + "", ""), x + 0.5, y + 0.5, Color.BLACK.getRGB());
-            adapter.drawString(context.getMatrices(), str, x, y, color);
+            adapter.drawString(context, str.replace(Formatting.WHITE + "", ""), x + 0.5, y + 0.5, Color.BLACK.getRGB());
+            adapter.drawString(context, str, x, y, color);
             return;
         }
         context.drawText(mc.textRenderer, str, x, y, color, true);
@@ -228,8 +228,8 @@ public class LegacyHud extends Module {
                 case SF -> adapter = FontRenderers.sf_medium;
                 default -> adapter = FontRenderers.modules;
             }
-            adapter.drawString(context.getMatrices(), str.replace(Formatting.WHITE + "", ""), x + 0.5, y + 0.5, Color.BLACK.getRGB());
-            adapter.drawString(context.getMatrices(), str, x, y, color);
+            adapter.drawString(context, str.replace(Formatting.WHITE + "", ""), x + 0.5, y + 0.5, Color.BLACK.getRGB());
+            adapter.drawString(context, str, x, y, color);
             return;
         }
         context.drawText(mc.textRenderer, str, x, y, color, true);

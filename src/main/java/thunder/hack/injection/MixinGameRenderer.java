@@ -3,8 +3,6 @@ package thunder.hack.injection;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.RenderTickCounter;
-import thunder.hack.core.Managers;
-import thunder.hack.utility.render.shaders.satin.impl.ReloadableShaderEffectManager;
 import net.minecraft.client.option.Perspective;
 import net.minecraft.client.render.Camera;
 import net.minecraft.client.render.GameRenderer;
@@ -41,15 +39,6 @@ import static thunder.hack.features.modules.Module.mc;
 public abstract class MixinGameRenderer {
 
     @Shadow
-    private float zoom;
-
-    @Shadow
-    private float zoomX;
-
-    @Shadow
-    private float zoomY;
-
-    @Shadow
     private float viewDistanceBlocks;
 
     @Shadow
@@ -60,30 +49,24 @@ public abstract class MixinGameRenderer {
         FrameRateCounter.INSTANCE.recordFrame();
     }
 
-    @Inject(at = @At(value = "FIELD", target = "Lnet/minecraft/client/render/GameRenderer;renderHand:Z", opcode = Opcodes.GETFIELD, ordinal = 0), method = "renderWorld")
+    @Inject(at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderHand(FZLorg/joml/Matrix4f;)V", shift = At.Shift.BEFORE), method = "renderWorld")
     void render3dHook(RenderTickCounter tickCounter, CallbackInfo ci) {
         if (Module.fullNullCheck()) return;
 
         Camera camera = mc.gameRenderer.getCamera();
         MatrixStack matrixStack = new MatrixStack();
-        RenderSystem.getModelViewStack().pushMatrix().mul(matrixStack.peek().getPositionMatrix());
+        RenderSystem.getModelViewStack().pushMatrix();
         matrixStack.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
         matrixStack.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0f));
-        RenderSystem.applyModelViewMatrix();
-
-        Render3DEngine.lastProjMat.set(RenderSystem.getProjectionMatrix());
-        Render3DEngine.lastModMat.set(RenderSystem.getModelViewMatrix());
-        Render3DEngine.lastWorldSpaceMatrix.set(matrixStack.peek().getPositionMatrix());
 
         Managers.MODULE.onRender3D(matrixStack);
         BlockAnimationUtility.onRender(matrixStack);
-        Render3DEngine.onRender3D(matrixStack); // <- не двигать
+        Render3DEngine.onRender3D(matrixStack);
 
         RenderSystem.getModelViewStack().popMatrix();
-        RenderSystem.applyModelViewMatrix();
     }
 
-    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderHand(Lnet/minecraft/client/render/Camera;FLorg/joml/Matrix4f;)V", shift = At.Shift.AFTER))
+    @Inject(method = "renderWorld", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;renderHand(FZLorg/joml/Matrix4f;)V", shift = At.Shift.AFTER))
     public void postRender3dHook(RenderTickCounter tickCounter, CallbackInfo ci) {
         if (Module.fullNullCheck()) return;
         Managers.SHADER.renderShaders();
@@ -95,71 +78,58 @@ public abstract class MixinGameRenderer {
         return MathHelper.lerp(delta, first, second);
     }
 
-    @Inject(method = "loadPrograms", at = @At(value = "RETURN"))
+    @Inject(method = "preloadPrograms", at = @At(value = "RETURN"))
     private void loadSatinPrograms(ResourceFactory factory, CallbackInfo ci) {
-        ReloadableShaderEffectManager.INSTANCE.reload(factory);
+        // TODO(1.21.11): satin post pipeline is gone; shader reload intentionally does nothing (see ShaderManager)
     }
 
-    @Inject(method = "updateCrosshairTarget", at = @At(value = "INVOKE", target = "Lnet/minecraft/client/render/GameRenderer;findCrosshairTarget(Lnet/minecraft/entity/Entity;DDF)Lnet/minecraft/util/hit/HitResult;"), cancellable = true)
-    private void onUpdateTargetedEntity(float tickDelta, CallbackInfo info) {
+    @Inject(method = "updateCrosshairTarget", at = @At("TAIL"))
+    private void onUpdateTargetedEntity(float tickDelta, CallbackInfo ci) {
         if (Module.fullNullCheck()) return;
 
-        /*
-        if (ModuleManager.aura.isEnabled() && Aura.target != null && mc.player.distanceTo(Aura.target) <= ModuleManager.aura.attackRange.getValue() && ModuleManager.aura.rotationMode.getValue() != Aura.Mode.None) {
-            mc.getProfiler().pop();
-            info.cancel();
-            //add vector from aura
-            mc.crosshairTarget = new EntityHitResult(Aura.target);
-        }
-         */
-
         if (ModuleManager.freeCam.isEnabled()) {
-            mc.getProfiler().pop();
-            info.cancel();
             mc.crosshairTarget = Managers.PLAYER.getRtxTarget(ModuleManager.freeCam.getFakeYaw(), ModuleManager.freeCam.getFakePitch(), ModuleManager.freeCam.getFakeX(), ModuleManager.freeCam.getFakeY(), ModuleManager.freeCam.getFakeZ());
+            mc.targetedEntity = mc.crosshairTarget instanceof EntityHitResult ehr ? ehr.getEntity() : null;
+            return;
         }
-    }
 
-    @Inject(method = "findCrosshairTarget", at = @At("HEAD"), cancellable = true)
-    private void findCrosshairTargetHook(Entity camera, double blockInteractionRange, double entityInteractionRange, float tickDelta, CallbackInfoReturnable<HitResult> cir) {
         if (ModuleManager.noEntityTrace.isEnabled() && (mc.player.getMainHandStack().isIn(ItemTags.PICKAXES) || !NoEntityTrace.ponly.getValue())) {
             if (mc.player.getMainHandStack().isIn(ItemTags.SWORDS) && NoEntityTrace.noSword.getValue()) return;
-            double d = Math.max(blockInteractionRange, entityInteractionRange);
-            Vec3d vec3d = camera.getCameraPosVec(tickDelta);
-            HitResult hitResult = camera.raycast(d, tickDelta, false);
-            cir.setReturnValue(ensureTargetInRangeCustom(hitResult, vec3d, blockInteractionRange));
+            Entity cameraEntity = mc.getCameraEntity();
+            if (cameraEntity == null) return;
+            double d = Math.max(mc.player.getBlockInteractionRange(), mc.player.getEntityInteractionRange());
+            Vec3d vec3d = cameraEntity.getCameraPosVec(tickDelta);
+            HitResult hitResult = cameraEntity.raycast(d, tickDelta, false);
+            mc.crosshairTarget = ensureTargetInRangeCustom(hitResult, vec3d, mc.player.getBlockInteractionRange());
+            mc.targetedEntity = mc.crosshairTarget instanceof EntityHitResult ehr ? ehr.getEntity() : null;
         }
     }
 
     @Inject(method = "getBasicProjectionMatrix", at = @At("TAIL"), cancellable = true)
-    public void getBasicProjectionMatrixHook(double fov, CallbackInfoReturnable<Matrix4f> cir) {
+    public void getBasicProjectionMatrixHook(float fov, CallbackInfoReturnable<Matrix4f> cir) {
         if (ModuleManager.aspectRatio.isEnabled()) {
             MatrixStack matrixStack = new MatrixStack();
             matrixStack.peek().getPositionMatrix().identity();
-            if (zoom != 1.0f) {
-                matrixStack.translate(zoomX, -zoomY, 0.0f);
-                matrixStack.scale(zoom, zoom, 1.0f);
-            }
             matrixStack.peek().getPositionMatrix().mul(new Matrix4f().setPerspective((float) (fov * 0.01745329238474369), ModuleManager.aspectRatio.ratio.getValue(), 0.05f, viewDistanceBlocks * 4.0f));
             cir.setReturnValue(matrixStack.peek().getPositionMatrix());
         }
     }
 
-    @Inject(method = "getFov(Lnet/minecraft/client/render/Camera;FZ)D", at = @At("TAIL"), cancellable = true)
-    public void getFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Double> cb) {
+    @Inject(method = "getFov(Lnet/minecraft/client/render/Camera;FZ)F", at = @At("TAIL"), cancellable = true)
+    public void getFov(Camera camera, float tickDelta, boolean changingFov, CallbackInfoReturnable<Float> cb) {
         if (ModuleManager.fov.isEnabled()) {
-            if (cb.getReturnValue() == 70 && !ModuleManager.fov.itemFov.getValue() && mc.options.getPerspective() != Perspective.FIRST_PERSON)
+            if (cb.getReturnValue() == 70f && !ModuleManager.fov.itemFov.getValue() && mc.options.getPerspective() != Perspective.FIRST_PERSON)
                 return;
 
-            else if (ModuleManager.fov.itemFov.getValue() && cb.getReturnValue() == 70) {
-                cb.setReturnValue(ModuleManager.fov.itemFovModifier.getValue().doubleValue());
+            else if (ModuleManager.fov.itemFov.getValue() && cb.getReturnValue() == 70f) {
+                cb.setReturnValue(ModuleManager.fov.itemFovModifier.getValue().floatValue());
                 return;
             }
 
             if (mc.player.isSubmergedInWater())
                 return;
 
-            cb.setReturnValue(ModuleManager.fov.fovModifier.getValue().doubleValue());
+            cb.setReturnValue(ModuleManager.fov.fovModifier.getValue().floatValue());
         }
     }
 
@@ -194,14 +164,6 @@ public abstract class MixinGameRenderer {
         if (ModuleManager.totemAnimation.isEnabled()) {
             ModuleManager.totemAnimation.showFloatingItem(floatingItem);
             info.cancel();
-        }
-    }
-
-    @Inject(method = "renderFloatingItem", at = @At("HEAD"), cancellable = true)
-    private void renderFloatingItemHook(DrawContext context, float tickDelta, CallbackInfo ci) {
-        if (ModuleManager.totemAnimation.isEnabled()) {
-            ModuleManager.totemAnimation.renderFloatingItem(tickDelta);
-            ci.cancel();
         }
     }
 

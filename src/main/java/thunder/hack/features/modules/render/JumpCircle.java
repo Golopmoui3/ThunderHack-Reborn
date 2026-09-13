@@ -1,6 +1,9 @@
 package thunder.hack.features.modules.render;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.*;
 import net.minecraft.client.util.math.MatrixStack;
@@ -74,18 +77,17 @@ public class JumpCircle extends Module {
 
     public void onRender3D(MatrixStack stack) {
         Collections.reverse(circles);
-        RenderSystem.disableDepthTest();
-        RenderSystem.enableBlend();
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
+        GlStateManager._disableDepthTest();
+        GlStateManager._enableBlend();
+        GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
 
         switch (mode.getValue()) {
-            case Portal -> RenderSystem.setShaderTexture(0, TextureStorage.bubble);
-            case Default -> RenderSystem.setShaderTexture(0, TextureStorage.default_circle);
+            case Portal -> Render2DEngine.bindTexture(TextureStorage.bubble);
+            case Default -> Render2DEngine.bindTexture(TextureStorage.default_circle);
             case Custom ->
-                    RenderSystem.setShaderTexture(0, Objects.requireNonNullElse(custom, TextureStorage.default_circle));
+                    Render2DEngine.bindTexture(Objects.requireNonNullElse(custom, TextureStorage.default_circle));
         }
 
-        RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
         BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
         for (Circle c : circles) {
@@ -108,9 +110,8 @@ public class JumpCircle extends Module {
         }
 
         Render2DEngine.endBuilding(buffer);
-        RenderSystem.disableBlend();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
-        RenderSystem.enableDepthTest();
+        GlStateManager._disableBlend();
+        GlStateManager._enableDepthTest();
         Collections.reverse(circles);
     }
 

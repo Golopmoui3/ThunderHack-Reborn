@@ -1,5 +1,7 @@
 package thunder.hack.injection;
 
+import net.minecraft.client.gl.RenderPipelines;
+
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.MinecraftClient;
@@ -192,7 +194,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
 
     @Unique
     private void draw(DrawContext context, List<ItemStack> itemStacks, int offsetX, int offsetY, int mouseX, int mouseY, float[] colors) {
-        RenderSystem.disableDepthTest();
+        GlStateManager._disableDepthTest();
         GL11.glClear(GL11.GL_DEPTH_BUFFER_BIT);
 
         offsetX += 8;
@@ -200,7 +202,6 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
 
         drawBackground(context, offsetX, offsetY, colors);
 
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
         DiffuseLighting.enableGuiDepthLighting();
         int row = 0;
         int i = 0;
@@ -218,22 +219,20 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
             }
         }
         DiffuseLighting.disableGuiDepthLighting();
-        RenderSystem.enableDepthTest();
+        GlStateManager._enableDepthTest();
     }
 
     private void drawBackground(DrawContext context, int x, int y, float[] colors) {
-        RenderSystem.disableBlend();
-        RenderSystem.setShaderColor(colors[0], colors[1], colors[2], 1F);
+        GlStateManager._disableBlend();
         RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
         RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
-        context.drawTexture(TextureStorage.container, x, y, 0, 0, 176, 67, 176, 67);
-        RenderSystem.enableBlend();
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.container, x, y, 0, 0, 176, 67, 176, 67);
+        GlStateManager._enableBlend();
     }
 
     private void drawMapPreview(DrawContext context, ItemStack stack, int x, int y) {
-        RenderSystem.enableBlend();
-        context.getMatrices().push();
-        RenderSystem.setShaderColor(1.0F, 1.0F, 1.0F, 1.0F);
+        GlStateManager._enableBlend();
+        context.getMatrices().pushMatrix();
 
         int y1 = y - 12;
         int x1 = x + 8;
@@ -253,7 +252,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
             VertexConsumerProvider.Immediate consumer = client.getBufferBuilders().getEntityVertexConsumers();
             client.gameRenderer.getMapRenderer().draw(context.getMatrices(), consumer, (MapIdComponent) stack.get(DataComponentTypes.MAP_ID), mapState, false, 0xF000F0);
         }
-        context.getMatrices().pop();
+        context.getMatrices().popMatrix();
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)

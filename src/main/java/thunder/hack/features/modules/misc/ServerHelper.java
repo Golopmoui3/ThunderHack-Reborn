@@ -253,7 +253,7 @@ public class ServerHelper extends Module {
                     if (item.id == slot.id && slot.id <= 44 && !slot.getStack().isEmpty()) {
                         float ratio = (float) (Math.pow(item.lowestPrice, contrast.getValue()) / Math.pow(item.price, contrast.getValue()));
 
-                        Render2DEngine.drawRect(context.getMatrices(), slot.x, slot.y,
+                        Render2DEngine.drawRect(context, slot.x, slot.y,
                                 16, 16, Render2DEngine.interpolateColorC(new Color(0xFF000000, true), new Color(0x00FF00), ratio));
                         return;
                     }

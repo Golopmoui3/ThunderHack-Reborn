@@ -1,5 +1,7 @@
 package thunder.hack.gui.clickui.impl;
 
+import net.minecraft.client.gl.RenderPipelines;
+
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.math.RotationAxis;
@@ -45,7 +47,7 @@ public class BooleanParentElement extends AbstractElement {
         matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-180f * arrowAnimation));
         matrixStack.translate(-tx, -ty, 0);
         matrixStack.translate((x + width - 14), (y + 4.5f), 0);
-        context.drawTexture(TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6);
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6);
         matrixStack.translate(-(x + width - 14), -(y + 4.5f), 0);
         matrixStack.pop();
 
@@ -53,13 +55,13 @@ public class BooleanParentElement extends AbstractElement {
         animation = fast(animation, getParentSetting().getValue().isEnabled() ? 1 : 0, 15f);
         float paddingX = 7f * animation;
         Color color = HudEditor.getColor(0);
-        Render2DEngine.drawRound(context.getMatrices(), x + width - 36, y + height / 2 - 4, 15, 8, 1, paddingX > 4 ? color : new Color(0x28FFFFFF, true));
-        Render2DEngine.drawRound(context.getMatrices(), x + width - 35f + paddingX, y + height / 2 - 3, 6, 6, 1, new Color(-1));
+        Render2DEngine.drawRound(context, x + width - 36, y + height / 2 - 4, 15, 8, 1, paddingX > 4 ? color : new Color(0x28FFFFFF, true));
+        Render2DEngine.drawRound(context, x + width - 35f + paddingX, y + height / 2 - 3, 6, 6, 1, new Color(-1));
 
         if (7f * animation > 4) {
-            FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "v", x + width - 34f, y + height / 2 - 2f, new Color(-1).getRGB());
+            FontRenderers.sf_bold_mini.drawString(context, "v", x + width - 34f, y + height / 2 - 2f, new Color(-1).getRGB());
         } else {
-            FontRenderers.sf_bold_mini.drawString(context.getMatrices(), "x", x + width - 27f, y + height / 2 - 2f, new Color(-1).getRGB());
+            FontRenderers.sf_bold_mini.drawString(context, "x", x + width - 27f, y + height / 2 - 2f, new Color(-1).getRGB());
         }
 
         if (Render2DEngine.isHovered(mouseX, mouseY, x + width - 36, y + height / 2 - 4, 15, 8)) {

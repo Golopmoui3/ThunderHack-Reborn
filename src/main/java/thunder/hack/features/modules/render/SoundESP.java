@@ -51,13 +51,13 @@ public class SoundESP extends Module {
 
                 float alpha = (float) (1f - Math.pow(1f - ((float) s.ticks / 60f), 3f));
 
-                context.getMatrices().push();
+                context.getMatrices().pushMatrix();
                 context.getMatrices().translate(tagX - 2 + (textWidth + 4) / 2f, (float) (posY - 13f) + 6.5f, 0);
                 context.getMatrices().scale(scale.getValue(), scale.getValue(), 1f);
                 context.getMatrices().translate(-(tagX - 2 + (textWidth + 4) / 2f), -(float) ((posY - 13f) + 6.5f), 0);
-                Render2DEngine.drawRect(context.getMatrices(), tagX - 2, (float) (posY - 13f), textWidth + 4, 11, fillColorA.getValue().withAlpha((int) (fillColorA.getValue().getAlpha() * alpha)).getColorObject());
-                FontRenderers.sf_bold.drawString(context.getMatrices(), s.name, tagX, (float) posY - 10, Render2DEngine.applyOpacity(-1, alpha));
-                context.getMatrices().pop();
+                Render2DEngine.drawRect(context, tagX - 2, (float) (posY - 13f), textWidth + 4, 11, fillColorA.getValue().withAlpha((int) (fillColorA.getValue().getAlpha() * alpha)).getColorObject());
+                FontRenderers.sf_bold.drawString(context, s.name, tagX, (float) posY - 10, Render2DEngine.applyOpacity(-1, alpha));
+                context.getMatrices().popMatrix();
             }
         }
     }

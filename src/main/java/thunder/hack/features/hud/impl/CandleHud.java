@@ -1,6 +1,8 @@
 package thunder.hack.features.hud.impl;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import net.minecraft.client.gl.RenderPipelines;
+
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.util.math.MatrixStack;
@@ -37,12 +39,12 @@ public class CandleHud extends HudElement {
 
         prevPitch = mc.player.getPitch();
 
-        context.getMatrices().push();
+        context.getMatrices().pushMatrix();
         context.getMatrices().translate((int) getPosX(), (int) getPosY(), 0);
         float scalefactor = (float) scale.getValue() / 100f;
         context.getMatrices().scale(scalefactor, scalefactor, 1);
-        context.drawTexture(TextureStorage.candle, 0, -5, 0, 0, 102, 529, 102, 529);
-        context.getMatrices().pop();
+        context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.candle, 0, -5, 0, 0, 102, 529, 102, 529);
+        context.getMatrices().popMatrix();
 
         drawFire(context.getMatrices(), getPosX() + (40 + 15f - xAnim) * scalefactor, getPosY() + (10 - yAnim) * scalefactor, 7 * scalefactor, 7 * scalefactor,
                 Render2DEngine.applyOpacity(new Color(0xFA460F), (float) Math.sin((mc.player.age + 10) / 15f) + 1.4f));
@@ -64,13 +66,11 @@ public class CandleHud extends HudElement {
         x = x - 7;
         y = y - 7;
 
-        RenderSystem.enableBlend();
-        RenderSystem.setShaderColor(color.getRed() / 255f, color.getGreen() / 255f, color.getBlue() / 255f, color.getAlpha() / 255f);
-        RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-        RenderSystem.setShaderTexture(0, TextureStorage.firefly);
+        GlStateManager._enableBlend();
+        GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
+        Render2DEngine.bindTexture(TextureStorage.firefly);
         Render2DEngine.renderTexture(matrices, x, y, width, height, 0, 0, width, height, width, height);
-        RenderSystem.disableBlend();
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+        GlStateManager._disableBlend();
     }
 
     private enum For {

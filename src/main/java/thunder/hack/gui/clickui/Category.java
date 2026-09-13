@@ -1,6 +1,9 @@
 package thunder.hack.gui.clickui;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.render.*;
@@ -55,7 +58,7 @@ public class Category extends AbstractCategory {
 
         scrollHover = Render2DEngine.isHovered(mouseX, mouseY, getX(), getY() + height, width, catHeight + 20);
 
-        context.getMatrices().push();
+        context.getMatrices().pushMatrix();
 
         boolean popStack = false;
 
@@ -73,14 +76,14 @@ public class Category extends AbstractCategory {
         Color m4 = HudEditor.getColor(90);
 
         if (isOpen()) {
-            Render2DEngine.drawHudBase(context.getMatrices(), getX() + 3, getY() + height - 6, width - 6, catHeight, 1, false);
+            Render2DEngine.drawHudBase(context, getX() + 3, getY() + height - 6, width - 6, catHeight, 1, false);
 
             if (!(ModuleManager.clickGui.scrollMode.getValue() == ClickGui.scrollModeEn.Old || getButtonsHeight() < ModuleManager.clickGui.catHeight.getValue())) {
-                Render2DEngine.addWindow(context.getMatrices(), getX() + 3, getY() + height - 6, getX() + 3 + width - 6, (getY() + height - 6) + (float) ((ModuleManager.clickGui.catHeight.getValue())), 1f);
+                Render2DEngine.addWindow(context, getX() + 3, getY() + height - 6, getX() + 3 + width - 6, (getY() + height - 6) + (float) ((ModuleManager.clickGui.catHeight.getValue())), 1f);
                 popStack = true;
             }
 
-            Render2DEngine.drawBlurredShadow(context.getMatrices(), (int) getX() + 4, (int) (getY() + height - 6), (int) width - 8, 8, 7, new Color(0, 0, 0, 180));
+            Render2DEngine.drawBlurredShadow(context, (int) getX() + 4, (int) (getY() + height - 6), (int) width - 8, 8, 7, new Color(0, 0, 0, 180));
             for (AbstractButton button : buttons) {
                 if (button instanceof ModuleButton mb && SearchBar.listening && !mb.module.getName().toLowerCase().contains(SearchBar.moduleName.toLowerCase()))
                     continue;
@@ -101,14 +104,13 @@ public class Category extends AbstractCategory {
         if (popStack)
             Render2DEngine.popWindow();
 
-        Render2DEngine.drawHudBase(context.getMatrices(), getX() + 2, getY() - 5, width - 4, height, 1, false);
+        Render2DEngine.drawHudBase(context, getX() + 2, getY() - 5, width - 4, height, 1, false);
 
         {
-            RenderSystem.setShaderTexture(0, ICON);
-            RenderSystem.enableBlend();
-            RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-            Render2DEngine.addWindow(context.getMatrices(), getX() + 2, getY() - 4, getX() + 2 + width - 4, getY() - 5 + height, 1);
-            RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
+            Render2DEngine.bindTexture(ICON);
+            GlStateManager._enableBlend();
+            GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
+            Render2DEngine.addWindow(context, getX() + 2, getY() - 4, getX() + 2 + width - 4, getY() - 5 + height, 1);
             BufferBuilder b = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
             Render2DEngine.renderGradientTextureInternal(b, context.getMatrices(), getX() + 85, (getY() + (height - 24) / 2), 12, 12, 0, 0, 12, 12, 12, 12, m1.darker(), m2.darker(), m3.darker(), m4.darker());
             Render2DEngine.renderGradientTextureInternal(b, context.getMatrices(), getX() + 75, (getY() + (height - 34) / 2), 16, 16, 0, 0, 16, 16, 16, 16, m1, m2, m3, m4);
@@ -120,15 +122,15 @@ public class Category extends AbstractCategory {
             Render2DEngine.renderGradientTextureInternal(b, context.getMatrices(), getX() + 15, (getY() + (height - 22) / 2), 12, 12, 0, 0, 12, 12, 12, 12, m1.darker().darker().darker(), m2.darker().darker().darker(), m3.darker().darker().darker(), m4.darker().darker().darker());
             Render2DEngine.renderGradientTextureInternal(b, context.getMatrices(), getX() + 5, (getY() + (height - 28) / 2), 20, 20, 0, 0, 20, 20, 20, 20, m1, m2, m3, m4);
             BufferRenderer.drawWithGlobalProgram(b.end());
-            RenderSystem.disableBlend();
+            GlStateManager._disableBlend();
             Render2DEngine.popWindow();
         }
 
-        Render2DEngine.drawBlurredShadow(context.getMatrices(),
+        Render2DEngine.drawBlurredShadow(context,
                 ((int) getX() + (width - 4) / 2) - FontRenderers.categories.getStringWidth(getName()) / 2f, (int) getY() + (int) height / 2f - 10, FontRenderers.categories.getStringWidth(getName()) + 6, 13, 20, Render2DEngine.injectAlpha(Color.black, 170));
 
-        FontRenderers.categories.drawCenteredString(context.getMatrices(), getName(), ((int) getX() + 2 + (width - 4) / 2), (int) getY() + (int) height / 2f - 7, new Color(-1).getRGB());
-        context.getMatrices().pop();
+        FontRenderers.categories.drawCenteredString(context, getName(), ((int) getX() + 2 + (width - 4) / 2), (int) getY() + (int) height / 2f - 7, new Color(-1).getRGB());
+        context.getMatrices().popMatrix();
         updatePosition();
     }
 

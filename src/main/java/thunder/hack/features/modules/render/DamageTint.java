@@ -17,7 +17,7 @@ public class DamageTint extends Module {
         Color red = new Color(0xFF0000, true);
 
         if (factor < 1f)
-            Render2DEngine.draw2DGradientRect(context.getMatrices(), 0, 0, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight(),
+            Render2DEngine.draw2DGradientRect(context, 0, 0, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight(),
                     Render2DEngine.injectAlpha(red, (int) (factor * 170f)), red,
                     Render2DEngine.injectAlpha(red, (int) (factor * 170f)), red
             );

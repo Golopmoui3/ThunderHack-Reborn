@@ -1,5 +1,7 @@
 package thunder.hack.features.modules.client;
 
+import net.minecraft.client.gl.RenderPipelines;
+
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Formatting;
 import net.minecraft.util.math.MathHelper;
@@ -57,14 +59,14 @@ public final class WayPoints extends Module {
                 String distance = String.format("%.0f", Math.sqrt(mc.player.squaredDistanceTo(wp.getX(), wp.getY(), wp.getZ()))) + "m";
                 float tagX3 = (float) ((posX + diff - FontRenderers.sf_bold_mini.getStringWidth(distance) / 2) * 1);
 
-                context.getMatrices().push();
+                context.getMatrices().pushMatrix();
                 context.getMatrices().translate(posX - 10, (posY - 35), 0);
-                context.drawTexture(TextureStorage.waypoint, 0, 0, 20, 20, 0, 0, 20, 20, 20, 20);
-                context.getMatrices().pop();
+                context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.waypoint, 0, 0, 20, 20, 0, 0, 20, 20, 20, 20);
+                context.getMatrices().popMatrix();
 
-                FontRenderers.sf_bold_mini.drawString(context.getMatrices(), wp.getName(), tagX, (float) posY - 10, -1);
-                FontRenderers.sf_bold_mini.drawString(context.getMatrices(), Formatting.GRAY + coords, tagX2, (float) posY - 2, -1);
-                FontRenderers.sf_bold_mini.drawString(context.getMatrices(), Formatting.GRAY + distance, tagX3, (float) posY + 6, -1);
+                FontRenderers.sf_bold_mini.drawString(context, wp.getName(), tagX, (float) posY - 10, -1);
+                FontRenderers.sf_bold_mini.drawString(context, Formatting.GRAY + coords, tagX2, (float) posY - 2, -1);
+                FontRenderers.sf_bold_mini.drawString(context, Formatting.GRAY + distance, tagX3, (float) posY + 6, -1);
             }
         }
     }

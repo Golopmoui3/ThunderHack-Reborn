@@ -1,4 +1,7 @@
 package thunder.hack.features.modules.render;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
@@ -66,9 +69,9 @@ public class ItemESP extends Module {
                 float tagX = (posX + diff - textWidth / 2f) * 1;
 
                 if (shadow.getValue())
-                    Render2DEngine.drawBlurredShadow(context.getMatrices(), tagX - 2, posY - 13, FontRenderers.sf_bold_mini.getStringWidth(ent.getDisplayName().getString()) + 4, 10, 14, scolor.getValue().getColorObject());
+                    Render2DEngine.drawBlurredShadow(context, tagX - 2, posY - 13, FontRenderers.sf_bold_mini.getStringWidth(ent.getDisplayName().getString()) + 4, 10, 14, scolor.getValue().getColorObject());
 
-                FontRenderers.sf_bold_mini.drawString(context.getMatrices(), ent.getDisplayName().getString(), tagX, (float) posY - 10, tcolor.getValue().getColor());
+                FontRenderers.sf_bold_mini.drawString(context, ent.getDisplayName().getString(), tagX, (float) posY - 10, tcolor.getValue().getColor());
             }
         }
 
@@ -102,7 +105,6 @@ public class ItemESP extends Module {
 
             Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
             Render2DEngine.setupRender();
-            RenderSystem.setShader(GameRenderer::getPositionColorProgram);
 
             BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
 

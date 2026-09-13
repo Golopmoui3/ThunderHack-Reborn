@@ -1,6 +1,9 @@
 package thunder.hack.features.modules.render;
+import com.mojang.blaze3d.vertex.VertexFormat;
 
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -78,13 +81,12 @@ public class Trails extends Module {
                 float alpha = color.getValue().getAlpha() / 255f;
                 if (!((IEntity) entity).getTrails().isEmpty()) {
                     stack.push();
-                    RenderSystem.disableCull();
-                    RenderSystem.enableBlend();
-                    RenderSystem.defaultBlendFunc();
-                    RenderSystem.enableDepthTest();
+                    GlStateManager._disableCull();
+                    GlStateManager._enableBlend();
+                    GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
+                    GlStateManager._enableDepthTest();
                     RenderSystem.depthFunc(GL11.GL_LEQUAL);
 
-                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
                     BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
                     for (int i = 0; i < ((IEntity) entity).getTrails().size(); i++) {
@@ -97,8 +99,8 @@ public class Trails extends Module {
                     Render2DEngine.endBuilding(bufferBuilder);
 
                     Render3DEngine.endRender();
-                    RenderSystem.enableCull();
-                    RenderSystem.disableDepthTest();
+                    GlStateManager._enableCull();
+                    GlStateManager._disableDepthTest();
                     stack.pop();
                 }
             }
@@ -109,12 +111,11 @@ public class Trails extends Module {
                 float alpha = color.getValue().getAlpha();
                 Camera camera = mc.gameRenderer.getCamera();
                 stack.push();
-                RenderSystem.setShaderTexture(0, TextureStorage.firefly);
-                RenderSystem.enableBlend();
-                RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
-                RenderSystem.enableDepthTest();
+                Render2DEngine.bindTexture(TextureStorage.firefly);
+                GlStateManager._enableBlend();
+                GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
+                GlStateManager._enableDepthTest();
                 RenderSystem.depthMask(false);
-                RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
                 BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
                 int size = ((IEntity) entity).getTrails().size();
@@ -149,8 +150,8 @@ public class Trails extends Module {
                 }
                 Render2DEngine.endBuilding(bufferBuilder);
                 RenderSystem.depthMask(true);
-                RenderSystem.disableDepthTest();
-                RenderSystem.disableBlend();
+                GlStateManager._disableDepthTest();
+                GlStateManager._disableBlend();
                 stack.pop();
             }
         } else if (players.getValue() == Players.Cute) {
@@ -161,15 +162,14 @@ public class Trails extends Module {
                 float alpha = color.getValue().getAlpha() / 255f;
                 if (!((IEntity) entity).getTrails().isEmpty()) {
                     stack.push();
-                    RenderSystem.disableCull();
-                    RenderSystem.enableBlend();
-                    RenderSystem.defaultBlendFunc();
-                    RenderSystem.enableDepthTest();
+                    GlStateManager._disableCull();
+                    GlStateManager._enableBlend();
+                    GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
+                    GlStateManager._enableDepthTest();
                     RenderSystem.depthFunc(GL11.GL_LEQUAL);
 
                     float step = (float) (mc.player.getBoundingBox().getLengthY() / 5f);
 
-                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
                     BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
 
@@ -181,7 +181,6 @@ public class Trails extends Module {
                     }
                     Render2DEngine.endBuilding(bufferBuilder);
 
-                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
                     bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
                     for (int i = 0; i < ((IEntity) entity).getTrails().size(); i++) {
                         Trail ctx = ((IEntity) entity).getTrails().get(i);
@@ -191,7 +190,6 @@ public class Trails extends Module {
                     }
                     Render2DEngine.endBuilding(bufferBuilder);
 
-                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
                     bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
                     for (int i = 0; i < ((IEntity) entity).getTrails().size(); i++) {
                         Trail ctx = ((IEntity) entity).getTrails().get(i);
@@ -201,7 +199,6 @@ public class Trails extends Module {
                     }
                     Render2DEngine.endBuilding(bufferBuilder);
 
-                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
                     bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
                     for (int i = 0; i < ((IEntity) entity).getTrails().size(); i++) {
                         Trail ctx = ((IEntity) entity).getTrails().get(i);
@@ -211,7 +208,6 @@ public class Trails extends Module {
                     }
                     Render2DEngine.endBuilding(bufferBuilder);
 
-                    RenderSystem.setShader(GameRenderer::getPositionColorProgram);
                     bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
                     for (int i = 0; i < ((IEntity) entity).getTrails().size(); i++) {
                         Trail ctx = ((IEntity) entity).getTrails().get(i);
@@ -222,40 +218,38 @@ public class Trails extends Module {
                     Render2DEngine.endBuilding(bufferBuilder);
 
                     Render3DEngine.endRender();
-                    RenderSystem.enableCull();
-                    RenderSystem.disableDepthTest();
+                    GlStateManager._enableCull();
+                    GlStateManager._disableDepthTest();
                     stack.pop();
                 }
             }
         }
 
         if (!particles.isEmpty()) {
-            RenderSystem.enableBlend();
-            RenderSystem.enableDepthTest();
+            GlStateManager._enableBlend();
+            GlStateManager._enableDepthTest();
             RenderSystem.depthMask(false);
 
-            RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
+            GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
 
             switch (mode.getValue()) {
-                case Stars -> RenderSystem.setShaderTexture(0, TextureStorage.star);
-                case Bloom -> RenderSystem.setShaderTexture(0, TextureStorage.firefly);
-                case Hearts -> RenderSystem.setShaderTexture(0, TextureStorage.heart);
+                case Stars -> Render2DEngine.bindTexture(TextureStorage.star);
+                case Bloom -> Render2DEngine.bindTexture(TextureStorage.firefly);
+                case Hearts -> Render2DEngine.bindTexture(TextureStorage.heart);
                 default -> {
                     return;
                 }
             }
 
-            RenderSystem.setShader(GameRenderer::getPositionTexColorProgram);
             BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
             if (mc.player != null && mc.world != null)
                 particles.forEach(p -> p.render(stack, bufferBuilder));
 
             Render2DEngine.endBuilding(bufferBuilder);
-            RenderSystem.disableBlend();
+            GlStateManager._disableBlend();
             RenderSystem.depthMask(true);
-            RenderSystem.disableDepthTest();
-            RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
+            GlStateManager._disableDepthTest();
         }
     }
 

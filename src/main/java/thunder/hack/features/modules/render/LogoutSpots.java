@@ -1,7 +1,10 @@
 package thunder.hack.features.modules.render;
+import com.mojang.blaze3d.vertex.VertexFormat;
+
+import com.mojang.blaze3d.vertex.VertexFormat;
 
 import com.google.common.collect.Maps;
-import com.mojang.blaze3d.platform.GlStateManager;
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.gui.DrawContext;
@@ -101,10 +104,10 @@ public class LogoutSpots extends Module {
     }
 
     public void onRender3D(MatrixStack s) {
-        RenderSystem.enableBlend();
-        RenderSystem.disableDepthTest();
-        if (renderMode.is(RenderMode.Box)) RenderSystem.defaultBlendFunc();
-        else RenderSystem.blendFunc(GlStateManager.SrcFactor.SRC_ALPHA, GlStateManager.DstFactor.ONE);
+        GlStateManager._enableBlend();
+        GlStateManager._disableDepthTest();
+        if (renderMode.is(RenderMode.Box)) GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
+        else GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
         for (UUID uuid : logoutCache.keySet()) {
             final PlayerEntity data = logoutCache.get(uuid);
             if (data != null) {
@@ -121,8 +124,8 @@ public class LogoutSpots extends Module {
                 }
             }
         }
-        RenderSystem.enableDepthTest();
-        RenderSystem.disableBlend();
+        GlStateManager._enableDepthTest();
+        GlStateManager._disableBlend();
     }
 
     public void onRender2D(DrawContext context) {
@@ -147,8 +150,8 @@ public class LogoutSpots extends Module {
                     float textWidth = (FontRenderers.sf_bold.getStringWidth(string) * 1);
                     float tagX = (float) ((position.x + diff - textWidth / 2) * 1);
 
-                    Render2DEngine.drawRect(context.getMatrices(), tagX - 2, (float) (position.y - 13f), textWidth + 4, 11, new Color(0x99000001, true));
-                    FontRenderers.sf_bold.drawString(context.getMatrices(), string, tagX, (float) position.y - 10, -1);
+                    Render2DEngine.drawRect(context, tagX - 2, (float) (position.y - 13f), textWidth + 4, 11, new Color(0x99000001, true));
+                    FontRenderers.sf_bold.drawString(context, string, tagX, (float) position.y - 10, -1);
                 }
             }
         }
@@ -175,17 +178,13 @@ public class LogoutSpots extends Module {
         modelBase.setAngles((PlayerEntity) entity, entity.limbAnimator.getAnimationProgress(), limbSpeed, entity.age, entity.headYaw - entity.bodyYaw, entity.getPitch());
         BufferBuilder buffer;
         if (renderMode.is(RenderMode.TexturedChams)) {
-            RenderSystem.setShaderTexture(0, texture);
-            RenderSystem.setShader(GameRenderer::getPositionTexProgram);
+            Render2DEngine.bindTexture(texture);
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE);
         } else {
-            RenderSystem.setShader(GameRenderer::getPositionProgram);
             buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION);
         }
-        RenderSystem.setShaderColor(color.getValue().getGlRed(), color.getValue().getGlGreen(), color.getValue().getGlBlue(), alpha / 255f);
         modelBase.render(matrices, buffer, 10, 0);
         Render2DEngine.endBuilding(buffer);
-        RenderSystem.setShaderColor(1f, 1f, 1f, 1f);
         matrices.pop();
     }
 

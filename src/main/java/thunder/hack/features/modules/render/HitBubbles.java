@@ -35,7 +35,7 @@ public class HitBubbles extends Module {
     }
 
     public void onRender3D(MatrixStack matrixStack) {
-        RenderSystem.disableDepthTest();
+        GlStateManager._disableDepthTest();
         ArrayList<HitBubble> bubblesCopy = Lists.newArrayList(bubbles);
         bubblesCopy.forEach(b -> {
             matrixStack.push();
@@ -45,7 +45,7 @@ public class HitBubbles extends Module {
             drawBubble(matrixStack, -b.life.getPassedTimeMs() / 4f, b.life.getPassedTimeMs() / 1500f);
             matrixStack.pop();
         });
-        RenderSystem.enableDepthTest();
+        GlStateManager._enableDepthTest();
         bubbles.removeIf(b -> b.life.passedMs(lifeTime.getValue() * 50));
     }
 
