@@ -41,8 +41,8 @@ public class RadarRewrite extends HudElement {
 
     public static float getRotations(Entity entity) {
         if (mc.player == null) return 0;
-        double x = interp(entity.getPos().x, entity.prevX) - interp(mc.player.getPos().x, mc.player.prevX);
-        double z = interp(entity.getPos().z, entity.prevZ) - interp(mc.player.getPos().z, mc.player.prevZ);
+        double x = interp(entity.getPos().x, entity.lastX) - interp(mc.player.getPos().x, mc.player.lastX);
+        double z = interp(entity.getPos().z, entity.lastZ) - interp(mc.player.getPos().z, mc.player.lastZ);
         return (float) -(Math.atan2(x, z) * (180 / Math.PI));
     }
 

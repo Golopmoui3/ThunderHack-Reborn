@@ -6,7 +6,7 @@ import org.spongepowered.asm.mixin.gen.Accessor;
 
 @Mixin(LivingEntity.class)
 public interface ILivingEntity {
-    @Accessor("lastAttackedTicks")
+    @Accessor("ticksSinceLastAttack")
     int getLastAttackedTicks();
 
     @Accessor("jumpingCooldown")

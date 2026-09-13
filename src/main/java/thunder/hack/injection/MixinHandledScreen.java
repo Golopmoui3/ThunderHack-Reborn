@@ -42,7 +42,6 @@ import thunder.hack.utility.render.TextureStorage;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 import static thunder.hack.features.modules.Module.mc;
 import static thunder.hack.features.modules.render.Tooltips.hasItems;
@@ -206,7 +205,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
         int i = 0;
         for (ItemStack itemStack : itemStacks) {
             context.drawItem(itemStack, offsetX + 8 + i * 18, offsetY + 7 + row * 18);
-            context.drawItemInSlot(mc.textRenderer, itemStack, offsetX + 8 + i * 18, offsetY + 7 + row * 18);
+            context.drawStackOverlay(mc.textRenderer, itemStack, offsetX + 8 + i * 18, offsetY + 7 + row * 18);
 
             if (mouseX > offsetX + 8 + i * 18 && mouseX < offsetX + 28 + i * 18 && mouseY > offsetY + 7 + row * 18 && mouseY < offsetY + 27 + row * 18)
                 postRender = () -> context.drawTooltip(textRenderer, getTooltipFromItem(mc, itemStack), itemStack.getTooltipData(), mouseX, mouseY);

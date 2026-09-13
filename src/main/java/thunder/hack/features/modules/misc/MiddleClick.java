@@ -66,7 +66,7 @@ public class MiddleClick extends Module {
         if (mc.currentScreen == null) {
             HitResult target = mc.crosshairTarget;
 
-            if (mc.player.isFallFlying()) {
+            if (mc.player.isGliding()) {
                 if (mc.options.pickItemKey.isPressed())
                     onFlying.getValue().doAction(event);
                 state = onFlying.getValue().toString();

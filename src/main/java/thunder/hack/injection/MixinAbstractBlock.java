@@ -35,7 +35,7 @@ public abstract class MixinAbstractBlock {
     public float getDigSpeed(BlockState state, ItemStack stack)
     {
         double str = stack.getMiningSpeedMultiplier(state);
-        int effect = EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(EFFICIENCY.getRegistryRef()).getEntry(EFFICIENCY).get(), stack);
+        int effect = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(EFFICIENCY.getRegistryRef()).getEntry(EFFICIENCY).get(), stack);
         return (float) Math.max(str + (str > 1.0 ? (effect * effect + 1.0) : 0.0), 0.0);
     }
 }

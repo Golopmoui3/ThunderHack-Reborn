@@ -2,7 +2,7 @@ package thunder.hack.injection;
 
 import com.mojang.authlib.GameProfile;
 import net.minecraft.client.network.PlayerListEntry;
-import net.minecraft.client.util.SkinTextures;
+import net.minecraft.entity.player.SkinTextures;
 import net.minecraft.util.Identifier;
 import net.minecraft.util.Util;
 import org.spongepowered.asm.mixin.Mixin;
@@ -38,7 +38,7 @@ public class MixinPlayerListEntry {
     private void getCapeTexture(CallbackInfoReturnable<SkinTextures> cir) {
         if (customCapeTexture != null) {
             SkinTextures prev = cir.getReturnValue();
-            SkinTextures newTextures = new SkinTextures(prev.texture(), prev.textureUrl(), customCapeTexture, customCapeTexture, prev.model(), prev.secure());
+            SkinTextures newTextures = new SkinTextures(prev.body(), prev.textureUrl(), customCapeTexture, customCapeTexture, prev.model(), prev.secure());
             cir.setReturnValue(newTextures);
         }
     }

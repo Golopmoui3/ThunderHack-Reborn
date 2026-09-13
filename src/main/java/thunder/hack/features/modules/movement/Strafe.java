@@ -175,7 +175,7 @@ public class Strafe extends Module {
 
     @EventHandler
     public void onSync(EventSync e) {
-        oldSpeed = Math.hypot(mc.player.getX() - mc.player.prevX, mc.player.getZ() - mc.player.prevZ) * contextFriction;
+        oldSpeed = Math.hypot(mc.player.getX() - mc.player.lastX, mc.player.getZ() - mc.player.lastZ) * contextFriction;
     }
 
 
@@ -186,7 +186,7 @@ public class Strafe extends Module {
         }
         EntityVelocityUpdateS2CPacket velocity;
 
-        if (e.getPacket() instanceof EntityVelocityUpdateS2CPacket && (velocity = e.getPacket()).getId() == mc.player.getId() && boost.getValue() == Boost.Damage) {
+        if (e.getPacket() instanceof EntityVelocityUpdateS2CPacket && (velocity = e.getPacket()).getEntityId() == mc.player.getId() && boost.getValue() == Boost.Damage) {
             if (mc.player.isOnGround()) return;
 
             double vX = velocity.getVelocityX();

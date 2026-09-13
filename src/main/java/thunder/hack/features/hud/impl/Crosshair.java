@@ -49,7 +49,7 @@ public class Crosshair extends Module {
         float midX = mc.getWindow().getScaledWidth() / 2f;
         float midY = mc.getWindow().getScaledHeight() / 2f;
 
-        float yawDelta = mc.player.prevHeadYaw - mc.player.getHeadYaw();
+        float yawDelta = mc.player.lastHeadYaw - mc.player.getHeadYaw();
         float pitchDelta = prevPitch - mc.player.getPitch();
 
         if (yawDelta > 0) xAnim = AnimationUtility.fast(xAnim, midX - range.getValue(), speed.getValue());

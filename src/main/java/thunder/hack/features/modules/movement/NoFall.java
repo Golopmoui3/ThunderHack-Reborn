@@ -153,7 +153,7 @@ public class NoFall extends Module {
         if (mc == null || mc.player == null || mc.world == null)
             return false;
 
-        if (mc.player.isFallFlying())
+        if (mc.player.isGliding())
             return false;
 
         if (mode.is(Mode.Grim2b2t))

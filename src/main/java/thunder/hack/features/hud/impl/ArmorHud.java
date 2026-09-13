@@ -28,7 +28,7 @@ public class ArmorHud extends HudElement {
 
             if (mode.is(Mode.V1)) {
                 context.drawItem(itemStack, (int) xItemOffset, (int) getPosY());
-                context.drawItemInSlot(mc.textRenderer,itemStack,  (int) xItemOffset, (int) getPosY());
+                context.drawStackOverlay(mc.textRenderer,itemStack,  (int) xItemOffset, (int) getPosY());
             } else {
                 RenderSystem.setShaderColor(0.4f,0.4f,0.4f,0.35f);
                 context.drawItem(itemStack, (int) xItemOffset, (int) getPosY());

@@ -52,7 +52,7 @@ public class WaterSpeed extends Module {
                 e.setZ(e.getZ() + dirSpeed[1]);
                 e.cancel();
 
-                if(Math.abs(mc.player.getYaw() - mc.player.prevYaw) > 3) acceleration -= 0.1f;
+                if(Math.abs(mc.player.getYaw() - mc.player.lastYaw) > 3) acceleration -= 0.1f;
                 else acceleration += 0.015f;
 
                 acceleration = MathUtility.clamp(acceleration, 0f, 1f);

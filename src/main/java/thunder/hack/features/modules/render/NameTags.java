@@ -56,7 +56,6 @@ import thunder.hack.utility.render.TextureStorage;
 import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
-import java.util.List;
 import java.util.*;
 
 public class NameTags extends Module {
@@ -107,9 +106,9 @@ public class NameTags extends Module {
             if (ent == mc.player && (mc.options.getPerspective().isFirstPerson() || !self.getValue())) continue;
             if (getEntityPing(ent) <= 0 && ignoreBots.getValue()) continue;
 
-            double x = ent.prevX + (ent.getX() - ent.prevX) * Render3DEngine.getTickDelta();
-            double y = ent.prevY + (ent.getY() - ent.prevY) * Render3DEngine.getTickDelta();
-            double z = ent.prevZ + (ent.getZ() - ent.prevZ) * Render3DEngine.getTickDelta();
+            double x = ent.lastX + (ent.getX() - ent.lastX) * Render3DEngine.getTickDelta();
+            double y = ent.lastY + (ent.getY() - ent.lastY) * Render3DEngine.getTickDelta();
+            double z = ent.lastZ + (ent.getZ() - ent.lastZ) * Render3DEngine.getTickDelta();
             float scale = resize.getValue() ? this.scale.getValue() / mc.player.distanceTo(ent) : this.scale.getValue();
             Vec3d vector = new Vec3d(x, y + height.getValue(), z);
 
@@ -181,7 +180,7 @@ public class NameTags extends Module {
                             context.getMatrices().scale(1.1f, 1.1f, 1.1f);
                             DiffuseLighting.disableGuiDepthLighting();
                             context.drawItem(armorComponent, 0, 0);
-                            context.drawItemInSlot(mc.textRenderer, armorComponent, 0, 0);
+                            context.drawStackOverlay(mc.textRenderer, armorComponent, 0, 0);
                             context.getMatrices().pop();
                         } else {
                             context.getMatrices().push();
@@ -211,9 +210,9 @@ public class NameTags extends Module {
                         if (enchantss.getValue()) {
                             if (!onlyHands.getValue() || (armorComponent == ent.getOffHandStack() || armorComponent == ent.getMainHandStack())) {
                                 for (RegistryKey<Enchantment> enchantment : encMap.keySet()) {
-                                    if (enchants.getEnchantments().contains(mc.world.getRegistryManager().get(Enchantments.PROTECTION.getRegistryRef()).getEntry(enchantment).get())) {
+                                    if (enchants.getEnchantments().contains(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(enchantment).get())) {
                                         String id = encMap.get(enchantment);
-                                        int level = enchants.getLevel(mc.world.getRegistryManager().get(Enchantments.PROTECTION.getRegistryRef()).getEntry(enchantment).get());
+                                        int level = enchants.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(enchantment).get());
                                         String encName = id + level;
 
                                         if (font.getValue() == Font.Fancy) {
@@ -286,7 +285,7 @@ public class NameTags extends Module {
 
                 if (!health.is(Health.Number)) {
                     int i = MathHelper.ceil(ent.getHealth());
-                    float f = (float) ent.getAttributeValue(EntityAttributes.GENERIC_MAX_HEALTH);
+                    float f = (float) ent.getAttributeValue(EntityAttributes.MAX_HEALTH);
                     int p = MathHelper.ceil(ent.getAbsorptionAmount());
                     context.getMatrices().push();
                     context.getMatrices().translate(posX - 44, posY, 0);
@@ -378,9 +377,9 @@ public class NameTags extends Module {
             } else continue;
 
             String final_string = "Owned by " + ownerName;
-            double x = ent.prevX + (ent.getX() - ent.prevX) * Render3DEngine.getTickDelta();
-            double y = ent.prevY + (ent.getY() - ent.prevY) * Render3DEngine.getTickDelta();
-            double z = ent.prevZ + (ent.getZ() - ent.prevZ) * Render3DEngine.getTickDelta();
+            double x = ent.lastX + (ent.getX() - ent.lastX) * Render3DEngine.getTickDelta();
+            double y = ent.lastY + (ent.getY() - ent.lastY) * Render3DEngine.getTickDelta();
+            double z = ent.lastZ + (ent.getZ() - ent.lastZ) * Render3DEngine.getTickDelta();
             Vec3d vector = new Vec3d(x, y + 2, z);
             Vector4d position = null;
             vector = Render3DEngine.worldSpaceToScreenSpace(new Vec3d(vector.x, vector.y, vector.z));
@@ -627,7 +626,7 @@ public class NameTags extends Module {
         int i = 0;
         for (ItemStack itemStack : itemStacks) {
             context.drawItem(itemStack, offsetX + 8 + i * 18, offsetY + 7 + row * 18);
-            context.drawItemInSlot(mc.textRenderer, itemStack, offsetX + 8 + i * 18, offsetY + 7 + row * 18);
+            context.drawStackOverlay(mc.textRenderer, itemStack, offsetX + 8 + i * 18, offsetY + 7 + row * 18);
             i++;
             if (i >= 9) {
                 i = 0;

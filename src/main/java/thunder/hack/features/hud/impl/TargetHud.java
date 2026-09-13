@@ -183,7 +183,7 @@ public class TargetHud extends HudElement {
         Render2DEngine.drawRect(context.getMatrices(), getPosX() + 50, getPosY() + 30, MathUtility.clamp((int) (60 * (health / target.getMaxHealth())), 0, 60), 10, color.getValue().getColorObject().brighter().brighter().brighter());
 
         if (target instanceof PlayerEntity) {
-            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkinTextures().texture());
+            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkin().body());
         } else {
             RenderSystem.setShaderTexture(0, mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
         }
@@ -221,7 +221,7 @@ public class TargetHud extends HudElement {
 
         // Бошка
         if (target instanceof PlayerEntity) {
-            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkinTextures().texture());
+            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkin().body());
         } else {
             RenderSystem.setShaderTexture(0, mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
         }
@@ -275,7 +275,7 @@ public class TargetHud extends HudElement {
                 context.getMatrices().translate(xItemOffset, getPosY() + 15, 0);
                 context.getMatrices().scale(0.75f, 0.75f, 0.75f);
                 context.drawItem(itemStack, 0, 0);
-                context.drawItemInSlot(mc.textRenderer, itemStack, 0, 0);
+                context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
                 context.getMatrices().pop();
                 xItemOffset += 12;
             }
@@ -300,7 +300,7 @@ public class TargetHud extends HudElement {
 
         // Бошка
         if (target instanceof PlayerEntity) {
-            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkinTextures().texture());
+            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkin().body());
         } else {
             RenderSystem.setShaderTexture(0, mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
         }
@@ -350,7 +350,7 @@ public class TargetHud extends HudElement {
                 context.getMatrices().translate(xItemOffset, getPosY() + 13, 0);
                 context.getMatrices().scale(0.5f, 0.5f, 0.5f);
                 context.drawItem(itemStack, 0, 0);
-                context.drawItemInSlot(mc.textRenderer, itemStack, 0, 0);
+                context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
                 context.getMatrices().pop();
                 xItemOffset += 9;
             }
@@ -432,7 +432,7 @@ public class TargetHud extends HudElement {
         headAnimation.setValue(hurtPercent2);
 
         if (target instanceof PlayerEntity) {
-            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkinTextures().texture());
+            RenderSystem.setShaderTexture(0, ((AbstractClientPlayerEntity) target).getSkin().body());
         } else {
             RenderSystem.setShaderTexture(0, mc.getEntityRenderDispatcher().getRenderer(target).getTexture(target));
         }
@@ -483,7 +483,7 @@ public class TargetHud extends HudElement {
                 context.getMatrices().translate(xItemOffset, getPosY() + 35, 0);
                 context.getMatrices().scale(0.75f, 0.75f, 0.75f);
                 context.drawItem(itemStack, 0, 0);
-                context.drawItemInSlot(mc.textRenderer, itemStack, 0, 0);
+                context.drawStackOverlay(mc.textRenderer, itemStack, 0, 0);
 
                 context.getMatrices().pop();
                 xItemOffset += 14;
@@ -500,7 +500,7 @@ public class TargetHud extends HudElement {
                 context.getMatrices().push();
                 context.getMatrices().translate(posX + (i > 1 ? 138 : 118), posY + (i % 2 == 0 ? 5 : 26), 0);
                 context.drawItem(target.getInventory().armor.get(3 - i), 0, 0);
-                context.drawItemInSlot(mc.textRenderer, target.getInventory().armor.get(3 - i), 0, 0);
+                context.drawStackOverlay(mc.textRenderer, target.getInventory().armor.get(3 - i), 0, 0);
                 context.getMatrices().pop();
             }
     }

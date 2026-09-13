@@ -80,8 +80,8 @@ public final class PopChams extends Module {
         entity.handSwingTicks = e.getEntity().handSwingTicks;
         entity.setSneaking(e.getEntity().isSneaking());
         entity.limbAnimator.setSpeed(e.getEntity().limbAnimator.getSpeed());
-        entity.limbAnimator.pos = e.getEntity().limbAnimator.getPos();
-        popList.add(new Person(entity, ((AbstractClientPlayerEntity) e.getEntity()).getSkinTextures().texture()));
+        entity.limbAnimator.animationProgress = e.getEntity().limbAnimator.getAnimationProgress();
+        popList.add(new Person(entity, ((AbstractClientPlayerEntity) e.getEntity()).getSkin().body()));
     }
 
     private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel<PlayerEntity> modelBase, Identifier texture, int alpha) {
@@ -106,11 +106,11 @@ public final class PopChams extends Module {
         matrices.multiply(RotationAxis.POSITIVE_Y.rotation(MathUtility.rad(180 - entity.bodyYaw + yRotYaw)));
         prepareScale(matrices);
 
-        modelBase.animateModel((PlayerEntity) entity, entity.limbAnimator.getPos(), entity.limbAnimator.getSpeed(), Render3DEngine.getTickDelta());
+        modelBase.animateModel((PlayerEntity) entity, entity.limbAnimator.getAnimationProgress(), entity.limbAnimator.getSpeed(), Render3DEngine.getTickDelta());
 
         float limbSpeed = Math.min(entity.limbAnimator.getSpeed(), 1f);
 
-        modelBase.setAngles((PlayerEntity) entity, entity.limbAnimator.getPos(), limbSpeed, entity.age, entity.headYaw - entity.bodyYaw, entity.getPitch());
+        modelBase.setAngles((PlayerEntity) entity, entity.limbAnimator.getAnimationProgress(), limbSpeed, entity.age, entity.headYaw - entity.bodyYaw, entity.getPitch());
 
         BufferBuilder buffer;
         if (mode.is(Mode.Textured)) {
@@ -144,7 +144,7 @@ public final class PopChams extends Module {
 
         public Person(PlayerEntity player, Identifier texture) {
             this.player = player;
-            modelPlayer = new PlayerEntityModel<>(new EntityRendererFactory.Context(mc.getEntityRenderDispatcher(), mc.getItemRenderer(), mc.getBlockRenderManager(), mc.getEntityRenderDispatcher().getHeldItemRenderer(), mc.getResourceManager(), mc.getEntityModelLoader(), mc.textRenderer).getPart(EntityModelLayers.PLAYER), false);
+            modelPlayer = new PlayerEntityModel<>(new EntityRendererFactory.Context(mc.getEntityRenderDispatcher(), mc.getItemRenderer(), mc.getBlockRenderManager(), mc.getEntityRenderDispatcher().getHeldItemRenderer(), mc.getResourceManager(), mc.getLoadedEntityModels(), mc.textRenderer).getPart(EntityModelLayers.PLAYER), false);
             modelPlayer.getHead().scale(new Vector3f(-0.3f, -0.3f, -0.3f));
             alpha = color.getValue().getAlpha();
             this.texture = texture;

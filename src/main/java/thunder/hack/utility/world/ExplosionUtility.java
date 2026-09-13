@@ -95,7 +95,7 @@ public final class ExplosionUtility {
                 if (mc.world.getDifficulty() == Difficulty.EASY) toDamage = Math.min(toDamage / 2f + 1f, toDamage);
                 else if (mc.world.getDifficulty() == Difficulty.HARD) toDamage = toDamage * 3f / 2f;
 
-                toDamage = DamageUtil.getDamageLeft(target, toDamage, ((IExplosion) explosion).getDamageSource(), target.getArmor(), (float) target.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS).getValue());
+                toDamage = DamageUtil.getDamageLeft(target, toDamage, ((IExplosion) explosion).getDamageSource(), target.getArmor(), (float) target.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS).getValue());
 
                 if (target.hasStatusEffect(StatusEffects.RESISTANCE)) {
                     int resistance = 25 - (target.getStatusEffect(StatusEffects.RESISTANCE).getAmplifier() + 1) * 5;
@@ -154,7 +154,7 @@ public final class ExplosionUtility {
                 if (mc.world.getDifficulty() == Difficulty.EASY) toDamage = Math.min(toDamage / 2f + 1f, toDamage);
                 else if (mc.world.getDifficulty() == Difficulty.HARD) toDamage = toDamage * 3f / 2f;
 
-                toDamage = DamageUtil.getDamageLeft(target, toDamage, ((IExplosion) explosion).getDamageSource(), target.getArmor(), (float) Objects.requireNonNull(target.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS)).getValue());
+                toDamage = DamageUtil.getDamageLeft(target, toDamage, ((IExplosion) explosion).getDamageSource(), target.getArmor(), (float) Objects.requireNonNull(target.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS)).getValue());
 
                 if (target.hasStatusEffect(StatusEffects.RESISTANCE)) {
                     int resistance = 25 - (Objects.requireNonNull(target.getStatusEffect(StatusEffects.RESISTANCE)).getAmplifier() + 1) * 5;
@@ -247,7 +247,7 @@ public final class ExplosionUtility {
                     toDamage = toDamage * 3f / 2f;
                 }
 
-                toDamage = DamageUtil.getDamageLeft(target, toDamage, ((IExplosion) explosion).getDamageSource(), target.getArmor(), (float) target.getAttributeInstance(EntityAttributes.GENERIC_ARMOR_TOUGHNESS).getValue());
+                toDamage = DamageUtil.getDamageLeft(target, toDamage, ((IExplosion) explosion).getDamageSource(), target.getArmor(), (float) target.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS).getValue());
 
                 if (target.hasStatusEffect(StatusEffects.RESISTANCE)) {
                     int resistance = 25 - (target.getStatusEffect(StatusEffects.RESISTANCE).getAmplifier() + 1) * 5;
@@ -383,8 +383,8 @@ public final class ExplosionUtility {
     }
 
     public static int getProtectionAmount(ItemStack stack) {
-        int modifierBlast = EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION).get(), stack);
-        int modifier = EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.PROTECTION).get(), stack);
+        int modifierBlast = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.BLAST_PROTECTION.getRegistryRef()).getEntry(Enchantments.BLAST_PROTECTION).get(), stack);
+        int modifier = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.PROTECTION).get(), stack);
         return modifierBlast * 2 + modifier;
     }
 }

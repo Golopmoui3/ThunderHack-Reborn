@@ -45,7 +45,6 @@ import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.Render3DEngine;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
 
 import static thunder.hack.features.modules.client.ClientSettings.isRu;
@@ -378,7 +377,7 @@ public final class PistonAura extends Module {
             sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle2, 0, mc.player.isOnGround()));
             float prevYaw = mc.player.getYaw();
             mc.player.setYaw(angle2);
-            mc.player.prevYaw = angle2;
+            mc.player.lastYaw = angle2;
             ((IClientPlayerEntity) mc.player).setLastYaw(angle2);
             int prevSlot = mc.player.getInventory().selectedSlot;
             InteractionUtility.placeBlock(pistonPos, InteractionUtility.Rotate.None, interact.getValue(), placeMode.getValue(), piston_slot, false, false);

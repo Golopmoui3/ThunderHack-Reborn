@@ -165,9 +165,9 @@ public class ItemESP extends Module {
 
     @NotNull
     private static Box getBox(Entity ent) {
-        double x = ent.prevX + (ent.getX() - ent.prevX) * Render3DEngine.getTickDelta();
-        double y = ent.prevY + (ent.getY() - ent.prevY) * Render3DEngine.getTickDelta();
-        double z = ent.prevZ + (ent.getZ() - ent.prevZ) * Render3DEngine.getTickDelta();
+        double x = ent.lastX + (ent.getX() - ent.lastX) * Render3DEngine.getTickDelta();
+        double y = ent.lastY + (ent.getY() - ent.lastY) * Render3DEngine.getTickDelta();
+        double z = ent.lastZ + (ent.getZ() - ent.lastZ) * Render3DEngine.getTickDelta();
         Box axisAlignedBB2 = ent.getBoundingBox();
         Box axisAlignedBB = new Box(axisAlignedBB2.minX - ent.getX() + x - 0.05, axisAlignedBB2.minY - ent.getY() + y, axisAlignedBB2.minZ - ent.getZ() + z - 0.05, axisAlignedBB2.maxX - ent.getX() + x + 0.05, axisAlignedBB2.maxY - ent.getY() + y + 0.15, axisAlignedBB2.maxZ - ent.getZ() + z + 0.05);
         return axisAlignedBB;

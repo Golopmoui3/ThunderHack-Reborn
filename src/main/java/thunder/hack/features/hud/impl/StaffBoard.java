@@ -15,7 +15,6 @@ import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.animation.AnimationUtility;
 
 import java.awt.*;
-import java.util.List;
 import java.util.*;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
@@ -185,7 +184,7 @@ public class StaffBoard extends HudElement {
 
         for (PlayerListEntry ple : mc.getNetworkHandler().getPlayerList())
             if (n.contains(ple.getProfile().getName())) {
-                id = ple.getSkinTextures().texture();
+                id = ple.getSkinTextures().body();
                 if (!skinMap.containsKey(n))
                     skinMap.put(n, id);
                 break;

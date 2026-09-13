@@ -3,8 +3,8 @@ package thunder.hack.features.modules.render;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.render.OverlayTexture;
 import net.minecraft.client.render.VertexConsumerProvider;
-import net.minecraft.client.render.model.json.ModelTransformationMode;
 import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.item.ItemDisplayContext;
 import net.minecraft.item.ItemStack;
 import net.minecraft.util.math.MathHelper;
 import net.minecraft.util.math.RotationAxis;
@@ -107,7 +107,7 @@ public class TotemAnimation extends Module {
 
             VertexConsumerProvider.Immediate immediate = mc.getBufferBuilders().getEntityVertexConsumers();
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f - animationProgress);
-            mc.getItemRenderer().renderItem(floatingItem, ModelTransformationMode.FIXED, 15728880, OverlayTexture.DEFAULT_UV, matrixStack, immediate, mc.world, 0);
+            mc.getItemRenderer().renderItem(floatingItem, ItemDisplayContext.FIXED, 15728880, OverlayTexture.DEFAULT_UV, matrixStack, immediate, mc.world, 0);
             matrixStack.pop();
             immediate.draw();
             RenderSystem.setShaderColor(1f, 1f, 1f, 1f);

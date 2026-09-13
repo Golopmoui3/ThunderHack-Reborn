@@ -67,7 +67,7 @@ public class Spider extends Module {
             mc.player.setVelocity(mc.player.getVelocity().getX(), 0.21, mc.player.getVelocity().getZ());
         } else if (mode.getValue() == Mode.Matrix) {
             mc.player.setOnGround(mc.player.age % delay.getValue() == 0);
-            mc.player.prevY -= 2.0E-232;
+            mc.player.lastY -= 2.0E-232;
             if (mc.player.isOnGround())
                 mc.player.setVelocity(mc.player.getVelocity().getX(), 0.42, mc.player.getVelocity().getZ());
         }

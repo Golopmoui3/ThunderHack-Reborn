@@ -58,14 +58,14 @@ public class PlayerManager implements IManager {
         lastYaw = ((IClientPlayerEntity) mc.player).getLastYaw();
         lastPitch = ((IClientPlayerEntity) mc.player).getLastPitch();
         if (mc.currentScreen == null) inInventory = false;
-        if (mc.player.isFallFlying() && mc.player.getEquippedStack(EquipmentSlot.CHEST).getItem() == Items.ELYTRA) {
+        if (mc.player.isGliding() && mc.player.getEquippedStack(EquipmentSlot.CHEST).getItem() == Items.ELYTRA) {
             ticksElytraFlying++;
         } else ticksElytraFlying = 0;
     }
 
     @EventHandler
     public void onTick(EventTick e) {
-        currentPlayerSpeed = (float) Math.hypot(mc.player.getX() - mc.player.prevX, mc.player.getZ() - mc.player.prevZ);
+        currentPlayerSpeed = (float) Math.hypot(mc.player.getX() - mc.player.lastX, mc.player.getZ() - mc.player.lastZ);
 
         if (speedResult.size() > 20)
             speedResult.poll();
@@ -137,8 +137,8 @@ public class PlayerManager implements IManager {
     }
 
     private float getBodyYaw() {
-        double x = mc.player.getX() - mc.player.prevX;
-        double z = mc.player.getZ() - mc.player.prevZ;
+        double x = mc.player.getX() - mc.player.lastX;
+        double z = mc.player.getZ() - mc.player.lastZ;
         float offset = bodyYaw;
         if ((x * x + z * z) > 0.0025000002f) offset = (float) (MathHelper.atan2(z, x) * 57.295776f - 90.0f);
         if (mc.player.handSwingProgress > 0.0f)

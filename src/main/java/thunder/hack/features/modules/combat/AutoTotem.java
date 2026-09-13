@@ -142,7 +142,7 @@ public final class AutoTotem extends Module {
         } else if (invResult.found()) {
             int slot = invResult.slot() >= 36 ? invResult.slot() - 36 : invResult.slot();
             if (!hotbarFallBack.getValue()) swapTo(slot);
-            else mc.interactionManager.pickFromInventory(slot);
+            else mc.interactionManager.pickItemFromEntity(slot);
             delay = 20;
         }
     }
@@ -195,7 +195,7 @@ public final class AutoTotem extends Module {
 
                         sendPacket(new CloseHandledScreenC2SPacket(mc.player.currentScreenHandler.syncId));
                         if (resetAttackCooldown.getValue())
-                            mc.player.resetLastAttackedTicks();
+                            mc.player.resetTicksSince();
                     }
                     case MatrixPick -> {
                         debug(slot + " pick");
@@ -218,7 +218,7 @@ public final class AutoTotem extends Module {
                 sendPacket(new UpdateSelectedSlotC2SPacket(prevCurrentItem));
                 mc.player.getInventory().selectedSlot = prevCurrentItem;
                 if (resetAttackCooldown.getValue())
-                    mc.player.resetLastAttackedTicks();
+                    mc.player.resetTicksSince();
             }
             delay = (int) (2 + (Managers.SERVER.getPing() / 25f));
         }
@@ -336,7 +336,7 @@ public final class AutoTotem extends Module {
         if (onFall.getValue() && (getTriggerHealth()) - (((mc.player.fallDistance - 3) / 2F) + 3.5F) < 0.5)
             item = Items.TOTEM_OF_UNDYING;
 
-        if (onElytra.getValue() && mc.player.isFallFlying())
+        if (onElytra.getValue() && mc.player.isGliding())
             item = Items.TOTEM_OF_UNDYING;
 
         if (onCrystalInHand.getValue()) {

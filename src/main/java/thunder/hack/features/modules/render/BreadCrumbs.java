@@ -41,7 +41,7 @@ public class BreadCrumbs extends Module {
         RenderSystem.disableCull();
         RenderSystem.lineWidth(1f);
         RenderSystem.setShader(GameRenderer::getRenderTypeLinesProgram);
-        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.LINES);
+        BufferBuilder buffer = Tessellator.getInstance().begin(VertexFormat.DrawMode.LINES, VertexFormats.POSITION_COLOR_NORMAL);
 
         for (int i = 0; i < positions.size(); i++) {
             Vec3d vec1 = null;

@@ -222,7 +222,7 @@ public final class SpeedMine extends Module {
             int slot = getTool(position);
             if (slot != -1) {
                 ItemStack itemstack = mc.player.getInventory().getStack(slot);
-                int efficiencyModifier = EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemstack);
+                int efficiencyModifier = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemstack);
                 if (efficiencyModifier > 0 && !itemstack.isEmpty()) {
                     digSpeed += (float) (StrictMath.pow(efficiencyModifier, 2) + 1);
                 }
@@ -238,7 +238,7 @@ public final class SpeedMine extends Module {
 
 
         if (mc.player.isSubmergedInWater())
-            digSpeed *= (float) mc.player.getAttributeInstance(EntityAttributes.PLAYER_SUBMERGED_MINING_SPEED).getValue();
+            digSpeed *= (float) mc.player.getAttributeInstance(EntityAttributes.SUBMERGED_MINING_SPEED).getValue();
 
         if (!mc.player.isOnGround() && ModuleManager.freeCam.isDisabled())
             digSpeed /= 5;
@@ -262,7 +262,7 @@ public final class SpeedMine extends Module {
                 if (!(stack.getMaxDamage() - stack.getDamage() > 10))
                     continue;
 
-                final float digSpeed = EnchantmentHelper.getLevel(mc.world.getRegistryManager().get(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), stack);
+                final float digSpeed = EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.PROTECTION.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), stack);
                 final float destroySpeed = stack.getMiningSpeedMultiplier(mc.world.getBlockState(pos));
 
                 if (digSpeed + destroySpeed > currentFastest) {

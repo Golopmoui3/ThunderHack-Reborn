@@ -264,8 +264,8 @@ public class Trails extends Module {
         Color c = lmode.getValue() == Mode.Sync ? HudEditor.getColor(mc.player.age % 360) : lcolor.getValue().getColorObject();
 
         for (PlayerEntity player : mc.world.getPlayers()) {
-            if (player.getPos().getZ() != player.prevZ || player.getPos().getX() != player.prevX && (!onlySelf.getValue())) {
-                ((IEntity) player).getTrails().add(new Trail(new Vec3d(player.prevX, player.prevY, player.prevZ), player.getPos(), c));
+            if (player.getPos().getZ() != player.lastZ || player.getPos().getX() != player.lastX && (!onlySelf.getValue())) {
+                ((IEntity) player).getTrails().add(new Trail(new Vec3d(player.lastX, player.lastY, player.lastZ), player.getPos(), c));
                 if (players.is(Players.Particles)) {
                     for (int i = 0; i < amount.getValue(); i++) {
                         particles.add(new Particle(player.getX(), MathUtility.random((float) (player.getY() + player.getHeight()), (float) player.getY()), player.getZ(), c));
@@ -277,7 +277,7 @@ public class Trails extends Module {
         }
 
         for (Entity en : Managers.ASYNC.getAsyncEntities()) {
-            if (en instanceof ArrowEntity ae && (ae.prevY != ae.getY()) && arrows.is(Particles.Particles))
+            if (en instanceof ArrowEntity ae && (ae.lastY != ae.getY()) && arrows.is(Particles.Particles))
                 for (int i = 0; i < 5; i++)
                     particles.add(new Particle(en.getX(), en.getY(), en.getZ(), HudEditor.getColor(mc.player.age)));
 
@@ -287,7 +287,7 @@ public class Trails extends Module {
         }
 
         if (Managers.PLAYER.currentPlayerSpeed != 0) {
-            ((IEntity) mc.player).getTrails().add(new Trail(new Vec3d(mc.player.prevX, mc.player.prevY, mc.player.prevZ), mc.player.getPos(), c));
+            ((IEntity) mc.player).getTrails().add(new Trail(new Vec3d(mc.player.lastX, mc.player.lastY, mc.player.lastZ), mc.player.getPos(), c));
             if (players.is(Players.Particles)) {
                 for (int i = 0; i < amount.getValue(); i++) {
                     particles.add(new Particle(mc.player.getX(), MathUtility.random((float) (mc.player.getY() + mc.player.getHeight()), (float) mc.player.getY()), mc.player.getZ(), c));

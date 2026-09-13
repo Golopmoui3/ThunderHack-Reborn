@@ -25,7 +25,7 @@ public class CandleHud extends HudElement {
     public void onRender2D(DrawContext context) {
         super.onRender2D(context);
 
-        float yDelta = mc.player.prevHeadYaw - mc.player.getHeadYaw();
+        float yDelta = mc.player.lastHeadYaw - mc.player.getHeadYaw();
         if (yDelta > 0) xAnim = AnimationUtility.fast(xAnim, -15, 10);
         else if (yDelta < 0) xAnim = AnimationUtility.fast(xAnim, 35, 10);
         else xAnim = AnimationUtility.fast(xAnim, 10, 10);

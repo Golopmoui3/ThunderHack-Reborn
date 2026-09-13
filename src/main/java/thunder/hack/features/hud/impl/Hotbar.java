@@ -90,7 +90,7 @@ public class Hotbar extends HudElement {
             context.getMatrices().scale(0.9f, 0.9f, 1.0F);
             context.getMatrices().translate((float) (-(i + 8)), (float) (-(j + 12)), 0.0F);
             context.drawItem(itemStack, i, j);
-            context.drawItemInSlot(mc.textRenderer, itemStack, i, j);
+            context.drawStackOverlay(mc.textRenderer, itemStack, i, j);
             context.getMatrices().pop();
         }
     }

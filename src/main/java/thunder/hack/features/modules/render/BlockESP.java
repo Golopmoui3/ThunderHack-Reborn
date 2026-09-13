@@ -65,7 +65,7 @@ public class BlockESP extends Module {
         int startX = (int) Math.floor(mc.player.getX() - range.getValue());
         int endX = (int) Math.ceil(mc.player.getX() + range.getValue());
         int startY = mc.world.getBottomY() + 1;
-        int endY = mc.world.getTopY();
+        int endY = mc.world.getTopYInclusive();
         int startZ = (int) Math.floor(mc.player.getZ() - range.getValue());
         int endZ = (int) Math.ceil(mc.player.getZ() + range.getValue());
 

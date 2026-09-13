@@ -35,7 +35,6 @@ import thunder.hack.utility.render.Render2DEngine;
 
 import java.awt.*;
 import java.util.*;
-import java.util.List;
 
 import static thunder.hack.features.modules.client.ClientSettings.isRu;
 

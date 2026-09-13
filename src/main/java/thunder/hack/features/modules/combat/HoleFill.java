@@ -105,7 +105,7 @@ public final class HoleFill extends Module {
     @EventHandler
     public void onTick(EventTick event) {
         if (fullNullCheck()) return;
-        if (jumpDisable.getValue() && mc.player.prevY < mc.player.getY())
+        if (jumpDisable.getValue() && mc.player.lastY < mc.player.getY())
             disable(isRu() ? "Вы прыгнули! Выключаю..." : "You jumped! Disabling...");
 
         if (tickCounter < actionInterval.getValue()) {

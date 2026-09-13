@@ -182,7 +182,7 @@ public final class PistonPush extends Module {
             sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(angle, 0, mc.player.isOnGround()));
             float prevYaw = mc.player.getYaw();
             mc.player.setYaw(angle);
-            mc.player.prevYaw = angle;
+            mc.player.lastYaw = angle;
             ((IClientPlayerEntity) mc.player).setLastYaw(angle);
             int prevSlot = mc.player.getInventory().selectedSlot;
             InteractionUtility.placeBlock(pistonPos, InteractionUtility.Rotate.None, interact.getValue(), placeMode.getValue(), getPistonSlot(), true, false);
