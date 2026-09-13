@@ -21,6 +21,7 @@ import net.minecraft.entity.projectile.FireballEntity;
 import net.minecraft.entity.projectile.ProjectileEntity;
 import net.minecraft.entity.projectile.ShulkerBulletEntity;
 import net.minecraft.item.*;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.network.packet.s2c.play.EntityStatusS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
@@ -215,10 +216,11 @@ public class Aura extends Module {
     }
 
     private boolean haveWeapon() {
-        Item handItem = mc.player.getMainHandStack().getItem();
+        ItemStack handStack = mc.player.getMainHandStack();
+        Item handItem = handStack.getItem();
         if (onlyWeapon.getValue()) {
             if (switchMode.getValue() == Switch.None) {
-                return handItem instanceof SwordItem || handItem instanceof AxeItem || handItem instanceof TridentItem;
+                return handStack.isIn(ItemTags.SWORDS) || handItem instanceof AxeItem || handItem instanceof TridentItem;
             } else {
                 return (InventoryUtility.getSwordHotBar().found() || InventoryUtility.getAxeHotBar().found());
             }

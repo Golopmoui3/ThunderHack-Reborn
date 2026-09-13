@@ -16,7 +16,6 @@ import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
-import net.minecraft.network.packet.s2c.play.ExperienceOrbSpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
@@ -344,9 +343,6 @@ public class AutoCrystal extends Module {
     public void onPacketReceive(PacketEvent.Receive e) {
         if (mc.player == null || mc.world == null) return;
 
-        if (e.getPacket() instanceof ExperienceOrbSpawnS2CPacket spawn)
-            processSpawnPacket(spawn.getId());
-
         if (e.getPacket() instanceof EntitySpawnS2CPacket spawn)
             processSpawnPacket(spawn.getEntityId());
 
@@ -585,7 +581,7 @@ public class AutoCrystal extends Module {
 
         int prevSlot = -1;
         SearchInvResult antiWeaknessResult = InventoryUtility.getAntiWeaknessItem();
-        SearchInvResult antiWeaknessResultInv = InventoryUtility.findInInventory(itemStack -> itemStack.getItem() instanceof SwordItem || itemStack.getItem() instanceof PickaxeItem || itemStack.getItem() instanceof AxeItem || itemStack.getItem() instanceof ShovelItem);
+        SearchInvResult antiWeaknessResultInv = InventoryUtility.findInInventory(itemStack -> itemStack.isIn(ItemTags.SWORDS) || itemStack.isIn(ItemTags.PICKAXES) || itemStack.getItem() instanceof AxeItem || itemStack.getItem() instanceof ShovelItem);
 
         if (antiWeakness.getValue() != Switch.NONE)
             if (weaknessEffect != null && (strengthEffect == null || strengthEffect.getAmplifier() < weaknessEffect.getAmplifier()))

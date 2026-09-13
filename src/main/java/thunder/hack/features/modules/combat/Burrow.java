@@ -87,13 +87,14 @@ public final class Burrow extends Module {
 
         if (event.getPacket() instanceof PlayerPositionLookS2CPacket) {
             PlayerPositionLookS2CPacket packet = event.getPacket();
-            double x = packet.getX();
-            double y = packet.getY();
-            double z = packet.getZ();
+            Vec3d changePos = packet.change().position();
+            double x = changePos.x;
+            double y = changePos.y;
+            double z = changePos.z;
 
-            if (packet.getFlags().contains(PositionFlag.X)) x += mc.player.getX();
-            if (packet.getFlags().contains(PositionFlag.Y)) y += mc.player.getY();
-            if (packet.getFlags().contains(PositionFlag.Z)) z += mc.player.getZ();
+            if (packet.relatives().contains(PositionFlag.X)) x += mc.player.getX();
+            if (packet.relatives().contains(PositionFlag.Y)) y += mc.player.getY();
+            if (packet.relatives().contains(PositionFlag.Z)) z += mc.player.getZ();
 
             last_x = MathUtility.clamp(x, -3.0E7, 3.0E7);
             last_y = y;

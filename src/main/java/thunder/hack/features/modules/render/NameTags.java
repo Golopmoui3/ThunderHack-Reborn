@@ -57,6 +57,7 @@ import java.awt.*;
 import java.math.BigDecimal;
 import java.math.RoundingMode;
 import java.util.*;
+import java.util.List;
 
 public class NameTags extends Module {
     private final Map<RegistryKey<Enchantment>, String> encMap = new HashMap<>();

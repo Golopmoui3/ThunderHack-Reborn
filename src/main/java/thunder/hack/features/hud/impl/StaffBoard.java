@@ -16,6 +16,7 @@ import thunder.hack.utility.render.animation.AnimationUtility;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 import java.util.regex.Pattern;
 import java.util.stream.Collectors;
 

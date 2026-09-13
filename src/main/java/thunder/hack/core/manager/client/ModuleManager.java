@@ -13,12 +13,15 @@ import thunder.hack.features.modules.Module;
 import thunder.hack.features.modules.client.*;
 import thunder.hack.features.modules.combat.*;
 import thunder.hack.features.modules.misc.*;
+import thunder.hack.features.modules.movement.Timer;
 import thunder.hack.features.modules.movement.*;
 import thunder.hack.features.modules.player.*;
+import thunder.hack.features.modules.render.Particles;
 import thunder.hack.features.modules.render.*;
 
 import java.lang.reflect.Field;
 import java.util.*;
+import java.util.List;
 import java.util.stream.Collectors;
 
 @SuppressWarnings("unused")

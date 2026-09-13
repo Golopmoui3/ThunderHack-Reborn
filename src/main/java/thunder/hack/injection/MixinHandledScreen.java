@@ -42,6 +42,7 @@ import thunder.hack.utility.render.TextureStorage;
 
 import java.awt.*;
 import java.util.*;
+import java.util.List;
 
 import static thunder.hack.features.modules.Module.mc;
 import static thunder.hack.features.modules.render.Tooltips.hasItems;

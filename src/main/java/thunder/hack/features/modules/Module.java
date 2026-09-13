@@ -275,10 +275,10 @@ public abstract class Module {
     public void sendMessage(String message) {
         if (fullNullCheck() || !ClientSettings.clientMessages.getValue() || ModuleManager.unHook.isEnabled()) return;
         if (mc.isOnThread()) {
-            mc.player.sendMessage(Text.of(CommandManager.getClientMessage() + " " + Formatting.GRAY + "[" + Formatting.DARK_PURPLE + getDisplayName() + Formatting.GRAY + "] " + message));
+            mc.player.sendMessage(Text.of(CommandManager.getClientMessage() + " " + Formatting.GRAY + "[" + Formatting.DARK_PURPLE + getDisplayName() + Formatting.GRAY + "] " + message), false);
         } else {
             mc.executeSync(() ->
-                mc.player.sendMessage(Text.of(CommandManager.getClientMessage() + " " + Formatting.GRAY + "[" + Formatting.DARK_PURPLE + getDisplayName() + Formatting.GRAY + "] " + message))
+                mc.player.sendMessage(Text.of(CommandManager.getClientMessage() + " " + Formatting.GRAY + "[" + Formatting.DARK_PURPLE + getDisplayName() + Formatting.GRAY + "] " + message), false)
             );
         }
     }

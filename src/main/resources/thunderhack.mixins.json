@@ -4,7 +4,6 @@
   "package": "thunder.hack.injection",
   "compatibilityLevel": "JAVA_21",
   "client": [
-    "JsonEffectGlShaderMixin",
     "MixinArmorFeatureRenderer",
     "MixinBackgroundRenderer",
     "MixinBlockCollisionSpliterator",
@@ -56,7 +55,6 @@
     "accesors.IMinecraftClient",
     "accesors.INativeImage",
     "accesors.IPostProcessShader",
-    "accesors.IRenderPhaseMixin",
     "accesors.ISignEditScreen",
     "accesors.IWorldRenderer",
     "accesors.ShaderProgramAccessor"
@@ -100,8 +98,6 @@
     "accesors.ILivingEntity",
     "accesors.IPlayerInteractBlockC2SPacket",
     "accesors.IPlayerMoveC2SPacket",
-    "accesors.IPlayerPositionLookS2CPacket",
-    "accesors.ISPacketEntityVelocity",
-    "accesors.ISPacketPlayerPosLook"
+    "accesors.ISPacketEntityVelocity"
   ]
 }

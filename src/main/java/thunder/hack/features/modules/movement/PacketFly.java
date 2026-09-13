@@ -6,10 +6,9 @@ import thunder.hack.ThunderHack;
 import thunder.hack.events.impl.EventMove;
 import thunder.hack.events.impl.EventSync;
 import thunder.hack.events.impl.PacketEvent;
-import thunder.hack.injection.accesors.IPlayerPositionLookS2CPacket;
 import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
-import net.minecraft.client.gui.screen.DownloadingTerrainScreen;
+import net.minecraft.client.gui.screen.world.LevelLoadingScreen;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.network.packet.c2s.play.TeleportConfirmC2SPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
@@ -44,6 +43,7 @@ public class PacketFly extends Module {
     private final ConcurrentHashMap<Integer,Teleport> teleports = new ConcurrentHashMap<>();
     private final ArrayList<PlayerMoveC2SPacket> movePackets = new ArrayList<>();
     private int ticks, factorTicks, teleportId = -1;
+    private float prevYaw, prevPitch;
     private boolean flip = false;
 
     @Override
@@ -116,23 +116,34 @@ public class PacketFly extends Module {
     public void onPacketReceive(PacketEvent.Receive event) {
         if (fullNullCheck()) return;
         if (mc.player != null && event.getPacket() instanceof PlayerPositionLookS2CPacket pac) {
-            Teleport teleport = teleports.remove(pac.getTeleportId());
+            Teleport teleport = teleports.remove(pac.teleportId());
+            Vec3d changePos = pac.change().position();
             if (
                     mc.player.isAlive()
                     && mc.world.isChunkLoaded((int) mc.player.getX() >> 4, (int) mc.player.getZ() >> 4)
-                    && !(mc.currentScreen instanceof DownloadingTerrainScreen)
+                    && !(mc.currentScreen instanceof LevelLoadingScreen)
                     && mode.getValue() != Mode.Rubber
                     && teleport != null
-                    && teleport.x == pac.getX()
-                    && teleport.y == pac.getY()
-                    && teleport.z == pac.getZ()
+                    && teleport.x == changePos.x
+                    && teleport.y == changePos.y
+                    && teleport.z == changePos.z
             ) {
                 event.cancel();
                 return;
             }
-            ((IPlayerPositionLookS2CPacket) pac).setYaw(mc.player.getYaw());
-            ((IPlayerPositionLookS2CPacket) pac).setPitch(mc.player.getPitch());
-            teleportId = pac.getTeleportId();
+            prevYaw = mc.player.getYaw();
+            prevPitch = mc.player.getPitch();
+            teleportId = pac.teleportId();
+        }
+    }
+
+    @EventHandler
+    public void onPacketReceivePost(PacketEvent.ReceivePost event) {
+        if (fullNullCheck()) return;
+        if (mc.player != null && event.getPacket() instanceof PlayerPositionLookS2CPacket) {
+            // 1.21.11 made the packet an immutable record - restore our rotation after vanilla applies it
+            mc.player.setYaw(prevYaw);
+            mc.player.setPitch(prevPitch);
         }
     }
 

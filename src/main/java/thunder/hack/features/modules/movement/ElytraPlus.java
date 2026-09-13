@@ -10,7 +10,6 @@ import net.minecraft.client.util.InputUtil;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.entity.EquipmentSlot;
 import net.minecraft.entity.data.DataTracker;
-import net.minecraft.item.ElytraItem;
 import net.minecraft.item.Item;
 import net.minecraft.item.ItemStack;
 import net.minecraft.item.Items;
@@ -696,7 +695,7 @@ public class ElytraPlus extends Module {
 
     private boolean shouldSwapToElytra() {
         ItemStack is = mc.player.getEquippedStack(EquipmentSlot.CHEST);
-        return is.getItem() != Items.ELYTRA || !ElytraItem.isUsable(is);
+        return is.getItem() != Items.ELYTRA || !(is.getDamage() < is.getMaxDamage() - 1);
     }
 
     private void doFireWork(boolean started) {

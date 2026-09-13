@@ -12,6 +12,7 @@ import net.minecraft.entity.mob.CreeperEntity;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.entity.vehicle.TntMinecartEntity;
 import net.minecraft.item.*;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.network.packet.s2c.play.BlockUpdateS2CPacket;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
@@ -89,7 +90,7 @@ public final class AutoTotem extends Module {
     public void onSync(EventSync e) {
         swapTo(getItemSlot());
 
-        if (rcGap.not(RCGap.Off) && (mc.player.getMainHandStack().getItem() instanceof SwordItem) && mc.options.useKey.isPressed() && !mc.player.isUsingItem())
+        if (rcGap.not(RCGap.Off) && (mc.player.getMainHandStack().isIn(ItemTags.SWORDS)) && mc.options.useKey.isPressed() && !mc.player.isUsingItem())
             ((IMinecraftClient) mc).idoItemUse();
 
         delay--;
@@ -324,7 +325,7 @@ public final class AutoTotem extends Module {
         if (getTriggerHealth() <= healthF.getValue() && (InventoryUtility.findItemInInventory(Items.TOTEM_OF_UNDYING).found() || offHandItem == Items.TOTEM_OF_UNDYING))
             item = Items.TOTEM_OF_UNDYING;
 
-        if (!rcGap.is(RCGap.Off) && (mc.player.getMainHandStack().getItem() instanceof SwordItem) && mc.options.useKey.isPressed() && !(offHandItem instanceof ShieldItem)) {
+        if (!rcGap.is(RCGap.Off) && (mc.player.getMainHandStack().isIn(ItemTags.SWORDS)) && mc.options.useKey.isPressed() && !(offHandItem instanceof ShieldItem)) {
             if (rcGap.is(RCGap.Always) || (rcGap.is(RCGap.OnlySafe) && getTriggerHealth() > healthF.getValue())) {
                 if (crapple.found() || offHandItem == Items.GOLDEN_APPLE)
                     item = Items.GOLDEN_APPLE;

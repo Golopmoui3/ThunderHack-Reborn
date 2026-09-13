@@ -33,7 +33,9 @@ public class AntiCrash extends Module { //https://github.com/Bram1903/MinecraftP
                 debugTimer.reset();
             }
             receive.cancel();
-        } else if (receive.getPacket() instanceof PlayerPositionLookS2CPacket pos && (pos.getX() > 1E9 || pos.getY() > 1E9 || pos.getZ() > 1E9 || pos.getYaw() > 1E9 || pos.getPitch() > 1E9)) {
+        } else if (receive.getPacket() instanceof PlayerPositionLookS2CPacket pos) {
+            Vec3d changePos = pos.change().position();
+            if (changePos.x > 1E9 || changePos.y > 1E9 || changePos.z > 1E9 || pos.change().yaw() > 1E9 || pos.change().pitch() > 1E9) {
             if (debug.getValue() && debugTimer.passedMs(1000)) {
                 sendMessage("PlayerPositionLookS2CPacket canceled");
                 debugTimer.reset();

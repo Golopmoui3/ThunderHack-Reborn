@@ -1,5 +1,8 @@
 package thunder.hack.features.modules.combat;
 
+import java.util.ArrayList;
+import java.util.List;
+
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.block.*;
 import net.minecraft.client.util.math.MatrixStack;

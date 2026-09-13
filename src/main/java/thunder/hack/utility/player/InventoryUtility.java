@@ -2,15 +2,20 @@ package thunder.hack.utility.player;
 
 import net.minecraft.block.Block;
 import net.minecraft.component.DataComponentTypes;
+import net.minecraft.component.type.AttributeModifiersComponent;
+import net.minecraft.component.type.EquippableComponent;
 import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.DamageUtil;
+import net.minecraft.entity.EquipmentSlot;
+import net.minecraft.entity.attribute.EntityAttributeModifier;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.registry.Registries;
+import net.minecraft.registry.tag.ItemTags;
 import org.jetbrains.annotations.NotNull;
 import thunder.hack.core.Managers;
 import thunder.hack.core.manager.client.ModuleManager;
@@ -69,7 +74,7 @@ public final class InventoryUtility {
         float f = 1.0F;
         for (int b1 = 0; b1 < 9; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
-            if (itemStack != null && itemStack.getItem() instanceof PickaxeItem) {
+            if (itemStack != null && itemStack.isIn(ItemTags.PICKAXES)) {
                 float f1 = 0;
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemStack);
                 if (f1 > f) {
@@ -90,7 +95,7 @@ public final class InventoryUtility {
         float f = 1.0F;
         for (int b1 = 9; b1 < 45; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
-            if (itemStack != null && itemStack.getItem() instanceof PickaxeItem) {
+            if (itemStack != null && itemStack.isIn(ItemTags.PICKAXES)) {
                 float f1 = 0;
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemStack);
                 if (f1 > f) {
@@ -111,7 +116,7 @@ public final class InventoryUtility {
         float f = 1.0F;
         for (int b1 = 0; b1 < 9; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
-            if (itemStack != null && itemStack.getItem() instanceof PickaxeItem) {
+            if (itemStack != null && itemStack.isIn(ItemTags.PICKAXES)) {
                 float f1 = 0;
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.EFFICIENCY.getRegistryRef()).getEntry(Enchantments.EFFICIENCY).get(), itemStack);
                 if (f1 > f) {
@@ -151,8 +156,8 @@ public final class InventoryUtility {
         float f = 1.0F;
         for (int b1 = 9; b1 < 45; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
-            if (itemStack != null && itemStack.getItem() instanceof SwordItem sword) {
-                float f1 = sword.getComponents().get(DataComponentTypes.MAX_DAMAGE);
+            if (itemStack != null && itemStack.isIn(ItemTags.SWORDS)) {
+                float f1 = itemStack.get(DataComponentTypes.MAX_DAMAGE);
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS).get(), itemStack);
                 if (f1 > f) {
                     f = f1;
@@ -172,8 +177,8 @@ public final class InventoryUtility {
         float f = 1.0F;
         for (int b1 = 0; b1 < 9; b1++) {
             ItemStack itemStack = mc.player.getInventory().getStack(b1);
-            if (itemStack != null && itemStack.getItem() instanceof SwordItem sword) {
-                float f1 = sword.getComponents().get(DataComponentTypes.MAX_DAMAGE);
+            if (itemStack != null && itemStack.isIn(ItemTags.SWORDS)) {
+                float f1 = itemStack.get(DataComponentTypes.MAX_DAMAGE);
                 f1 += EnchantmentHelper.getLevel(mc.world.getRegistryManager().getOrThrow(Enchantments.SHARPNESS.getRegistryRef()).getEntry(Enchantments.SHARPNESS).get(), itemStack);
                 if (f1 > f) {
                     f = f1;
@@ -323,17 +328,18 @@ public final class InventoryUtility {
     public static SearchInvResult getAntiWeaknessItem() {
         if (mc.player == null) return SearchInvResult.notFound();
 
-        Item mainHand = mc.player.getMainHandStack().getItem();
-        if (mainHand instanceof SwordItem
-                || mainHand instanceof PickaxeItem
+        ItemStack mainHandStack = mc.player.getMainHandStack();
+        Item mainHand = mainHandStack.getItem();
+        if (mainHandStack.isIn(ItemTags.SWORDS)
+                || mainHandStack.isIn(ItemTags.PICKAXES)
                 || mainHand instanceof AxeItem
                 || mainHand instanceof ShovelItem) {
             return new SearchInvResult(mc.player.getInventory().selectedSlot, true, mc.player.getMainHandStack());
         }
 
         return findInHotBar(
-                itemStack -> itemStack.getItem() instanceof SwordItem
-                        || itemStack.getItem() instanceof PickaxeItem
+                itemStack -> itemStack.isIn(ItemTags.SWORDS)
+                        || itemStack.isIn(ItemTags.PICKAXES)
                         || itemStack.getItem() instanceof AxeItem
                         || itemStack.getItem() instanceof ShovelItem
         );
@@ -343,7 +349,7 @@ public final class InventoryUtility {
         if (mc.player == null) return 0;
         float baseDamage = 1f;
 
-        if (weapon.getItem() instanceof SwordItem swordItem)
+        if (weapon.isIn(ItemTags.SWORDS))
             baseDamage = 7;
 
         if (weapon.getItem() instanceof AxeItem axeItem)
@@ -407,6 +413,45 @@ public final class InventoryUtility {
         return counter;
     }
 
+
+    /**
+     * 1.21.11 removed the ArmorItem class (armor is data-driven now).
+     * An armor piece is any equippable item for a body armor slot.
+     */
+    public static EquipmentSlot getArmorSlot(ItemStack stack) {
+        EquippableComponent equippable = stack.get(DataComponentTypes.EQUIPPABLE);
+        EquipmentSlot slot = equippable == null ? null : equippable.slot();
+        if (slot == EquipmentSlot.HEAD || slot == EquipmentSlot.CHEST || slot == EquipmentSlot.LEGS || slot == EquipmentSlot.FEET)
+            return slot;
+        return EquipmentSlot.CHEST;
+    }
+
+    public static boolean isArmorPiece(ItemStack stack) {
+        if (stack.isOf(Items.ELYTRA)) return false;
+        EquippableComponent equippable = stack.get(DataComponentTypes.EQUIPPABLE);
+        EquipmentSlot slot = equippable == null ? null : equippable.slot();
+        return slot == EquipmentSlot.HEAD || slot == EquipmentSlot.CHEST || slot == EquipmentSlot.LEGS || slot == EquipmentSlot.FEET;
+    }
+
+    public static boolean isUsableElytra(ItemStack stack) {
+        return stack.isOf(Items.ELYTRA) && stack.getDamage() < stack.getMaxDamage() - 1;
+    }
+
+    /**
+     * Base armor value (protection + toughness) from attribute modifiers,
+     * replaces the removed ArmorItem#getProtection/#getToughness.
+     */
+    public static int getArmorPoints(ItemStack stack) {
+        AttributeModifiersComponent comp = stack.get(DataComponentTypes.ATTRIBUTE_MODIFIERS);
+        if (comp == null) return 0;
+        double[] points = new double[2];
+        comp.applyModifiers(getArmorSlot(stack), (attribute, modifier) -> {
+            if (modifier.operation() != EntityAttributeModifier.Operation.ADD_VALUE) return;
+            if (attribute.value() == EntityAttributes.ARMOR.value()) points[0] += modifier.value();
+            else if (attribute.value() == EntityAttributes.ARMOR_TOUGHNESS.value()) points[1] += modifier.value();
+        });
+        return (int) (points[0] + Math.ceil(points[1]));
+    }
 
     public interface Searcher {
         boolean isValid(ItemStack stack);
