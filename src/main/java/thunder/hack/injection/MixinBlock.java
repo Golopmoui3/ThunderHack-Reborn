@@ -20,10 +20,10 @@ import static thunder.hack.core.manager.IManager.mc;
 public abstract class MixinBlock {
 
     @Inject(method = "shouldDrawSide", at = @At("HEAD"), cancellable = true)
-    private static void shouldDrawSideHook(BlockState state, BlockView world, BlockPos pos, Direction side, BlockPos blockPos, CallbackInfoReturnable<Boolean> cir) {
+    private static void shouldDrawSideHook(BlockState state, BlockState neighborState, Direction side, CallbackInfoReturnable<Boolean> cir) {
         if (ModuleManager.xray.isEnabled() && ModuleManager.xray.wallHack.getValue())
             cir.setReturnValue(XRay.isCheckableOre(state.getBlock()));
-        if(ModuleManager.autoAnchor.isEnabled() && state.getBlock() instanceof FireBlock)
+        if (ModuleManager.autoAnchor.isEnabled() && state.getBlock() instanceof FireBlock)
             cir.setReturnValue(false);
     }
 

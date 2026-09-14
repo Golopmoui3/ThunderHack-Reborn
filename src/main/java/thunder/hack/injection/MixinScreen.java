@@ -2,12 +2,10 @@ package thunder.hack.injection;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.logging.LogUtils;
-import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Style;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
@@ -36,8 +34,6 @@ import static thunder.hack.features.modules.client.ClientSettings.isRu;
 
 @Mixin(Screen.class)
 public abstract class MixinScreen {
-    @Shadow
-    public abstract void init(MinecraftClient client, int width, int height);
 
     @Inject(method = "handleTextClick", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;)V", ordinal = 1, remap = false), cancellable = true)
     private void onRunCommand(Style style, CallbackInfoReturnable<Boolean> cir) {
