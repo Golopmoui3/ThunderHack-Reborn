@@ -3,10 +3,10 @@ package thunder.hack.injection;
 import net.minecraft.block.FluidBlock;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.MovementType;
+import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
 import org.spongepowered.asm.mixin.Mixin;
-import org.spongepowered.asm.mixin.Shadow;
 import org.spongepowered.asm.mixin.Unique;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 import thunder.hack.ThunderHack;
 import thunder.hack.core.manager.client.ModuleManager;
+import thunder.hack.events.impl.EventPlayerJump;
 import thunder.hack.events.impl.EventTravel;
 import thunder.hack.features.modules.Module;
 import thunder.hack.features.modules.combat.Aura;
@@ -29,13 +30,6 @@ import static thunder.hack.features.modules.movement.WaterSpeed.Mode.CancelResur
 
 @Mixin(LivingEntity.class)
 public class MixinEntityLiving implements IEntityLiving {
-    @Shadow
-    protected double serverX;
-    @Shadow
-    protected double serverY;
-    @Shadow
-    protected double serverZ;
-
     @Unique
     double prevServerX, prevServerY, prevServerZ;
 
@@ -53,14 +47,27 @@ public class MixinEntityLiving implements IEntityLiving {
             info.setReturnValue(Animations.slowAnimationVal.getValue());
     }
 
-    @Inject(method = {"updateTrackedPositionAndAngles"}, at = {@At("HEAD")})
-    private void updateTrackedPositionAndAnglesHook(double x, double y, double z, float yaw, float pitch, int interpolationSteps, CallbackInfo ci) {
+    @Inject(method = {"tickMovement"}, at = {@At("HEAD")})
+    private void updateTrackedPositionAndAnglesHook(CallbackInfo ci) {
         if (Module.fullNullCheck()) return;
-        prevServerX = serverX;
-        prevServerY = serverY;
-        prevServerZ = serverZ;
-        positonHistory.add(new Aura.Position(serverX, serverY, serverZ));
+        if (!((Object) this instanceof PlayerEntity self)) return;
+        prevServerX = self.getX();
+        prevServerY = self.getY();
+        prevServerZ = self.getZ();
+        positonHistory.add(new Aura.Position(self.getX(), self.getY(), self.getZ()));
         positonHistory.removeIf(Aura.Position::shouldRemove);
+    }
+
+    @Inject(method = "jump", at = @At("HEAD"))
+    private void onJumpPre(CallbackInfo ci) {
+        if ((Object) this instanceof PlayerEntity)
+            ThunderHack.EVENT_BUS.post(new EventPlayerJump(true));
+    }
+
+    @Inject(method = "jump", at = @At("RETURN"))
+    private void onJumpPost(CallbackInfo ci) {
+        if ((Object) this instanceof PlayerEntity)
+            ThunderHack.EVENT_BUS.post(new EventPlayerJump(false));
     }
 
     @Override

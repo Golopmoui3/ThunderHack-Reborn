@@ -2,8 +2,10 @@ package thunder.hack.injection;
 
 import com.mojang.brigadier.exceptions.CommandSyntaxException;
 import com.mojang.logging.LogUtils;
+import net.minecraft.client.MinecraftClient;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.text.ClickEvent;
 import net.minecraft.text.Style;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
@@ -35,9 +37,9 @@ import static thunder.hack.features.modules.client.ClientSettings.isRu;
 @Mixin(Screen.class)
 public abstract class MixinScreen {
 
-    @Inject(method = "handleTextClick", at = @At(value = "INVOKE", target = "Lorg/slf4j/Logger;error(Ljava/lang/String;Ljava/lang/Object;)V", ordinal = 1, remap = false), cancellable = true)
-    private void onRunCommand(Style style, CallbackInfoReturnable<Boolean> cir) {
-        if (Objects.requireNonNull(style.getClickEvent()) instanceof ClientClickEvent clientClickEvent && clientClickEvent.getValue().startsWith(Managers.COMMAND.getPrefix()))
+    @Inject(method = "handleClickEvent", at = @At("HEAD"), cancellable = true)
+    private static void onRunCommand(ClickEvent clickEvent, MinecraftClient client, Screen screen, CallbackInfoReturnable<Boolean> cir) {
+        if (clickEvent instanceof ClientClickEvent clientClickEvent && clientClickEvent.getValue().startsWith(Managers.COMMAND.getPrefix()))
             try {
                 CommandManager manager = Managers.COMMAND;
                 manager.getDispatcher().execute(clientClickEvent.getValue().substring(Managers.COMMAND.getPrefix().length()), manager.getSource());
