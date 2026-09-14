@@ -38,12 +38,12 @@ import static thunder.hack.features.modules.client.ClientSettings.isRu;
 public abstract class MixinScreen {
 
     @Inject(method = "handleClickEvent", at = @At("HEAD"), cancellable = true)
-    private static void onRunCommand(ClickEvent clickEvent, MinecraftClient client, Screen screen, CallbackInfoReturnable<Boolean> cir) {
+    private static void onRunCommand(ClickEvent clickEvent, MinecraftClient client, Screen screen, CallbackInfo ci) {
         if (clickEvent instanceof ClientClickEvent clientClickEvent && clientClickEvent.getValue().startsWith(Managers.COMMAND.getPrefix()))
             try {
                 CommandManager manager = Managers.COMMAND;
                 manager.getDispatcher().execute(clientClickEvent.getValue().substring(Managers.COMMAND.getPrefix().length()), manager.getSource());
-                cir.setReturnValue(true);
+                ci.cancel();
             } catch (CommandSyntaxException ignored) {
             }
     }
