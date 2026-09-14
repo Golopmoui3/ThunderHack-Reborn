@@ -14,6 +14,7 @@ import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.*;
+import net.minecraft.registry.tag.ItemTags;
 import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.network.packet.s2c.play.EntitySpawnS2CPacket;
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
@@ -261,7 +262,7 @@ public class AutoCrystal extends Module {
 
         if (!rotate.is(Rotation.OFF) && mc.player != null && rotating) {
 
-            boolean hitVisible = bestCrystal == null || PlayerUtility.canSee(bestCrystal.getPos());
+            boolean hitVisible = bestCrystal == null || PlayerUtility.canSee(bestCrystal.getEntityPos());
             boolean placeVisible = bestPosition == null || PlayerUtility.canSee(bestPosition.getPos());
 
             if (mc.player.age % 5 == 0 && rayTraceBypass.getValue() && (!hitVisible || !placeVisible))
@@ -348,7 +349,7 @@ public class AutoCrystal extends Module {
 
         if (e.getPacket() instanceof ExplosionS2CPacket explosion) {
             for (Entity ent : Lists.newArrayList(mc.world.getEntities()))
-                if (ent instanceof EndCrystalEntity crystal && crystal.squaredDistanceTo(explosion.getX(), explosion.getY(), explosion.getZ()) <= 144 && !crystalManager.isDead(crystal.getId()))
+                if (ent instanceof EndCrystalEntity crystal && crystal.squaredDistanceTo(explosion.center()) <= 144 && !crystalManager.isDead(crystal.getId()))
                     crystalManager.setDead(crystal.getId(), System.currentTimeMillis());
         }
     }
@@ -385,7 +386,7 @@ public class AutoCrystal extends Module {
             // Shitty Matrix (forcemine) OK
             // Grim (mio test server) OK
 
-            Vec3d vec = !rotate.getValue().needSeparate() ? (bestPosition == null ? bestCrystal.getPos() : rotate.getValue().getVector(bestPosition)) : (rotationVec.hitVec() == null ? rotationVec.vec() : rotate.getValue().getVector(rotationVec.hitVec()));
+            Vec3d vec = !rotate.getValue().needSeparate() ? (bestPosition == null ? bestCrystal.getEntityPos() : rotate.getValue().getVector(bestPosition)) : (rotationVec.hitVec() == null ? rotationVec.vec() : rotate.getValue().getVector(rotationVec.hitVec()));
 
             float yawDelta = wrapDegrees((float) wrapDegrees(Math.toDegrees(Math.atan2(vec.z - mc.player.getZ(), (vec.x - mc.player.getX()))) - 90) - rotationYaw);
             float pitchDelta = ((float) (-Math.toDegrees(Math.atan2(vec.y - (mc.player.getEntityPos().y + mc.player.getEyeHeight(mc.player.getPose())), Math.sqrt(Math.pow((vec.x - mc.player.getX()), 2) + Math.pow(vec.z - mc.player.getZ(), 2))))) - rotationPitch);
@@ -629,8 +630,8 @@ public class AutoCrystal extends Module {
 
         if (!cr.isAlive()) return false;
 
-        float damage = ExplosionUtility.getAutoCrystalDamage(cr.getPos(), target, getPredictTicks(), false);
-        float selfDamage = ExplosionUtility.getSelfExplosionDamage(cr.getPos(), getSelfPredictTicks(), false);
+        float damage = ExplosionUtility.getAutoCrystalDamage(cr.getEntityPos(), target, getPredictTicks(), false);
+        float selfDamage = ExplosionUtility.getSelfExplosionDamage(cr.getEntityPos(), getSelfPredictTicks(), false);
 
         boolean overrideDamage = shouldOverrideMaxSelfDmg(damage, selfDamage);
 
@@ -638,7 +639,7 @@ public class AutoCrystal extends Module {
             List<PlayerEntity> players = Lists.newArrayList(mc.world.getPlayers());
             for (PlayerEntity pl : players) {
                 if (!Managers.FRIEND.isFriend(pl)) continue;
-                float fdamage = ExplosionUtility.getAutoCrystalDamage(cr.getPos(), pl, getPredictTicks(), false);
+                float fdamage = ExplosionUtility.getAutoCrystalDamage(cr.getEntityPos(), pl, getPredictTicks(), false);
                 if (fdamage > selfDamage) {
                     selfDamage = fdamage;
                 }
@@ -1006,7 +1007,7 @@ public class AutoCrystal extends Module {
                         if (canAttackCrystal(cr)) continue;
 
                     } else {
-                        if (cr.getPos().squaredDistanceTo(box.getCenter()) > 0.3) {
+                        if (cr.getEntityPos().squaredDistanceTo(box.getCenter()) > 0.3) {
                             secondaryCrystal = cr;
                             debug("secondary crystal created");
                         }

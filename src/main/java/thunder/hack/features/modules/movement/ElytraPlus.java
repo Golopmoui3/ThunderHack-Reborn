@@ -3,6 +3,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
@@ -29,6 +30,7 @@ import net.minecraft.util.Formatting;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import thunder.hack.ThunderHack;
 import thunder.hack.core.Managers;
@@ -38,6 +40,7 @@ import thunder.hack.gui.notification.Notification;
 import thunder.hack.features.modules.Module;
 import thunder.hack.features.modules.client.HudEditor;
 import thunder.hack.features.modules.combat.Criticals;
+import thunder.hack.injection.accesors.IInput;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.Bind;
 import thunder.hack.setting.impl.BooleanSettingGroup;
@@ -868,10 +871,11 @@ public class ElytraPlus extends Module {
             if (!MovementUtility.isMoving())
                 acceleration = 0;
 
-            if (mc.player.input.getMovementInput().x > 0) {
-                mc.player.input.getMovementInput().x = 1;
-            } else if (mc.player.input.getMovementInput().x < 0) {
-                mc.player.input.getMovementInput().x = -1;
+            float strafe = mc.player.input.getMovementInput().x;
+            if (strafe > 0) {
+                ((IInput) mc.player.input).setMovementVector(new Vec2f(1, mc.player.input.getMovementInput().y));
+            } else if (strafe < 0) {
+                ((IInput) mc.player.input).setMovementVector(new Vec2f(-1, mc.player.input.getMovementInput().y));
             }
 
             MovementUtility.modifyEventSpeed(e, xzSpeed.getValue() * Math.min((acceleration += 9) / 100.0f, 1.0f));

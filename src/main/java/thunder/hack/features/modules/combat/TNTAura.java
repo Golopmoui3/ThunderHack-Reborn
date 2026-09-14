@@ -120,7 +120,7 @@ public class TNTAura extends Module {
         }
 
         if (targetedPlayer != null) {
-            BlockPos headBlock = BlockPos.ofFloored(targetedPlayer.getPos()).up(2);
+            BlockPos headBlock = BlockPos.ofFloored(targetedPlayer.getEntityPos()).up(2);
             InventoryUtility.saveSlot();
             InteractionUtility.placeBlock(headBlock, rotate.getValue(), InteractionUtility.Interact.Vanilla, placeMode.getValue(), getTntSlot(), false, false);
             BlockHitResult igniteResult = getIgniteResult(headBlock);

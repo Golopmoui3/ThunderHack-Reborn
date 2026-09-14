@@ -12,6 +12,7 @@ import net.minecraft.entity.decoration.ArmorStandEntity;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.mob.HostileEntity;
 import net.minecraft.entity.mob.MobEntity;
+import net.minecraft.entity.mob.Angerable;
 import net.minecraft.entity.mob.SlimeEntity;
 import net.minecraft.entity.passive.AnimalEntity;
 import net.minecraft.entity.passive.CatEntity;
@@ -752,10 +753,10 @@ public class Aura extends Module {
 
         return switch (sort.getValue()) {
             case LowestDistance ->
-                    first_stage.stream().min(Comparator.comparing(e -> (mc.player.squaredDistanceTo(e.getPos())))).orElse(null);
+                    first_stage.stream().min(Comparator.comparing(e -> (mc.player.squaredDistanceTo(e.getEntityPos())))).orElse(null);
 
             case HighestDistance ->
-                    first_stage.stream().max(Comparator.comparing(e -> (mc.player.squaredDistanceTo(e.getPos())))).orElse(null);
+                    first_stage.stream().max(Comparator.comparing(e -> (mc.player.squaredDistanceTo(e.getEntityPos())))).orElse(null);
 
             case FOV -> first_stage.stream().min(Comparator.comparing(this::getFOVAngle)).orElse(null);
 
@@ -828,7 +829,7 @@ public class Aura extends Module {
                 return true;
 
             if (onlyAngry.getValue())
-                return !he.isAngryAt(mc.player);
+                return !(he instanceof Angerable angerable && angerable.hasAngerTime() && mc.player.getUuid().equals(angerable.getAngryAt()));
         }
 
         if (entity instanceof PlayerEntity && !Players.getValue()) return true;

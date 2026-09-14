@@ -83,7 +83,7 @@ public class Render2DEngine {
                 (int) x0, (int) y0, (int) x1, (int) y1, col1, col2, scissor()));
     }
 
-    private static void texturedQuad(DrawContext context, Identifier id, float x0, float y0, float x1, float y1,
+    public static void texturedQuad(DrawContext context, Identifier id, float x0, float y0, float x1, float y1,
                                      float u0, float v0, float u1, float v1, int color) {
         AbstractTexture tex = mc.getTextureManager().getTexture(id);
         state(context).addSimpleElement(new TexturedQuadGuiElementRenderState(

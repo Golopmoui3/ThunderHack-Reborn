@@ -59,7 +59,7 @@ public class LogoutSpots extends Module {
             if (pac.getActions().contains(PlayerListS2CPacket.Action.ADD_PLAYER)) {
                 for (PlayerListS2CPacket.Entry ple : pac.getPlayerAdditionEntries()) {
                     for (UUID uuid : logoutCache.keySet()) {
-                        if (!uuid.equals(ple.profile().getId())) continue;
+                        if (!uuid.equals(ple.profile().id())) continue;
                         PlayerEntity pl = logoutCache.get(uuid);
                         if (ignoreBots.getValue() && isABot(pl)) continue;
                         if (notifications.getValue())
@@ -99,7 +99,7 @@ public class LogoutSpots extends Module {
     public void onUpdate() {
         for (PlayerEntity player : mc.world.getPlayers()) {
             if (player == null || player.equals(mc.player)) continue;
-            playerCache.put(player.getGameProfile().getId(), player);
+            playerCache.put(player.getGameProfile().id(), player);
         }
     }
 
@@ -114,13 +114,10 @@ public class LogoutSpots extends Module {
                 if (renderMode.is(RenderMode.Box)) {
                     Render3DEngine.drawBoxOutline(data.getBoundingBox(), color.getValue().getColorObject(), 2);
                 } else {
-                    PlayerEntityModel<PlayerEntity> modelPlayer = new PlayerEntityModel<>(new EntityRendererFactory.Context(
-                            mc.getEntityRenderDispatcher(), mc.getItemRenderer(),
-                            mc.getBlockRenderManager(), mc.getEntityRenderDispatcher().getHeldItemRenderer(),
-                            mc.getResourceManager(), mc.getLoadedEntityModels(), mc.textRenderer).getPart(EntityModelLayers.PLAYER), false);
+                    PlayerEntityModel modelPlayer = new PlayerEntityModel(mc.getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER), false);
                     modelPlayer.getHead().scale(new Vector3f(-0.3f, -0.3f, -0.3f));
 
-                    renderEntity(s, data, modelPlayer, ((OtherClientPlayerEntity)data).getSkin().body(), color.getValue().getAlpha());
+                    renderEntity(s, data, modelPlayer, ((OtherClientPlayerEntity) data).getSkin().body().texturePath(), color.getValue().getAlpha());
                 }
             }
         }

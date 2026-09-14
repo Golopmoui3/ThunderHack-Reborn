@@ -3,8 +3,6 @@ package thunder.hack.gui.clickui.impl;
 import net.minecraft.client.gl.RenderPipelines;
 
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.RotationAxis;
 import thunder.hack.core.Managers;
 import thunder.hack.features.modules.client.HudEditor;
 import thunder.hack.gui.clickui.AbstractElement;
@@ -40,38 +38,36 @@ public class ModeElement extends AbstractElement {
         float tx = x + width - 11;
         float ty = y + 7.5f;
 
-        MatrixStack matrixStack = context.getMatrices();
-
         float thetaRotation = -180f * animation;
-        matrixStack.push();
+        context.getMatrices().pushMatrix();
 
-        matrixStack.translate(tx, ty, 0);
-        matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(thetaRotation));
-        matrixStack.translate(-tx, -ty, 0);
+        context.getMatrices().translate(tx, ty);
+        context.getMatrices().rotate(thetaRotation);
+        context.getMatrices().translate(-tx, -ty);
 
-        matrixStack.translate((x + width - 14), y + 4.5f, 0);
+        context.getMatrices().translate((x + width - 14), y + 4.5f);
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6);
-        matrixStack.translate(-(x + width - 14), -y - 4.5f, 0);
+        context.getMatrices().translate(-(x + width - 14), -y - 4.5f);
 
-        matrixStack.pop();
+        context.getMatrices().popMatrix();
 
         if (setting.group != null)
             Render2DEngine.drawRect(context, x + 4, y, 1f, 17, HudEditor.getColor(1));
 
 
-        FontRenderers.sf_medium_mini.drawString(matrixStack, setting2.getName(), (setting.group != null ? 2f : 0f) + (x + 6), (y + wheight / 2 - (6 / 2f)) + 3, new Color(-1).getRGB());
+        FontRenderers.sf_medium_mini.drawString(context, setting2.getName(), (setting.group != null ? 2f : 0f) + (x + 6), (y + wheight / 2 - (6 / 2f)) + 3, new Color(-1).getRGB());
 
         if (animation2 < 0.99 && !Objects.equals(setting2.currentEnumName(), prevMode)) {
-            FontRenderers.sf_medium_mini.drawString(matrixStack, prevMode, (int) (x + width - 18 - FontRenderers.sf_medium_mini.getStringWidth(prevMode)), 3 + (y + wheight / 2 - 3f) - animation2 * 5, Render2DEngine.applyOpacity(new Color(-1), animation2));
-            FontRenderers.sf_medium_mini.drawString(matrixStack, setting2.currentEnumName(), (x + width - 18 - FontRenderers.sf_medium_mini.getStringWidth(setting2.currentEnumName())), 3 + (y + wheight / 2 - 3f) - animation2 * 5 + 5, Render2DEngine.applyOpacity(new Color(-1), 1f - animation2));
+            FontRenderers.sf_medium_mini.drawString(context, prevMode, (int) (x + width - 18 - FontRenderers.sf_medium_mini.getStringWidth(prevMode)), 3 + (y + wheight / 2 - 3f) - animation2 * 5, Render2DEngine.applyOpacity(new Color(-1), animation2));
+            FontRenderers.sf_medium_mini.drawString(context, setting2.currentEnumName(), (x + width - 18 - FontRenderers.sf_medium_mini.getStringWidth(setting2.currentEnumName())), 3 + (y + wheight / 2 - 3f) - animation2 * 5 + 5, Render2DEngine.applyOpacity(new Color(-1), 1f - animation2));
         } else
-            FontRenderers.sf_medium_mini.drawString(matrixStack, setting2.currentEnumName(), (x + width - 18 - FontRenderers.sf_medium_mini.getStringWidth(setting.currentEnumName())), 3 + (y + wheight / 2 - 3f), new Color(-1).getRGB());
+            FontRenderers.sf_medium_mini.drawString(context, setting2.currentEnumName(), (x + width - 18 - FontRenderers.sf_medium_mini.getStringWidth(setting.currentEnumName())), 3 + (y + wheight / 2 - 3f), new Color(-1).getRGB());
 
         if (open) {
             Color color = HudEditor.getColor(0);
             double offsetY = 0;
             for (int i = 0; i <= setting2.getModes().length - 1; i++) {
-                FontRenderers.sf_medium_mini.drawString(matrixStack, setting2.getModes()[i], x + width / 2f - (FontRenderers.sf_medium_mini.getStringWidth(setting2.getModes()[i]) / 2f), (y + wheight + 2 + offsetY), setting2.currentEnumName().equalsIgnoreCase(setting2.getModes()[i]) ? color.getRGB() : new Color(-1).getRGB());
+                FontRenderers.sf_medium_mini.drawString(context, setting2.getModes()[i], x + width / 2f - (FontRenderers.sf_medium_mini.getStringWidth(setting2.getModes()[i]) / 2f), (y + wheight + 2 + offsetY), setting2.currentEnumName().equalsIgnoreCase(setting2.getModes()[i]) ? color.getRGB() : new Color(-1).getRGB());
                 offsetY += 12;
             }
         }

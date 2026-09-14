@@ -61,6 +61,6 @@ public class MixinClientWorld {
     @Inject(method = "playSound(DDDLnet/minecraft/sound/SoundEvent;Lnet/minecraft/sound/SoundCategory;FFZJ)V", at = @At("HEAD"))
     private void playSoundHoof(double x, double y, double z, SoundEvent event, SoundCategory category, float volume, float pitch, boolean useDistance, long seed, CallbackInfo ci) {
         if(ModuleManager.soundESP.isEnabled())
-            ModuleManager.soundESP.add(x, y, z, event.getId().toTranslationKey());
+            ModuleManager.soundESP.add(x, y, z, event.id().toString());
     }
 }

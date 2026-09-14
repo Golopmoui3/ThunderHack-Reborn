@@ -48,7 +48,7 @@ public class CaptureMark {
         buffer.vertex(matrix, 1.5f, 1.5f, 0).texture(1f, 1f).color(HudEditor.getColor(0).getRGB());
         buffer.vertex(matrix, 1.5f, 0, 0).texture(1f, 0).color(HudEditor.getColor(180).getRGB());
         buffer.vertex(matrix, 0, 0, 0).texture(0, 0).color(HudEditor.getColor(270).getRGB());
-        BufferRenderer.drawWithGlobalProgram(buffer.end());
+        Render2DEngine.endBuildingTextured(buffer);
         GlStateManager._enableCull();
         GlStateManager._enableDepthTest();
         GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);

@@ -8,6 +8,7 @@ import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.AbstractClientPlayerEntity;
+import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.render.*;
 import net.minecraft.client.render.entity.EntityRendererFactory;
 import net.minecraft.client.render.entity.model.EntityModelLayers;
@@ -71,10 +72,7 @@ public final class PopChams extends Module {
     private void onTotemPop(@NotNull TotemPopEvent e) {
         if (e.getEntity().equals(mc.player) || mc.world == null) return;
 
-        PlayerEntity entity = new PlayerEntity(mc.world, BlockPos.ORIGIN, e.getEntity().bodyYaw, new GameProfile(e.getEntity().getUuid(), e.getEntity().getName().getString())) {
-            @Override public boolean isSpectator() {return false;}
-            @Override public boolean isCreative() {return false;}
-        };
+        OtherClientPlayerEntity entity = new OtherClientPlayerEntity(mc.world, new GameProfile(e.getEntity().getUuid(), e.getEntity().getName().getString()));
 
         entity.copyPositionAndRotation(e.getEntity());
         entity.bodyYaw = e.getEntity().bodyYaw;
@@ -83,8 +81,7 @@ public final class PopChams extends Module {
         entity.handSwingTicks = e.getEntity().handSwingTicks;
         entity.setSneaking(e.getEntity().isSneaking());
         entity.limbAnimator.setSpeed(e.getEntity().limbAnimator.getSpeed());
-        entity.limbAnimator.animationProgress = e.getEntity().limbAnimator.getAnimationProgress();
-        popList.add(new Person(entity, ((AbstractClientPlayerEntity) e.getEntity()).getSkin().body()));
+        popList.add(new Person(entity, ((AbstractClientPlayerEntity) e.getEntity()).getSkin().body().texturePath()));
     }
 
     private void renderEntity(@NotNull MatrixStack matrices, @NotNull LivingEntity entity, @NotNull PlayerEntityModel modelBase, Identifier texture, int alpha) {
@@ -100,13 +97,13 @@ public final class PopChams extends Module {
 
     private class Person {
         private final PlayerEntity player;
-        private final PlayerEntityModel<PlayerEntity> modelPlayer;
+        private final PlayerEntityModel modelPlayer;
         private Identifier texture;
         private int alpha;
 
         public Person(PlayerEntity player, Identifier texture) {
             this.player = player;
-            modelPlayer = new PlayerEntityModel<>(new EntityRendererFactory.Context(mc.getEntityRenderDispatcher(), mc.getItemRenderer(), mc.getBlockRenderManager(), mc.getEntityRenderDispatcher().getHeldItemRenderer(), mc.getResourceManager(), mc.getLoadedEntityModels(), mc.textRenderer).getPart(EntityModelLayers.PLAYER), false);
+            modelPlayer = new PlayerEntityModel(mc.getLoadedEntityModels().getModelPart(EntityModelLayers.PLAYER), false);
             modelPlayer.getHead().scale(new Vector3f(-0.3f, -0.3f, -0.3f));
             alpha = color.getValue().getAlpha();
             this.texture = texture;
@@ -115,7 +112,6 @@ public final class PopChams extends Module {
         public void update(CopyOnWriteArrayList<Person> arrayList) {
             if (alpha <= 0) {
                 arrayList.remove(this);
-                player.kill();
                 player.remove(Entity.RemovalReason.KILLED);
                 player.onRemoved();
                 return;

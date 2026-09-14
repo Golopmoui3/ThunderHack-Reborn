@@ -138,7 +138,7 @@ public final class HoleFill extends Module {
                 pos = holes.stream()
                         .filter(this::isHole)
                         .filter(p -> mc.player.getEntityPos().distanceTo(p.toCenterPos()) <= placeRange.getValue())
-                        .filter(p -> predicted.getPos().distanceTo(p.toCenterPos()) <= rangeToTarget.getValue())
+                        .filter(p -> predicted.getEntityPos().distanceTo(p.toCenterPos()) <= rangeToTarget.getValue())
                         .filter(p -> {
                             if (p.equals(mc.player.getBlockPos()) && selfFill.getValue()) {
                                 selfFillNeed = true;

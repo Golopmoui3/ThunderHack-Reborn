@@ -88,7 +88,7 @@ public abstract class MixinSplashOverlay {
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.thLogo, k - 150, p - 35, 0, 0, 300, 70, 300, 70);
         Render2DEngine.addWindow(context, k - 150, p - 35, k - 150 + (300 * progress), p + 35, 1f);
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.thLogo, k - 150, p - 35, 0, 0, 300, 70, 300, 70);
-        Render2DEngine.popWindow();
+        Render2DEngine.popWindow(context);
 
         float t = this.reload.getProgress();
         this.progress = MathHelper.clamp(this.progress * 0.95F + t * 0.050000012F, 0.0F, 1.0F);
@@ -110,7 +110,7 @@ public abstract class MixinSplashOverlay {
 
             reloadCompleteTime = Util.getMeasuringTimeMs();
             if (mc.currentScreen != null) {
-                mc.currentScreen.init(mc, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
+                mc.currentScreen.init(mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
             }
         }
     }

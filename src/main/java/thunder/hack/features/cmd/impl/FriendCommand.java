@@ -29,8 +29,8 @@ public class FriendCommand extends Command {
         builder.then(literal("add").then(arg("player", PlayerArgumentType.create()).executes(context -> {
             PlayerListEntry player = context.getArgument("player", PlayerListEntry.class);
 
-            Managers.FRIEND.addFriend(player.getProfile().getName());
-            sendMessage(player.getProfile().getName() + " has been friended");
+            Managers.FRIEND.addFriend(player.getProfile().name());
+            sendMessage(player.getProfile().name() + " has been friended");
             return SINGLE_SUCCESS;
         })));
 
@@ -44,7 +44,7 @@ public class FriendCommand extends Command {
 
         builder.then(literal("is").then(arg("player", PlayerArgumentType.create()).executes(context -> {
             PlayerListEntry player = context.getArgument("player", PlayerListEntry.class);
-            sendMessage(player.getProfile().getName() + (Managers.FRIEND.isFriend(player.getProfile().getName()) ? " is friended." : " isn't friended."));
+            sendMessage(player.getProfile().name() + (Managers.FRIEND.isFriend(player.getProfile().name()) ? " is friended." : " isn't friended."));
 
             return SINGLE_SUCCESS;
         })));

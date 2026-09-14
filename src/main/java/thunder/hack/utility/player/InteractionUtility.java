@@ -8,10 +8,12 @@ import net.minecraft.entity.Entity;
 import net.minecraft.entity.ExperienceOrbEntity;
 import net.minecraft.entity.ItemEntity;
 import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
+import net.minecraft.network.packet.c2s.play.PlayerInputC2SPacket;
 import net.minecraft.network.packet.c2s.play.HandSwingC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.util.Hand;
+import net.minecraft.util.PlayerInput;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
@@ -109,8 +111,10 @@ public final class InteractionUtility {
 
         if (sprint)
             mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
-        if (sneak)
-            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
+        if (sneak) {
+            PlayerInput pi = mc.player.input.playerInput;
+            mc.player.networkHandler.sendPacket(new PlayerInputC2SPacket(new PlayerInput(pi.forward(), pi.backward(), pi.left(), pi.right(), pi.jump(), true, pi.sprint())));
+        }
 
         float[] angle = calculateAngle(result.getPos());
 
@@ -133,8 +137,10 @@ public final class InteractionUtility {
         if (rotate == Rotate.Grim)
             mc.player.networkHandler.sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), mc.player.isOnGround(), false));
 
-        if (sneak)
-            mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+        if (sneak) {
+            PlayerInput pi = mc.player.input.playerInput;
+            mc.player.networkHandler.sendPacket(new PlayerInputC2SPacket(new PlayerInput(pi.forward(), pi.backward(), pi.left(), pi.right(), pi.jump(), false, pi.sprint())));
+        }
 
         if (sprint)
             mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.START_SPRINTING));

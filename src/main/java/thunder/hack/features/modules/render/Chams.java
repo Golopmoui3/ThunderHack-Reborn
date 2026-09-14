@@ -57,6 +57,10 @@ public class Chams extends Module {
     private final Setting<Boolean> playerTexture = new Setting<>("PlayerTexture", true, v -> players.getValue());
     private final Setting<Boolean> simple = new Setting<>("Simple", false, v -> players.getValue());
 
+    public boolean playerTexture() {
+        return players.getValue() && playerTexture.getValue();
+    }
+
     private final Setting<Boolean> alternativeBlending = new Setting<>("AlternativeBlending", true);
 
     private enum CMode {

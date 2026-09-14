@@ -8,8 +8,10 @@ import net.minecraft.network.packet.c2s.play.PlayerInteractItemC2SPacket;
 import net.minecraft.network.packet.c2s.play.UpdateSelectedSlotC2SPacket;
 import net.minecraft.util.Hand;
 import net.minecraft.util.math.Direction;
+import net.minecraft.util.math.Vec2f;
 import thunder.hack.events.impl.EventKeyboardInput;
 import thunder.hack.features.modules.Module;
+import thunder.hack.injection.accesors.IInput;
 import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.SettingGroup;
 
@@ -94,27 +96,26 @@ public class NoSlow extends Module {
     @EventHandler
     public void onKeyboardInput(EventKeyboardInput e) {
         if (mode.getValue() == Mode.Matrix3 && mc.player.isUsingItem() && !mc.player.isGliding()) {
-            mc.player.input.getMovementInput().y *= 5f;
-            mc.player.input.getMovementInput().x *= 5f;
+            float mx = mc.player.input.getMovementInput().x * 5f;
+            float my = mc.player.input.getMovementInput().y * 5f;
             float mult = 1f;
 
             if (mc.player.isOnGround()) {
-                if (mc.player.input.getMovementInput().y != 0 && mc.player.input.getMovementInput().x != 0) {
-                    mc.player.input.getMovementInput().y *= 0.35f;
-                    mc.player.input.getMovementInput().x *= 0.35f;
+                if (my != 0 && mx != 0) {
+                    my *= 0.35f;
+                    mx *= 0.35f;
                 } else {
-                    mc.player.input.getMovementInput().y *= 0.5f;
-                    mc.player.input.getMovementInput().x *= 0.5f;
+                    my *= 0.5f;
+                    mx *= 0.5f;
                 }
             } else {
-                if (mc.player.input.getMovementInput().y != 0 && mc.player.input.getMovementInput().x != 0) {
+                if (my != 0 && mx != 0) {
                     mult = 0.47f;
                 } else {
                     mult = 0.67f;
                 }
             }
-            mc.player.input.getMovementInput().y *= mult;
-            mc.player.input.getMovementInput().x *= mult;
+            ((IInput) mc.player.input).setMovementVector(new Vec2f(mx * mult, my * mult));
         }
     }
 

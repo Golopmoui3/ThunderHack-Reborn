@@ -1,7 +1,6 @@
 package thunder.hack.gui.clickui.impl;
 
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.util.StringHelper;
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
@@ -37,27 +36,25 @@ public class SliderElement extends AbstractElement {
         super.render(context, mouseX, mouseY, delta);
         animation = Render2DEngine.scrollAnimate(animation, (((Number) setting.getValue()).floatValue() - min) / (max - min), 0.4f);
 
-        MatrixStack matrixStack = context.getMatrices();
-
         if (setting.group != null)
             Render2DEngine.drawRect(context, x + 4, y, 1f, 18, HudEditor.getColor(1));
 
         if (!dragging) {
-            FontRenderers.sf_medium_mini.drawString(matrixStack, setting.getName(), (setting.group != null ? 2f : 0f) + x + 6, y + 4, new Color(-1).getRGB());
-            FontRenderers.sf_medium_mini.drawString(matrixStack, listening ? (Objects.equals(Stringnumber, "") ? "..." : Stringnumber) : setting.getValue() + "",
+            FontRenderers.sf_medium_mini.drawString(context, setting.getName(), (setting.group != null ? 2f : 0f) + x + 6, y + 4, new Color(-1).getRGB());
+            FontRenderers.sf_medium_mini.drawString(context, listening ? (Objects.equals(Stringnumber, "") ? "..." : Stringnumber) : setting.getValue() + "",
                     (int) (x + width - 6 - FontRenderers.sf_medium_mini.getStringWidth(listening ? (Objects.equals(Stringnumber, "") ? "..." : Stringnumber) : setting.getValue() + "")), y + 5, new Color(-1).getRGB());
         } else {
             if (animation > 0.2f)
-                FontRenderers.sf_medium_mini.drawString(matrixStack, setting.getMin() + "", x + 6, y + 4, new Color(-1).getRGB());
+                FontRenderers.sf_medium_mini.drawString(context, setting.getMin() + "", x + 6, y + 4, new Color(-1).getRGB());
             if (animation < 0.8f)
-                FontRenderers.sf_medium_mini.drawString(matrixStack, setting.getMax() + "", x + width - FontRenderers.sf_medium_mini.getStringWidth(setting.getMax() + "") - 6, y + 4, new Color(-1).getRGB());
+                FontRenderers.sf_medium_mini.drawString(context, setting.getMax() + "", x + width - FontRenderers.sf_medium_mini.getStringWidth(setting.getMax() + "") - 6, y + 4, new Color(-1).getRGB());
 
-            FontRenderers.sf_medium_mini.drawString(matrixStack, listening ? (Objects.equals(Stringnumber, "") ? "..." : Stringnumber) : setting.getValue() + "", animation > 0.2f ? animation < 0.8f ? x + 6 + (width - 14) * animation - FontRenderers.sf_medium_mini.getStringWidth(setting.getValue() + "") / 2f : x + width - FontRenderers.sf_medium_mini.getStringWidth(setting.getMax() + "") - 6 : x + 6, y + 4, new Color(-1).getRGB());
+            FontRenderers.sf_medium_mini.drawString(context, listening ? (Objects.equals(Stringnumber, "") ? "..." : Stringnumber) : setting.getValue() + "", animation > 0.2f ? animation < 0.8f ? x + 6 + (width - 14) * animation - FontRenderers.sf_medium_mini.getStringWidth(setting.getValue() + "") / 2f : x + width - FontRenderers.sf_medium_mini.getStringWidth(setting.getMax() + "") - 6 : x + 6, y + 4, new Color(-1).getRGB());
         }
 
-        Render2DEngine.drawRect(matrixStack, x + 6, y + height - 6, width - 12, 2, new Color(0x28FFFFFF, true));
-        Render2DEngine.draw2DGradientRect(matrixStack, x + 6, y + height - 6, x + 6 + (width - 12) * animation, y + height - 4, HudEditor.getColor(180), HudEditor.getColor(180), HudEditor.getColor(0), HudEditor.getColor(0));
-        Render2DEngine.drawRect(matrixStack, (x + 6 + (width - 14) * animation), y + height - 7.5f, 2, 5, new Color(0xFFE1E1E1));
+        Render2DEngine.drawRect(context, x + 6, y + height - 6, width - 12, 2, new Color(0x28FFFFFF, true));
+        Render2DEngine.draw2DGradientRect(context, x + 6, y + height - 6, x + 6 + (width - 12) * animation, y + height - 4, HudEditor.getColor(180), HudEditor.getColor(180), HudEditor.getColor(0), HudEditor.getColor(0));
+        Render2DEngine.drawRect(context, (x + 6 + (width - 14) * animation), y + height - 7.5f, 2, 5, new Color(0xFFE1E1E1));
 
         animation = MathUtility.clamp(animation, 0, 1);
 

@@ -190,7 +190,7 @@ public class WaypointWindow extends WindowBase {
             FontRenderers.sf_medium_mini.drawString(context, id + ".", getX() + 3, getY() + 41 + getScrollOffset() + waypointPlate.offset, textColor);
         }
         setMaxElementsHeight(waypointPlates.size() * 20);
-        Render2DEngine.popWindow();
+        Render2DEngine.popWindow(context);
     }
 
     @Override

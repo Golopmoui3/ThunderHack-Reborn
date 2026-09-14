@@ -2,6 +2,7 @@ package thunder.hack.features.modules.movement;
 
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.client.network.ClientPlayerEntity;
+import net.minecraft.client.network.OtherClientPlayerEntity;
 import net.minecraft.client.util.math.MatrixStack;
 import net.minecraft.network.packet.Packet;
 import net.minecraft.network.packet.c2s.common.CommonPongC2SPacket;
@@ -72,7 +73,10 @@ public class Blink extends Module {
         prevVelocity = mc.player.getVelocity();
         prevYaw = mc.player.getYaw();
         prevSprinting = mc.player.isSprinting();
-        mc.world.spawnEntity(new ClientPlayerEntity(mc, mc.world, mc.getNetworkHandler(), mc.player.getStatHandler(), mc.player.getRecipeBook(), mc.player.lastSprinting, mc.player.isSneaking()));
+        OtherClientPlayerEntity ghost = new OtherClientPlayerEntity(mc.world, mc.player.getGameProfile());
+        ghost.copyPositionAndRotation(mc.player);
+        ghost.setSneaking(mc.player.isSneaking());
+        mc.world.spawnEntity(ghost);
         sending.set(false);
         storedPackets.clear();
     }

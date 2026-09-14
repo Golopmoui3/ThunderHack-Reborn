@@ -22,9 +22,10 @@ public final class OptifineCapes {
 
     public static void loadPlayerCape(GameProfile player, ReturnCapeTexture response) {
         try {
-            String uuid = player.getId().toString();
-            NativeImageBackedTexture nIBT = getCapeFromURL(String.format("http://s.optifine.net/capes/%s.png", player.getName()));
-            Identifier capeTexture = MinecraftClient.getInstance().getTextureManager().registerDynamicTexture("th-cape-" + uuid, nIBT);
+            String uuid = player.id().toString();
+            NativeImageBackedTexture nIBT = getCapeFromURL(String.format("http://s.optifine.net/capes/%s.png", player.name()));
+            Identifier capeTexture = Identifier.of("thunderhack", "capes/th-cape-" + uuid);
+            MinecraftClient.getInstance().getTextureManager().registerTexture(capeTexture, nIBT);
             response.response(capeTexture);
         } catch (Exception ignored) {
         }
@@ -47,7 +48,7 @@ public final class OptifineCapes {
             e.printStackTrace();
         }
         if (cape != null) {
-            return new NativeImageBackedTexture(parseCape(cape));
+            return new NativeImageBackedTexture(() -> "th-cape", parseCape(cape));
         }
         return null;
     }
@@ -65,7 +66,7 @@ public final class OptifineCapes {
         NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
         for (int x = 0; x < imageSrcWidth; x++) {
             for (int y = 0; y < srcHeight; y++) {
-                imgNew.setColor(x, y, image.getColor(x, y));
+                imgNew.setColorArgb(x, y, image.getColorArgb(x, y));
             }
         }
         image.close();

@@ -1,6 +1,7 @@
 package thunder.hack.features.modules.client;
 
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
 import thunder.hack.core.Managers;
 import thunder.hack.core.manager.client.ModuleManager;
@@ -10,6 +11,7 @@ import thunder.hack.events.impl.EventPlayerJump;
 import thunder.hack.events.impl.EventPlayerTravel;
 import thunder.hack.features.modules.Module;
 import thunder.hack.features.modules.combat.Aura;
+import thunder.hack.injection.accesors.IInput;
 import thunder.hack.setting.Setting;
 
 public class Rotations extends Module {
@@ -81,8 +83,7 @@ public class Rotations extends Module {
             float delta = (mc.player.getYaw() - fixRotation) * MathHelper.RADIANS_PER_DEGREE;
             float cos = MathHelper.cos(delta);
             float sin = MathHelper.sin(delta);
-            mc.player.input.getMovementInput().x = Math.round(mS * cos - mF * sin);
-            mc.player.input.getMovementInput().y = Math.round(mF * cos + mS * sin);
+            ((IInput) mc.player.input).setMovementVector(new Vec2f(Math.round(mS * cos - mF * sin), Math.round(mF * cos + mS * sin)));
         }
     }
 

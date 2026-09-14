@@ -16,7 +16,9 @@ import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Box;
 import net.minecraft.util.math.MathHelper;
+import net.minecraft.util.math.Vec2f;
 import net.minecraft.util.math.Vec3d;
+import thunder.hack.injection.accesors.IInput;
 import net.minecraft.world.RaycastContext;
 import org.jetbrains.annotations.NotNull;
 import thunder.hack.core.manager.client.ModuleManager;
@@ -136,8 +138,7 @@ public class PearlChaser extends Module {
             mc.options.backKey.setPressed(false);
             mc.options.leftKey.setPressed(false);
             mc.options.rightKey.setPressed(false);
-            mc.player.input.getMovementInput().y = 0;
-            mc.player.input.getMovementInput().x = 0;
+            ((IInput) mc.player.input).setMovementVector(Vec2f.ZERO);
             return;
         }
 

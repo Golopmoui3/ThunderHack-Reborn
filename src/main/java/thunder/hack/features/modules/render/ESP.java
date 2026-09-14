@@ -3,6 +3,7 @@ import com.mojang.blaze3d.vertex.VertexFormat;
 
 import com.mojang.blaze3d.vertex.VertexFormat;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.Block;
 import net.minecraft.block.Blocks;
@@ -128,21 +129,7 @@ public class ESP extends Module {
                     stack.translate(-x, -y, -z);
                     stack.pop();
 
-                    GlStateManager._disableDepthTest();
-                    MatrixStack matrices = new MatrixStack();
-                    Camera camera = mc.gameRenderer.getCamera();
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
-                    matrices.translate(x, y, z);
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    GlStateManager._enableBlend();
-                    GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
-                    matrices.translate(0, 0, 0);
-                    matrices.scale(-0.05f, -0.05f, 0);
-                    FontRenderers.modules.drawCenteredString(matrices, String.format("%.1f", ((aece.getRadius() * 10) - 5f)), 0, -10f, -1);
-                    GlStateManager._disableBlend();
-                    GlStateManager._enableDepthTest();
+                    Render3DEngine.drawTextIn3D(String.format("%.1f", ((aece.getRadius() * 10) - 5f)), aece.getEntityPos(), 0, 0.5, 0, new Color(-1));
                 }
             }
         }
@@ -230,21 +217,7 @@ public class ESP extends Module {
                         || block == Blocks.SKELETON_SKULL
                         || block == Blocks.WITHER_SKELETON_SKULL) {
                     Render3DEngine.drawBoxOutline(new Box(blockPos), burrowColor.getValue().getColorObject(), 2);
-                    GlStateManager._disableDepthTest();
-                    MatrixStack matrices = new MatrixStack();
-                    Camera camera = mc.gameRenderer.getCamera();
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
-                    matrices.translate(x + 0.5f, y + 0.5f, z + 0.5f);
-                    matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                    matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                    GlStateManager._enableBlend();
-                    GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
-                    matrices.translate(0, 0, 0);
-                    matrices.scale(-0.025f, -0.025f, 0);
-                    FontRenderers.modules.drawCenteredString(matrices, "BURROW", 0, -5, burrowTextColor.getValue().getColor());
-                    GlStateManager._disableBlend();
-                    GlStateManager._enableDepthTest();
+                    Render3DEngine.drawTextIn3D("BURROW", new Vec3d(blockPos.getX() + 0.5, blockPos.getY() + 0.5, blockPos.getZ() + 0.5), 0, 0.5, 0, new Color(burrowTextColor.getValue().getColor()));
                 }
             }
         }
@@ -252,26 +225,12 @@ public class ESP extends Module {
         if (tntFuse.getValue() || tntRadius.getValue()) {
             for (Entity ent : mc.world.getEntities()) {
                 if (ent instanceof TntEntity tnt) {
-                    double x = tnt.lastX + (tnt.getPos().getX() - tnt.lastX) * Render3DEngine.getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getX();
-                    double y = tnt.lastY + (tnt.getPos().getY() - tnt.lastY) * Render3DEngine.getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getY();
-                    double z = tnt.lastZ + (tnt.getPos().getZ() - tnt.lastZ) * Render3DEngine.getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ();
+                    double x = tnt.lastX + (tnt.getEntityPos().getX() - tnt.lastX) * Render3DEngine.getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getX();
+                    double y = tnt.lastY + (tnt.getEntityPos().getY() - tnt.lastY) * Render3DEngine.getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getY();
+                    double z = tnt.lastZ + (tnt.getEntityPos().getZ() - tnt.lastZ) * Render3DEngine.getTickDelta() - mc.getEntityRenderDispatcher().camera.getCameraPos().getZ();
 
                     if (tntFuse.getValue()) {
-                        GlStateManager._disableDepthTest();
-                        MatrixStack matrices = new MatrixStack();
-                        Camera camera = mc.gameRenderer.getCamera();
-                        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(camera.getYaw() + 180.0F));
-                        matrices.translate(x, y + 0.5f, z);
-                        matrices.multiply(RotationAxis.POSITIVE_Y.rotationDegrees(-camera.getYaw()));
-                        matrices.multiply(RotationAxis.POSITIVE_X.rotationDegrees(camera.getPitch()));
-                        GlStateManager._enableBlend();
-                        GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
-                        matrices.translate(0, 0, 0);
-                        matrices.scale(-0.025f, -0.025f, 0);
-                        FontRenderers.modules.drawCenteredString(matrices, String.format("%.1f", ((float) tnt.getFuse() / 20f)) + "s", 0, -5, tntFuseText.getValue().getColor());
-                        GlStateManager._disableBlend();
-                        GlStateManager._enableDepthTest();
+                        Render3DEngine.drawTextIn3D(String.format("%.1f", ((float) tnt.getFuse() / 20f)) + "s", tnt.getEntityPos(), 0, 0.5, 0, new Color(tntFuseText.getValue().getColor()));
                     }
 
                     if (tntRadius.getValue()) {
@@ -294,32 +253,25 @@ public class ESP extends Module {
                     float xOffset = mc.getWindow().getScaledWidth() / 2f;
                     float yOffset = mc.getWindow().getScaledHeight() / 2f;
 
-                    float xPos = (float) (pearl.lastX + (pearl.getPos().getX() - pearl.lastX) * Render3DEngine.getTickDelta());
-                    float zPos = (float) (pearl.lastZ + (pearl.getPos().getZ() - pearl.lastZ) * Render3DEngine.getTickDelta());
+                    float xPos = (float) (pearl.lastX + (pearl.getEntityPos().getX() - pearl.lastX) * Render3DEngine.getTickDelta());
+                    float zPos = (float) (pearl.lastZ + (pearl.getEntityPos().getZ() - pearl.lastZ) * Render3DEngine.getTickDelta());
 
                     float yaw = getRotations(new Vec2f(xPos, zPos)) - mc.player.getYaw();
                     context.getMatrices().translate(xOffset, yOffset);
-                    context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(yaw));
+                    context.getMatrices().rotate((float) Math.toRadians(yaw));
                     context.getMatrices().translate(-xOffset, -yOffset);
                     Render2DEngine.drawTracerPointer(context, xOffset, yOffset - 50, 12.5f, 0.5f, 3.63f, true, true, HudEditor.getColor(1).getRGB());
                     context.getMatrices().translate(xOffset, yOffset);
-                    context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-yaw));
+                    context.getMatrices().rotate((float) Math.toRadians(-yaw));
                     context.getMatrices().translate(-xOffset, -yOffset);
                     FontRenderers.modules.drawCenteredString(context, String.format("%.1f", mc.player.distanceTo(pearl)) + "m", (float) (Math.sin(Math.toRadians(yaw)) * 50f) + xOffset, (float) (yOffset - (Math.cos(Math.toRadians(yaw)) * 50f)) - 20, -1);
                 }
             }
         }
 
-        Matrix4f matrix = context.getMatrices().peek().getPositionMatrix();
-        Render2DEngine.setupRender();
-        BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_COLOR);
-
         for (Entity ent : mc.world.getEntities())
             if (shouldRender(ent))
-                drawBox(bufferBuilder, ent, matrix);
-
-        Render2DEngine.endBuilding(bufferBuilder);
-        Render2DEngine.endRender();
+                drawBox(context, ent);
     }
 
     public boolean shouldRender(Entity entity) {
@@ -369,7 +321,7 @@ public class ESP extends Module {
         };
     }
 
-    public void drawBox(BufferBuilder bufferBuilder, @NotNull Entity ent, Matrix4f matrix) {
+    public void drawBox(DrawContext context, @NotNull Entity ent) {
         Vec3d[] vectors = getVectors(ent);
 
         Color col = getEntityColor(ent);
@@ -388,41 +340,38 @@ public class ESP extends Module {
 
 
         if (position != null) {
-            double posX = position.x;
-            double posY = position.y;
-            double endPosX = position.z;
-            double endPosY = position.w;
+            float posX = (float) position.x;
+            float posY = (float) position.y;
+            float endPosX = (float) position.z;
+            float endPosY = (float) position.w;
 
-            if(outline.getValue()) {
-                Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (posX - 1F), (float) posY, (float) (posX + 0.5), (float) (endPosY + 0.5), Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK);
-                Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (posX - 1F), (float) (posY - 0.5), (float) (endPosX + 0.5), (float) (posY + 0.5 + 0.5), Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK);
-                Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (endPosX - 0.5 - 0.5), (float) posY, (float) (endPosX + 0.5), (float) (endPosY + 0.5), Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK);
-                Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (posX - 1), (float) (endPosY - 0.5 - 0.5), (float) (endPosX + 0.5), (float) (endPosY + 0.5), Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK);
-            }
+            if (outline.getValue())
+                Render2DEngine.drawRectWithOutline(context, posX - 0.5f, posY - 0.5f, endPosX - posX + 1, endPosY - posY + 1, Color.BLACK, Color.BLACK);
 
-            switch(colorMode.getValue()) {
+            switch (colorMode.getValue()) {
                 case Custom -> {
-                    Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (posX - 0.5f), (float) posY, (float) (posX + 0.5 - 0.5), (float) endPosY, col, col, col, col);
-                    Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) posX, (float) (endPosY - 0.5f), (float) endPosX, (float) endPosY, col, col, col, col);
-                    Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (posX - 0.5), (float) posY, (float) endPosX, (float) (posY + 0.5), col, col, col, col);
-                    Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (endPosX - 0.5), (float) posY, (float) endPosX, (float) endPosY, col, col, col, col);
+                    Render2DEngine.drawRect(context, posX - 0.5f, posY, 1, endPosY - posY, col);
+                    Render2DEngine.drawRect(context, posX, endPosY - 0.5f, endPosX - posX, 0.5f, col);
+                    Render2DEngine.drawRect(context, posX, posY, endPosX - posX, 0.5f, col);
+                    Render2DEngine.drawRect(context, endPosX - 0.5f, posY, 0.5f, endPosY - posY, col);
                 }
-                case SyncColor -> {
-                    Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (posX - 0.5f), (float) posY, (float) (posX + 0.5 - 0.5), (float) endPosY, HudEditor.getColor(270), HudEditor.getColor(0), HudEditor.getColor(0), HudEditor.getColor(270));
-                    Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) posX, (float) (endPosY - 0.5f), (float) endPosX, (float) endPosY, HudEditor.getColor(0), HudEditor.getColor(180), HudEditor.getColor(180), HudEditor.getColor(0));
-                    Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (posX - 0.5), (float) posY, (float) endPosX, (float) (posY + 0.5), HudEditor.getColor(180), HudEditor.getColor(90), HudEditor.getColor(90), HudEditor.getColor(180));
-                    Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (endPosX - 0.5), (float) posY, (float) endPosX, (float) endPosY, HudEditor.getColor(90), HudEditor.getColor(270), HudEditor.getColor(270), HudEditor.getColor(90));
-                }
+                case SyncColor ->
+                        Render2DEngine.drawRectWithOutline(context, posX - 0.5f, posY - 0.5f, endPosX - posX + 1, endPosY - posY + 1, HudEditor.getColor(0), HudEditor.getColor(270));
             }
 
 
-            if(ent instanceof LivingEntity lent && lent.getHealth() != 0 && renderHealth.getValue()) {
-                Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (posX - 5), (float) posY, (float) posX - 3, (float) endPosY, Color.BLACK, Color.BLACK, Color.BLACK, Color.BLACK);
-                switch(colorMode.getValue()) {
-                    case Custom -> Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (posX - 5), (float) (endPosY + (posY - endPosY) * lent.getHealth() / lent.getMaxHealth()), (float) posX - 3, (float) endPosY, healthB.getValue().getColorObject(), healthB.getValue().getColorObject(), healthU.getValue().getColorObject(), healthU.getValue().getColorObject());
-                    case SyncColor ->  Render2DEngine.setRectPoints(bufferBuilder, matrix, (float) (posX - 5), (float) (endPosY + (posY - endPosY) * lent.getHealth() / lent.getMaxHealth()), (float) posX - 3, (float) endPosY, HudEditor.getColor(90), HudEditor.getColor(90), HudEditor.getColor(270), HudEditor.getColor(270));
+            if (ent instanceof LivingEntity lent && lent.getHealth() != 0 && renderHealth.getValue()) {
+                Render2DEngine.drawRect(context, posX - 5, posY, 2, endPosY - posY, Color.BLACK);
+                float frac = lent.getHealth() / lent.getMaxHealth();
+                float topY = endPosY + (posY - endPosY) * frac;
+                switch (colorMode.getValue()) {
+                    case Custom ->
+                            Render2DEngine.draw2DGradientRect(context, posX - 5, topY, posX - 3, endPosY, healthB.getValue().getColorObject(), healthU.getValue().getColorObject(), healthB.getValue().getColorObject(), healthU.getValue().getColorObject());
+                    case SyncColor ->
+                            Render2DEngine.draw2DGradientRect(context, posX - 5, topY, posX - 3, endPosY, HudEditor.getColor(90), HudEditor.getColor(270), HudEditor.getColor(90), HudEditor.getColor(270));
                 }
-            } }
+            }
+        }
     }
 
     @NotNull

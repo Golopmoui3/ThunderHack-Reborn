@@ -5,6 +5,7 @@ import net.minecraft.item.BlockItem;
 import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.PlayerInput;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.math.BlockPos;
 import net.minecraft.util.math.Vec3d;
@@ -187,7 +188,7 @@ public class Scaffold extends Module {
         int prevItem = prePlace(true);
 
         if (prevItem != -1) {
-            if (mc.player.input.jumping && !MovementUtility.isMoving() && tower.getValue() && !mode.is(Mode.Grim)) {
+            if (mc.player.input.playerInput.jump() && !MovementUtility.isMoving() && tower.getValue() && !mode.is(Mode.Grim)) {
                 mc.player.setVelocity(0.0, 0.42, 0.0);
                 if (timer.passedMs(1500)) {
                     mc.player.setVelocity(mc.player.getVelocity().x, -0.28, mc.player.getVelocity().z);
@@ -206,8 +207,10 @@ public class Scaffold extends Module {
 
             boolean sneak = InteractionUtility.needSneak(mc.world.getBlockState(bhr.getBlockPos()).getBlock()) && !mc.player.isSneaking();
 
-            if (sneak)
-                mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.PRESS_SHIFT_KEY));
+            if (sneak) {
+                PlayerInput pi = mc.player.input.playerInput;
+                mc.player.networkHandler.sendPacket(new PlayerInputC2SPacket(new PlayerInput(pi.forward(), pi.backward(), pi.left(), pi.right(), pi.jump(), true, pi.sprint())));
+            }
 
             if (mode.is(Mode.Grim))
                 sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), rotations[0], rotations[1], mc.player.isOnGround(), false));
@@ -222,8 +225,10 @@ public class Scaffold extends Module {
 
             prevY = currentblock.position().getY();
 
-            if (sneak)
-                mc.player.networkHandler.sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+            if (sneak) {
+                PlayerInput pi2 = mc.player.input.playerInput;
+                mc.player.networkHandler.sendPacket(new PlayerInputC2SPacket(new PlayerInput(pi2.forward(), pi2.backward(), pi2.left(), pi2.right(), pi2.jump(), false, pi2.sprint())));
+            }
 
             if (mode.is(Mode.Grim))
                 sendPacket(new PlayerMoveC2SPacket.Full(mc.player.getX(), mc.player.getY(), mc.player.getZ(), mc.player.getYaw(), mc.player.getPitch(), mc.player.isOnGround(), false));

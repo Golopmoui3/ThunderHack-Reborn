@@ -1,8 +1,10 @@
 package thunder.hack.features.modules.movement;
 
 import meteordevelopment.orbit.EventHandler;
+import net.minecraft.util.math.Vec2f;
 import thunder.hack.events.impl.EventKeyboardInput;
 import thunder.hack.features.modules.Module;
+import thunder.hack.injection.accesors.IInput;
 import thunder.hack.setting.Setting;
 
 public class AutoWalk extends Module {
@@ -32,6 +34,6 @@ public class AutoWalk extends Module {
     @EventHandler
     public void onKey(EventKeyboardInput e) {
         if (mode.getValue() == Mode.Simple)
-            mc.player.input.getMovementInput().y = 1f;
+            ((IInput) mc.player.input).setMovementVector(new Vec2f(mc.player.input.getMovementInput().x, 1f));
     }
 }

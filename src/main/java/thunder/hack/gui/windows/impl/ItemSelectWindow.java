@@ -71,18 +71,15 @@ public class ItemSelectWindow extends WindowBase {
 
         int tabColor1 = allTab ? new Color(0xD5D5D5).getRGB() : Color.GRAY.getRGB();
         int tabColor2 = allTab ? Color.GRAY.getRGB() : new Color(0xBDBDBD).getRGB();
-        BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.DEBUG_LINE_STRIP, VertexFormats.POSITION_COLOR);
-        bufferBuilder.vertex(getX() + 1.5f, getY() + 29, 0f).color(Color.DARK_GRAY.getRGB());
-        bufferBuilder.vertex(getX() + 8, getY() + 29, 0f).color(tabColor1);
-        bufferBuilder.vertex(getX() + 8, getY() + 19, 0f).color(tabColor1);
-        bufferBuilder.vertex(getX() + 48, getY() + 19, 0f).color(tabColor1);
-        bufferBuilder.vertex(getX() + 54, getY() + 29, 0f).color(tabColor1);
-        bufferBuilder.vertex(getX() + 52, getY() + 25, 0f).color(tabColor2);
-        bufferBuilder.vertex(getX() + 52, getY() + 19, 0f).color(tabColor2);
-        bufferBuilder.vertex(getX() + 92, getY() + 19, 0f).color(tabColor2);
-        bufferBuilder.vertex(getX() + 100, getY() + 29, 0f).color(Color.GRAY.getRGB());
-        bufferBuilder.vertex(getX() + getWidth() - 1, getY() + 29, 0f).color(Color.DARK_GRAY.getRGB());
-        BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+        Render2DEngine.drawLine(context, getX() + 1.5f, getY() + 29, getX() + 8, getY() + 29, Color.DARK_GRAY.getRGB());
+        Render2DEngine.drawLine(context, getX() + 8, getY() + 29, getX() + 8, getY() + 19, tabColor1);
+        Render2DEngine.drawLine(context, getX() + 8, getY() + 19, getX() + 48, getY() + 19, tabColor1);
+        Render2DEngine.drawLine(context, getX() + 48, getY() + 19, getX() + 54, getY() + 29, tabColor1);
+        Render2DEngine.drawLine(context, getX() + 54, getY() + 29, getX() + 52, getY() + 25, tabColor1);
+        Render2DEngine.drawLine(context, getX() + 52, getY() + 25, getX() + 52, getY() + 19, tabColor2);
+        Render2DEngine.drawLine(context, getX() + 52, getY() + 19, getX() + 92, getY() + 19, tabColor2);
+        Render2DEngine.drawLine(context, getX() + 92, getY() + 19, getX() + 100, getY() + 29, tabColor2);
+        Render2DEngine.drawLine(context, getX() + 100, getY() + 29, getX() + getWidth() - 1, getY() + 29, Color.GRAY.getRGB());
 
         FontRenderers.sf_medium_mini.drawString(context, "All", getX() + 25, getY() + 25, tabColor1);
         FontRenderers.sf_medium_mini.drawString(context, "Selected", getX() + 60, getY() + 25, tabColor2);
@@ -99,7 +96,7 @@ public class ItemSelectWindow extends WindowBase {
                 continue;
 
             context.getMatrices().pushMatrix();
-            context.getMatrices().translate(getX() + 6, itemPlate.offset + getY() + 32 + getScrollOffset(), 0);
+            context.getMatrices().translate(getX() + 6, itemPlate.offset + getY() + 32 + getScrollOffset());
             context.drawItem(itemPlate.item().getDefaultStack(), 0, 0);
             context.getMatrices().popMatrix();
 
@@ -119,7 +116,7 @@ public class ItemSelectWindow extends WindowBase {
             }
         }
         setMaxElementsHeight((allTab ? allItems : itemPlates).size() * 20);
-        Render2DEngine.popWindow();
+        Render2DEngine.popWindow(context);
     }
 
     @Override

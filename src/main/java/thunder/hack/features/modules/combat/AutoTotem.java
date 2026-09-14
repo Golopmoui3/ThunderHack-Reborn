@@ -143,7 +143,7 @@ public final class AutoTotem extends Module {
         } else if (invResult.found()) {
             int slot = invResult.slot() >= 36 ? invResult.slot() - 36 : invResult.slot();
             if (!hotbarFallBack.getValue()) swapTo(slot);
-            else mc.interactionManager.pickItemFromEntity(slot);
+            else mc.interactionManager.clickCreativeStack(mc.player.currentScreenHandler.getSlot(slot).getStack(), 36 + mc.player.getInventory().getSelectedSlot());
             delay = 20;
         }
     }
@@ -200,10 +200,10 @@ public final class AutoTotem extends Module {
                     }
                     case MatrixPick -> {
                         debug(slot + " pick");
-                        sendPacket(new PickFromInventoryC2SPacket(slot));
+                        mc.interactionManager.clickCreativeStack(mc.player.currentScreenHandler.getSlot(slot).getStack(), 36 + mc.player.getInventory().getSelectedSlot());
                         sendPacket(new PlayerActionC2SPacket(PlayerActionC2SPacket.Action.SWAP_ITEM_WITH_OFFHAND, BlockPos.ORIGIN, Direction.DOWN));
                         int prevSlot = mc.player.getInventory().getSelectedSlot();
-                        Managers.ASYNC.run(() -> mc.player.getInventory().setSelectedSlot(prevSlot, 300));
+                        Managers.ASYNC.run(() -> mc.player.getInventory().setSelectedSlot(prevSlot));
                     }
                     case NewVersion -> {
                         debug(slot + " swap");
@@ -308,7 +308,7 @@ public final class AutoTotem extends Module {
                         else if (gapple.found() || offHandItem == Items.ENCHANTED_GOLDEN_APPLE)
                             item = Items.ENCHANTED_GOLDEN_APPLE;
                     } else {
-                        if (!mc.player.getItemCooldownManager().isCoolingDown(Items.SHIELD)) item = Items.SHIELD;
+                        if (!mc.player.getItemCooldownManager().isCoolingDown(Items.SHIELD.getDefaultStack())) item = Items.SHIELD;
                         else {
                             if (crapple.found() || offHandItem == Items.GOLDEN_APPLE)
                                 item = Items.GOLDEN_APPLE;

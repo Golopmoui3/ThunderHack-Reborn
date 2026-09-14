@@ -30,7 +30,7 @@ public class PlayerArgumentType implements ArgumentType<PlayerListEntry> {
         String name = reader.readString();
 
         final PlayerListEntry player = mc.getNetworkHandler().getPlayerList().stream()
-                .filter(p -> name.equals(p.getProfile().getName()))
+                .filter(p -> name.equals(p.getProfile().name()))
                 .findFirst()
                 .orElse(null);
         if (player == null) {
@@ -41,7 +41,7 @@ public class PlayerArgumentType implements ArgumentType<PlayerListEntry> {
 
     @Override
     public <S> CompletableFuture<Suggestions> listSuggestions(CommandContext<S> context, SuggestionsBuilder builder) {
-        return CommandSource.suggestMatching(mc.getNetworkHandler().getPlayerList().stream().map(p -> p.getProfile().getName()), builder);
+        return CommandSource.suggestMatching(mc.getNetworkHandler().getPlayerList().stream().map(p -> p.getProfile().name()), builder);
     }
 
     @Override

@@ -2,6 +2,7 @@ package thunder.hack.features.cmd.impl;
 
 import com.mojang.brigadier.builder.LiteralArgumentBuilder;
 import net.minecraft.command.CommandSource;
+import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import net.minecraft.scoreboard.ScoreboardObjective;
 import thunder.hack.ThunderHack;
 import thunder.hack.core.Managers;
@@ -25,7 +26,7 @@ public class RctCommand extends Command {
                 return SINGLE_SUCCESS;
             }
 
-            String an = "an" + ((ScoreboardObjective) mc.player.getScoreboard().getObjectives().toArray()[0]).getDisplayName().getString().substring(10);
+            String an = "an" + ((ScoreboardObjective) mc.world.getScoreboard().getObjectives().toArray()[0]).getDisplayName().getString().substring(10);
 
             Managers.ASYNC.run(() -> {
                 mc.player.networkHandler.sendPacket(new CommandExecutionC2SPacket("hub"));

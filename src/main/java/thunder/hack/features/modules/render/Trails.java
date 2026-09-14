@@ -85,7 +85,7 @@ public class Trails extends Module {
                     GlStateManager._enableBlend();
                     GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
                     GlStateManager._enableDepthTest();
-                    RenderSystem.depthFunc(GL11.GL_LEQUAL);
+                    GlStateManager._depthFunc(GL11.GL_LEQUAL);
 
                     BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.TRIANGLE_STRIP, VertexFormats.POSITION_COLOR);
 
@@ -115,7 +115,7 @@ public class Trails extends Module {
                 GlStateManager._enableBlend();
                 GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
                 GlStateManager._enableDepthTest();
-                RenderSystem.depthMask(false);
+                GlStateManager._depthMask(false);
                 BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
                 int size = ((IEntity) entity).getTrails().size();
@@ -149,7 +149,7 @@ public class Trails extends Module {
                     }
                 }
                 Render2DEngine.endBuilding(bufferBuilder);
-                RenderSystem.depthMask(true);
+                GlStateManager._depthMask(true);
                 GlStateManager._disableDepthTest();
                 GlStateManager._disableBlend();
                 stack.pop();
@@ -166,7 +166,7 @@ public class Trails extends Module {
                     GlStateManager._enableBlend();
                     GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
                     GlStateManager._enableDepthTest();
-                    RenderSystem.depthFunc(GL11.GL_LEQUAL);
+                    GlStateManager._depthFunc(GL11.GL_LEQUAL);
 
                     float step = (float) (mc.player.getBoundingBox().getLengthY() / 5f);
 
@@ -228,7 +228,7 @@ public class Trails extends Module {
         if (!particles.isEmpty()) {
             GlStateManager._enableBlend();
             GlStateManager._enableDepthTest();
-            RenderSystem.depthMask(false);
+            GlStateManager._depthMask(false);
 
             GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
 
@@ -248,7 +248,7 @@ public class Trails extends Module {
 
             Render2DEngine.endBuilding(bufferBuilder);
             GlStateManager._disableBlend();
-            RenderSystem.depthMask(true);
+            GlStateManager._depthMask(true);
             GlStateManager._disableDepthTest();
         }
     }

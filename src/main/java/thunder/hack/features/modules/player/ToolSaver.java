@@ -1,6 +1,7 @@
 package thunder.hack.features.modules.player;
 
 import net.minecraft.item.*;
+import net.minecraft.registry.tag.ItemTags;
 import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
 
@@ -17,7 +18,7 @@ public class ToolSaver extends Module {
     @Override
     public void onUpdate() {
         ItemStack tool = mc.player.getMainHandStack();
-        if(!(tool.getItem() instanceof MiningToolItem))
+        if (!(tool.isIn(ItemTags.PICKAXES) || tool.isIn(ItemTags.AXES) || tool.isIn(ItemTags.SHOVELS) || tool.isIn(ItemTags.HOES)))
             return;
 
         float durability = tool.getMaxDamage() - tool.getDamage();

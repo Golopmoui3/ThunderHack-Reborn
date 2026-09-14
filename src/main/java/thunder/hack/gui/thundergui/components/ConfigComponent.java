@@ -57,14 +57,14 @@ public class ConfigComponent {
         if (first_open) {
             Render2DEngine.addWindow(context, posX + 5, posY, posX + 5 + 285, posY + 30, 1f);
             Render2DEngine.drawBlurredShadow(context, MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
-            Render2DEngine.popWindow();
+            Render2DEngine.popWindow(context);
             first_open = false;
         }
 
         if (isHovered(MouseX, MouseY)) {
             Render2DEngine.addWindow(context, posX + 5, posY, posX + 5 + 285, posY + 30, 1f);
             Render2DEngine.drawBlurredShadow(context, MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
-            Render2DEngine.popWindow();
+            Render2DEngine.popWindow(context);
         }
 
         Render2DEngine.drawRound(context, posX + 250, posY + 8, 30, 14, 2f, Render2DEngine.applyOpacity(new Color(25, 20, 30, 255), getFadeFactor()));

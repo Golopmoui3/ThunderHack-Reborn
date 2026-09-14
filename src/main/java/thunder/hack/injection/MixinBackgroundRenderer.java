@@ -1,33 +1,23 @@
 package thunder.hack.injection;
 
-import com.mojang.blaze3d.systems.RenderSystem;
-import thunder.hack.core.manager.client.ModuleManager;
 import net.minecraft.client.render.Camera;
+import net.minecraft.client.render.RenderTickCounter;
 import net.minecraft.client.render.fog.FogRenderer;
+import net.minecraft.client.world.ClientWorld;
 import net.minecraft.entity.Entity;
+import org.joml.Vector4f;
 import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
-import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
-import thunder.hack.features.modules.render.WorldTweaks;
+import thunder.hack.core.manager.client.ModuleManager;
 
 @Mixin(FogRenderer.class)
 public class MixinBackgroundRenderer {
+    // TODO(1.21.11): fog is UBO-based now (FogData/GpuBufferSlice); NoRender.fog and
+    //  WorldTweaks.fogModify need a FogData/UBO hook instead of RenderSystem.setShaderFog*.
     @Inject(method = "applyFog", at = @At("TAIL"))
-    private static void onApplyFog(Camera camera, FogRenderer.FogType fogType, float viewDistance, boolean thickFog, float tickDelta, CallbackInfo info) {
-        if (ModuleManager.noRender.isEnabled() && ModuleManager.noRender.fog.getValue()) {
-            if (fogType == FogRenderer.FogType.FOG_TERRAIN) {
-                RenderSystem.setShaderFogStart(viewDistance * 4);
-                RenderSystem.setShaderFogEnd(viewDistance * 4.25f);
-            }
-        }
-
-        if(ModuleManager.worldTweaks.isEnabled() && WorldTweaks.fogModify.getValue().isEnabled()) {
-            RenderSystem.setShaderFogStart(WorldTweaks.fogStart.getValue());
-            RenderSystem.setShaderFogEnd(WorldTweaks.fogEnd.getValue());
-            RenderSystem.setShaderFogColor(WorldTweaks.fogColor.getValue().getGlRed(), WorldTweaks.fogColor.getValue().getGlGreen(), WorldTweaks.fogColor.getValue().getGlBlue());
-        }
+    private void onApplyFog(Camera camera, int viewDistance, RenderTickCounter tickCounter, float skyDarkness, ClientWorld world, CallbackInfoReturnable<Vector4f> info) {
     }
 
     @Inject(method = "getFogModifier(Lnet/minecraft/entity/Entity;F)Lnet/minecraft/client/render/fog/FogRenderer$StatusEffectFogModifier;", at = @At("HEAD"), cancellable = true)

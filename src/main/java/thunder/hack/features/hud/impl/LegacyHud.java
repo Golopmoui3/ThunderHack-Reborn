@@ -21,6 +21,7 @@ import thunder.hack.setting.Setting;
 import thunder.hack.setting.impl.ColorSetting;
 import thunder.hack.utility.math.FrameRateCounter;
 import thunder.hack.utility.math.MathUtility;
+import thunder.hack.utility.player.InventoryUtility;
 
 import java.awt.*;
 import java.text.SimpleDateFormat;
@@ -106,7 +107,7 @@ public class LegacyHud extends Module {
         int i = (mc.currentScreen instanceof ChatScreen && renderingUp.getValue()) ? 13 : (renderingUp.getValue() ? -2 : 0);
 
         if (potions.getValue()) {
-            List<StatusEffectInstance> effects = new ArrayList<>(mc.player.getStatusEffects());
+            java.util.List<StatusEffectInstance> effects = new ArrayList<>(mc.player.getStatusEffects());
             for (StatusEffectInstance potionEffect : effects) {
                 StatusEffect potion = potionEffect.getEffectType().value();
                 String power = "";
@@ -268,7 +269,11 @@ public class LegacyHud extends Module {
     public void renderTotemHUD(DrawContext context) {
         int width = mc.getWindow().getScaledWidth();
         int height = mc.getWindow().getScaledHeight();
-        int totems = mc.player.getInventory().main.stream().filter(itemStack -> (itemStack.getItem() == Items.TOTEM_OF_UNDYING)).mapToInt(ItemStack::getCount).sum();
+        int totems = 0;
+        for (int slot = 0; slot < mc.player.getInventory().size(); slot++) {
+            ItemStack itemStack = mc.player.getInventory().getStack(slot);
+            if (itemStack.getItem() == Items.TOTEM_OF_UNDYING) totems += itemStack.getCount();
+        }
         int u = mc.player.getMaxAir();
         int v = Math.min(mc.player.getAir(), u);
         if (mc.player.getOffHandStack().getItem() == Items.TOTEM_OF_UNDYING)

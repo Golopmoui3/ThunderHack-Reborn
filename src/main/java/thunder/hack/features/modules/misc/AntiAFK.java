@@ -2,11 +2,13 @@ package thunder.hack.features.modules.misc;
 
 import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
+import net.minecraft.util.math.Vec2f;
 import thunder.hack.core.Managers;
 import thunder.hack.events.impl.EventKeyboardInput;
 import thunder.hack.events.impl.EventSetting;
 import thunder.hack.events.impl.PlayerUpdateEvent;
 import thunder.hack.features.modules.Module;
+import thunder.hack.injection.accesors.IInput;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.Timer;
 import thunder.hack.utility.player.MovementUtility;
@@ -59,8 +61,7 @@ public class AntiAFK extends Module {
             float sin = (float) Math.clamp(Math.sin(angleToRad), -1, 1);
             float cos = (float) Math.clamp(Math.cos(angleToRad), -1, 1);
 
-            mc.player.input.getMovementInput().y = Math.round(sin);
-            mc.player.input.getMovementInput().x = Math.round(cos);
+            ((IInput) mc.player.input).setMovementVector(new Vec2f(Math.round(cos), Math.round(sin)));
         }
     }
 

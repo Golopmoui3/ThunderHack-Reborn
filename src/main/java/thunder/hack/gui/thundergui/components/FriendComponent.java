@@ -52,7 +52,8 @@ public class FriendComponent {
         net.minecraft.util.Util.getMainWorkerExecutor().execute(() -> {
             try {
                 NativeImageBackedTexture nIBT = getHeadFromURL("https://minotar.net/helm/" + name + "/22.png");
-                head = MinecraftClient.getInstance().getTextureManager().registerDynamicTexture("th-heads-" + name, nIBT);
+                head = Identifier.of("thunderhack", "heads/th-heads-" + name);
+                MinecraftClient.getInstance().getTextureManager().registerTexture(head, nIBT);
                 Core.HEADS.put(name, head);
             } catch (Exception e) {
                 head = null;
@@ -77,7 +78,7 @@ public class FriendComponent {
             e.printStackTrace();
         }
         if (Head != null) {
-            NativeImageBackedTexture nIBT = new NativeImageBackedTexture(parseHead(Head));
+            NativeImageBackedTexture nIBT = new NativeImageBackedTexture(() -> "th-head", parseHead(Head));
             return nIBT;
         }
         return null;
@@ -96,7 +97,7 @@ public class FriendComponent {
         NativeImage imgNew = new NativeImage(imageWidth, imageHeight, true);
         for (int x = 0; x < imageSrcWidth; x++) {
             for (int y = 0; y < srcHeight; y++) {
-                imgNew.setColor(x, y, image.getColor(x, y));
+                imgNew.setColorArgb(x, y, image.getColorArgb(x, y));
             }
         }
         image.close();
@@ -117,14 +118,14 @@ public class FriendComponent {
         if (first_open) {
             Render2DEngine.addWindow(context, posX + 5, posY, posX + 5 + 285, posY + 30, 1f);
             Render2DEngine.drawBlurredShadow(context, MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
-            Render2DEngine.popWindow();
+            Render2DEngine.popWindow(context);
             first_open = false;
         }
 
         if (isHovered(MouseX, MouseY)) {
             Render2DEngine.addWindow(context, posX + 5, posY, posX + 5 + 285, posY + 30, 1f);
             Render2DEngine.drawBlurredShadow(context, MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
-            Render2DEngine.popWindow();
+            Render2DEngine.popWindow(context);
         }
 
         Render2DEngine.drawRound(context, posX + 266, posY + 8, 14, 14, 2f, Render2DEngine.applyOpacity(new Color(25, 20, 30, 255), getFadeFactor()));
@@ -141,7 +142,7 @@ public class FriendComponent {
 
         FontRenderers.modules.drawString(context, name, posX + 37, posY + 6, Render2DEngine.applyOpacity(-1, getFadeFactor()));
 
-        boolean online = mc.player.networkHandler.getPlayerList().stream().map(p -> p.getProfile().getName()).toList().contains(name);
+        boolean online = mc.player.networkHandler.getPlayerList().stream().map(p -> p.getProfile().name()).toList().contains(name);
 
         FontRenderers.settings.drawString(context, online ? "online" : "offline", posX + 37, posY + 17, online ? Render2DEngine.applyOpacity(new Color(0xFF0B7A00, true).getRGB(), getFadeFactor()) : Render2DEngine.applyOpacity(new Color(0xFFBDBDBD, true).getRGB(), getFadeFactor()));
     }

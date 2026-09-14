@@ -18,6 +18,8 @@ import thunder.hack.injection.accesors.IExplosionS2CPacket;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.player.MovementUtility;
 
+import java.util.Optional;
+
 //TY <3
 //https://github.com/SkidderMC/FDPClient/blob/main/src/main/java/net/ccbluex/liquidbounce/features/module/modules/combat/velocitys/vanilla/JumpVelocity.kt
 
@@ -113,19 +115,14 @@ public class Velocity extends Module {
         if (e.getPacket() instanceof ExplosionS2CPacket explosion && explosions.getValue()) {
             switch (mode.getValue()) {
                 case Cancel -> {
-                    ((IExplosionS2CPacket) explosion).setMotionX(0);
-                    ((IExplosionS2CPacket) explosion).setMotionY(0);
-                    ((IExplosionS2CPacket) explosion).setMotionZ(0);
+                    ((IExplosionS2CPacket) (Object) explosion).setPlayerKnockback(Optional.of(Vec3d.ZERO));
                 }
                 case Custom -> {
-                    ((IExplosionS2CPacket) explosion).setMotionX(((IExplosionS2CPacket) explosion).getMotionX() * horizontal.getValue() / 100f);
-                    ((IExplosionS2CPacket) explosion).setMotionZ(((IExplosionS2CPacket) explosion).getMotionZ() * horizontal.getValue() / 100f);
-                    ((IExplosionS2CPacket) explosion).setMotionY(((IExplosionS2CPacket) explosion).getMotionY() * vertical.getValue() / 100f);
+                    Vec3d kb = ((IExplosionS2CPacket) (Object) explosion).getPlayerKnockback().orElse(Vec3d.ZERO);
+                    ((IExplosionS2CPacket) (Object) explosion).setPlayerKnockback(Optional.of(new Vec3d(kb.getX() * horizontal.getValue() / 100f, kb.getY() * vertical.getValue() / 100f, kb.getZ() * horizontal.getValue() / 100f)));
                 }
                 case GrimNew -> {
-                    ((IExplosionS2CPacket) explosion).setMotionX(0);
-                    ((IExplosionS2CPacket) explosion).setMotionY(0);
-                    ((IExplosionS2CPacket) explosion).setMotionZ(0);
+                    ((IExplosionS2CPacket) (Object) explosion).setPlayerKnockback(Optional.of(Vec3d.ZERO));
                     flag = true;
                 }
             }

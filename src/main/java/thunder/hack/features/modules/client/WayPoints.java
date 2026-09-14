@@ -60,7 +60,7 @@ public final class WayPoints extends Module {
                 float tagX3 = (float) ((posX + diff - FontRenderers.sf_bold_mini.getStringWidth(distance) / 2) * 1);
 
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(posX - 10, (posY - 35), 0);
+                context.getMatrices().translate((float) (posX - 10), (float) (posY - 35));
                 context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.waypoint, 0, 0, 20, 20, 0, 0, 20, 20, 20, 20);
                 context.getMatrices().popMatrix();
 

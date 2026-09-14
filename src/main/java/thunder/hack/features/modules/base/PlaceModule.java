@@ -154,7 +154,6 @@ public abstract class PlaceModule extends Module {
         attackTimer.reset();
 
         if (remove.getValue()) {
-            entity.kill();
             entity.setRemoved(Entity.RemovalReason.KILLED);
             entity.onRemoved();
         }

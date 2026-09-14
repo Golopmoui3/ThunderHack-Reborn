@@ -1,6 +1,7 @@
 package thunder.hack.gui.thundergui.components;
 
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
+
 import net.minecraft.util.math.MathHelper;
 import org.lwjgl.glfw.GLFW;
 import thunder.hack.ThunderHack;
@@ -37,39 +38,39 @@ public class SliderComponent extends SettingElement {
     }
 
     @Override
-    public void render(MatrixStack stack, int mouseX, int mouseY, float partialTicks) {
-        super.render(stack, mouseX, mouseY, partialTicks);
+    public void render(DrawContext context, int mouseX, int mouseY, float partialTicks) {
+        super.render(context, mouseX, mouseY, partialTicks);
         if ((getY() > ThunderGui.getInstance().main_posY + ThunderGui.getInstance().height) || getY() < ThunderGui.getInstance().main_posY) {
             return;
         }
 
-        FontRenderers.modules.drawString(stack, getSetting().getName(), getX(), getY() + 5, isHovered() ? -1 : new Color(0xB0FFFFFF, true).getRGB());
+        FontRenderers.modules.drawString(context, getSetting().getName(), getX(), getY() + 5, isHovered() ? -1 : new Color(0xB0FFFFFF, true).getRGB());
 
         double currentPos = (((Number) setting.getValue()).floatValue() - min) / (max - min);
         stranimation = stranimation + (((Number) setting.getValue()).floatValue() * 100 / 100 - stranimation) / 2.0D;
         animation = Render2DEngine.scrollAnimate(animation, (float) currentPos, .5f);
 
         Color color = new Color(0xFFE1E1E1);
-        Render2DEngine.drawRound(stack, x + 54, y + height - 8, (float) (90), 1, 0.5f, new Color(0xff0E0E0E));
-        Render2DEngine.drawRound(stack, x + 54, y + height - 8, (90) * animation, 1, 0.5f, color);
-        Render2DEngine.drawRound(stack, (x + 52 + (90) * animation), y + height - 9.5f, (float) 4, 4, 1.5f, color);
+        Render2DEngine.drawRound(context, x + 54, y + height - 8, (float) (90), 1, 0.5f, new Color(0xff0E0E0E));
+        Render2DEngine.drawRound(context, x + 54, y + height - 8, (90) * animation, 1, 0.5f, color);
+        Render2DEngine.drawRound(context, (x + 52 + (90) * animation), y + height - 9.5f, (float) 4, 4, 1.5f, color);
 
         if (mouseX > x + 154 && mouseX < x + 176 && mouseY > y + height - 11 && mouseY < y + height - 4) {
-            Render2DEngine.drawRound(stack, x + 154, y + height - 11, 22, 7, 0.5f, new Color(82, 57, 100, 178));
+            Render2DEngine.drawRound(context, x + 154, y + height - 11, 22, 7, 0.5f, new Color(82, 57, 100, 178));
         } else {
-            Render2DEngine.drawRound(stack, x + 154, y + height - 11, 22, 7, 0.5f, new Color(50, 35, 60, 178));
+            Render2DEngine.drawRound(context, x + 154, y + height - 11, 22, 7, 0.5f, new Color(50, 35, 60, 178));
         }
 
         if (!listening) {
             if (setting.getValue() instanceof Float)
-                FontRenderers.modules.drawString(stack, String.valueOf(MathUtility.round((Float) setting.getValue(), 2)), x + 156, y + height - 9, new Color(0xBAFFFFFF, true).getRGB());
+                FontRenderers.modules.drawString(context, String.valueOf(MathUtility.round((Float) setting.getValue(), 2)), x + 156, y + height - 9, new Color(0xBAFFFFFF, true).getRGB());
             if (setting.getValue() instanceof Integer)
-                FontRenderers.modules.drawString(stack, String.valueOf(setting.getValue()), x + 156, y + height - 9, new Color(0xBAFFFFFF, true).getRGB());
+                FontRenderers.modules.drawString(context, String.valueOf(setting.getValue()), x + 156, y + height - 9, new Color(0xBAFFFFFF, true).getRGB());
         } else {
             if (Objects.equals(Stringnumber, "")) {
-                FontRenderers.modules.drawString(stack, "...", x + 156, y + height - 9, new Color(0xBAFFFFFF, true).getRGB());
+                FontRenderers.modules.drawString(context, "...", x + 156, y + height - 9, new Color(0xBAFFFFFF, true).getRGB());
             } else {
-                FontRenderers.modules.drawString(stack, Stringnumber, x + 156, y + height - 9, new Color(0xBAFFFFFF, true).getRGB());
+                FontRenderers.modules.drawString(context, Stringnumber, x + 156, y + height - 9, new Color(0xBAFFFFFF, true).getRGB());
             }
         }
 

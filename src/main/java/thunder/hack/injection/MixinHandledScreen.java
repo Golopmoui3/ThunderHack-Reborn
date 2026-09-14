@@ -2,14 +2,16 @@ package thunder.hack.injection;
 
 import net.minecraft.client.gl.RenderPipelines;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.block.ShulkerBoxBlock;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.gui.screen.ingame.HandledScreen;
 import net.minecraft.client.gui.screen.ingame.ScreenHandlerProvider;
-import net.minecraft.client.render.DiffuseLighting;
+import net.minecraft.client.render.MapRenderState;
 import net.minecraft.client.render.VertexConsumerProvider;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.component.DataComponentTypes;
@@ -82,7 +84,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
     }
 
     private boolean shit() {
-        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 340) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), 344);
+        return InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), 340) || InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), 344);
     }
 
     private boolean attack() {
@@ -171,7 +173,7 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
             Item focusedItem = stack.getItem();
             if (focusedItem instanceof BlockItem bi && bi.getBlock() instanceof ShulkerBoxBlock) {
                 try {
-                    Color c = new Color(Objects.requireNonNull(ShulkerBoxBlock.getColor(stack.getItem())).getEntityColor());
+                    Color c = new Color(Objects.requireNonNull(((ShulkerBoxBlock) bi.getBlock()).getColor()).getEntityColor());
                     colors = new float[]{c.getRed() / 255f, c.getGreen() / 255f, c.getRed() / 255f, c.getAlpha() / 255f};
                 } catch (NullPointerException npe) {
                     colors = new float[]{1F, 1F, 1F};
@@ -202,7 +204,6 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
 
         drawBackground(context, offsetX, offsetY, colors);
 
-        DiffuseLighting.enableGuiDepthLighting();
         int row = 0;
         int i = 0;
         for (ItemStack itemStack : itemStacks) {
@@ -218,46 +219,37 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
                 row++;
             }
         }
-        DiffuseLighting.disableGuiDepthLighting();
         GlStateManager._enableDepthTest();
     }
 
     private void drawBackground(DrawContext context, int x, int y, float[] colors) {
         GlStateManager._disableBlend();
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+        GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.container, x, y, 0, 0, 176, 67, 176, 67);
         GlStateManager._enableBlend();
     }
 
     private void drawMapPreview(DrawContext context, ItemStack stack, int x, int y) {
-        GlStateManager._enableBlend();
-        context.getMatrices().pushMatrix();
-
-        int y1 = y - 12;
-        int x1 = x + 8;
-        int z = 300;
-
         MapState mapState = FilledMapItem.getMapState(stack, client.world);
 
         if (mapState != null) {
-            mapState.getPlayerSyncData(client.player);
-
-            x1 += 8;
-            y1 += 8;
-            z = 310;
-            double scale = (double) (100 - 16) / 128.0D;
-            context.getMatrices().translate(x1, y1, z);
-            context.getMatrices().scale((float) scale, (float) scale, 0);
-            VertexConsumerProvider.Immediate consumer = client.getBufferBuilders().getEntityVertexConsumers();
-            client.gameRenderer.getMapRenderer().draw(context.getMatrices(), consumer, (MapIdComponent) stack.get(DataComponentTypes.MAP_ID), mapState, false, 0xF000F0);
+            MapRenderState state = new MapRenderState();
+            client.getMapRenderer().update((MapIdComponent) stack.get(DataComponentTypes.MAP_ID), mapState, state);
+            context.getMatrices().pushMatrix();
+            context.getMatrices().translate(x + 16, y - 4);
+            context.getMatrices().scale(0.65f, 0.65f);
+            context.drawMap(state);
+            context.getMatrices().popMatrix();
         }
-        context.getMatrices().popMatrix();
     }
 
     @Inject(method = "mouseClicked", at = @At("HEAD"), cancellable = true)
-    private void mouseClicked(double mouseX, double mouseY, int button, CallbackInfoReturnable<Boolean> cir) {
+    private void mouseClicked(Click click, boolean doubled, CallbackInfoReturnable<Boolean> cir) {
         if (Module.fullNullCheck()) return;
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
         if (button == GLFW.GLFW_MOUSE_BUTTON_MIDDLE && focusedSlot != null && !focusedSlot.getStack().isEmpty() && client.player.playerScreenHandler.getCursorStack().isEmpty()) {
             ItemStack itemStack = focusedSlot.getStack();
 

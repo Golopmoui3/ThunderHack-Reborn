@@ -2,6 +2,7 @@ package thunder.hack.features.modules.misc;
 
 import com.google.gson.JsonObject;
 import com.google.gson.JsonParser;
+import net.minecraft.network.packet.c2s.play.CommandExecutionC2SPacket;
 import org.apache.commons.io.IOUtils;
 import thunder.hack.core.Managers;
 import thunder.hack.features.hud.impl.StaffBoard;

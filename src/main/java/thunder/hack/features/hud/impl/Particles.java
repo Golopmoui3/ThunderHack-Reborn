@@ -1,8 +1,7 @@
 package thunder.hack.features.hud.impl;
 
 import com.mojang.blaze3d.opengl.GlStateManager;
-import com.mojang.blaze3d.systems.RenderSystem;
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Identifier;
 import thunder.hack.utility.render.Render2DEngine;
 import thunder.hack.utility.render.TextureStorage;
@@ -21,15 +20,15 @@ public class Particles {
         return new Color(redPart, greenPart, bluePart);
     }
 
-    public void render2D(MatrixStack matrixStack) {
-        drawStar(matrixStack, (float) x, (float) y, color);
+    public void render2D(DrawContext context) {
+        drawStar(context, (float) x, (float) y, color);
     }
 
-    public void drawStar(MatrixStack matrices, float x, float y, Color c) {
+    public void drawStar(DrawContext context, float x, float y, Color c) {
         GlStateManager._enableBlend();
         GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
         Render2DEngine.bindTexture(TextureStorage.star);
-        Render2DEngine.renderTexture(matrices, x + size / 2f, y + size / 2f, size, size, 0, 0, 256, 256, 256, 256);
+        Render2DEngine.renderGradientTexture(context, x + size / 2f, y + size / 2f, size, size, 0, 0, 256, 256, 256, 256, c, c, c, c);
         GlStateManager._disableBlend();
     }
 

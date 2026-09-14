@@ -104,7 +104,7 @@ public class ConfigWindow extends WindowBase {
             FontRenderers.sf_medium_mini.drawString(context, id + ".", getX() + 3, configPlate.offset + getY() + 41 + getScrollOffset(), textColor);
         }
         setMaxElementsHeight(configPlates.size() * 20);
-        Render2DEngine.popWindow();
+        Render2DEngine.popWindow(context);
     }
 
     @Override

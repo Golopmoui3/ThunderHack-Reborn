@@ -3,6 +3,8 @@ package thunder.hack.features.modules.movement;
 import meteordevelopment.orbit.EventHandler;
 import net.minecraft.entity.effect.StatusEffectInstance;
 import net.minecraft.entity.effect.StatusEffects;
+import net.minecraft.util.math.Vec2f;
+import thunder.hack.injection.accesors.IInput;
 import thunder.hack.events.impl.EventMove;
 import thunder.hack.features.modules.Module;
 import thunder.hack.setting.Setting;
@@ -46,7 +48,7 @@ public class WaterSpeed extends Module {
 
         if (mode.getValue() == Mode.FunTimeNew) {
             if (mc.player.isSwimming()) {
-                mc.player.input.getMovementInput().x = 0;
+                ((IInput) mc.player.input).setMovementVector(new Vec2f(0, mc.player.input.getMovementInput().y));
                 double[] dirSpeed = MovementUtility.forward(acceleration / 6.3447f);
                 e.setX(e.getX() + dirSpeed[0]);
                 e.setZ(e.getZ() + dirSpeed[1]);

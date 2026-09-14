@@ -52,9 +52,9 @@ public class Companion extends HudElement {
         super.onRender2D(context);
 
         context.getMatrices().pushMatrix();
-        context.getMatrices().translate((int) getPosX() + 100, (int) getPosY() + 100, 0);
-        context.getMatrices().scale((float) scale.getValue() / 100f, (float) scale.getValue() / 100f, 1);
-        context.getMatrices().translate(-((int) getPosX() + 100), -((int) getPosY() + 100), 0);
+        context.getMatrices().translate((int) getPosX() + 100, (int) getPosY() + 100);
+        context.getMatrices().scale((float) scale.getValue() / 100f, (float) scale.getValue() / 100f);
+        context.getMatrices().translate(-((int) getPosX() + 100), -((int) getPosY() + 100));
         if (mode.getValue() == Mode.Boykisser)
             context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.boykisser, (int) getPosX(), (int) getPosY(), 0, currentFrame * 128, 130, 128, 130, 6784);
         else if (mode.getValue() == Mode.Paimon)
@@ -72,7 +72,7 @@ public class Companion extends HudElement {
 
             Render2DEngine.addWindow(context, getPosX() + scale.getValue() / 3f, getPosY() + 72 - scale.getValue(), factor * w + getPosX() + scale.getValue() / 3f, 20 + getPosY() + 72 - scale.getValue(), 1f);
             FontRenderers.sf_bold.drawString(context, message, getPosX() + 2 + scale.getValue() / 3f, getPosY() + 72 - scale.getValue(), new Color(0x484848).getRGB());
-            Render2DEngine.popWindow();
+            Render2DEngine.popWindow(context);
         }
 
         if (frameRate.passedMs(64)) {

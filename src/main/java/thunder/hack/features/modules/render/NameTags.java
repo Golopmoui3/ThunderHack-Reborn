@@ -171,24 +171,23 @@ public class NameTags extends Module {
                 if (armorMode.getValue() != Armor.Durability) stacks.add(ent.getMainHandStack());
 
                 context.getMatrices().pushMatrix();
-                context.getMatrices().translate(tagX - 2 + (textWidth + 4) / 2f, (float) (posY - 13f) + 6.5f, 0);
+                context.getMatrices().translate(tagX - 2 + (textWidth + 4) / 2f, (float) (posY - 13f) + 6.5f);
                 context.getMatrices().scale(scale, scale);
-                context.getMatrices().translate(-(tagX - 2 + (textWidth + 4) / 2f), -(float) ((posY - 13f) + 6.5f), 0);
+                context.getMatrices().translate(-(tagX - 2 + (textWidth + 4) / 2f), -(float) ((posY - 13f) + 6.5f));
 
                 float item_offset = 0;
                 if (armorMode.getValue() != Armor.None) for (ItemStack armorComponent : stacks) {
                     if (!armorComponent.isEmpty()) {
                         if (armorMode.getValue() == Armor.Full) {
                             context.getMatrices().pushMatrix();
-                            context.getMatrices().translate(posX - 55 + item_offset, (float) (posY - 33f), 0);
+                            context.getMatrices().translate((float) (posX - 55 + item_offset), (float) (posY - 33f));
                             context.getMatrices().scale(1.1f, 1.1f);
-                            DiffuseLighting.disableGuiDepthLighting();
                             context.drawItem(armorComponent, 0, 0);
                             context.drawStackOverlay(mc.textRenderer, armorComponent, 0, 0);
                             context.getMatrices().popMatrix();
                         } else {
                             context.getMatrices().pushMatrix();
-                            context.getMatrices().translate(posX - 35 + item_offset, (float) (posY - 20), 0);
+                            context.getMatrices().translate((float) (posX - 35 + item_offset), (float) (posY - 20));
                             context.getMatrices().scale(0.7f, 0.7f);
 
                             float durability = armorComponent.getMaxDamage() - armorComponent.getDamage();
@@ -223,7 +222,7 @@ public class NameTags extends Module {
                                             FontRenderers.sf_bold.drawString(context, encName, posX - 50 + item_offset, (float) posY - 45 + enchantmentY, -1);
                                         } else {
                                             context.getMatrices().pushMatrix();
-                                            context.getMatrices().translate((posX - 50f + item_offset), (posY - 45f + enchantmentY), 0);
+                                            context.getMatrices().translate((float) (posX - 50f + item_offset), (float) (posY - 45f + enchantmentY));
                                             context.drawText(mc.textRenderer, encName, 0, 0, -1, false);
                                             context.getMatrices().popMatrix();
                                         }
@@ -247,7 +246,7 @@ public class NameTags extends Module {
                 else
                     Render2DEngine.drawRect(context, tagX - 2, (float) (posY - 13f), textWidth + 4, 11, color);
 
-                if (Managers.TELEMETRY.getOnlinePlayers().contains(ent.getGameProfile().getName())) {
+                if (Managers.TELEMETRY.getOnlinePlayers().contains(ent.getGameProfile().name())) {
                     Render2DEngine.drawRect(context, tagX - 14, (float) (posY - 13f), 12, 11, color.brighter().brighter());
                     GlStateManager._enableBlend();
                     GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
@@ -280,7 +279,7 @@ public class NameTags extends Module {
                     FontRenderers.sf_bold.drawString(context, final_string, tagX, (float) posY - 10, -1);
                 } else {
                     context.getMatrices().pushMatrix();
-                    context.getMatrices().translate(tagX, ((float) posY - 11), 0);
+                    context.getMatrices().translate((float) tagX, (float) posY - 11);
                     context.drawText(mc.textRenderer, final_string, 0, 0, -1, false);
                     context.getMatrices().popMatrix();
                 }
@@ -290,7 +289,7 @@ public class NameTags extends Module {
                     float f = (float) ent.getAttributeValue(EntityAttributes.MAX_HEALTH);
                     int p = MathHelper.ceil(ent.getAbsorptionAmount());
                     context.getMatrices().pushMatrix();
-                    context.getMatrices().translate(posX - 44, posY);
+                    context.getMatrices().translate((float) (posX - 44), (float) posY);
                     context.getMatrices().scale(1.1f, 1.1f);
                     renderHealthBar(context, ent, f, i, p);
                     context.getMatrices().popMatrix();
@@ -373,7 +372,8 @@ public class NameTags extends Module {
             if (ent instanceof ProjectileEntity pe) {
                 if (pe.getOwner() != null) ownerName = pe.getOwner().getDisplayName().getString();
             } else if (ent instanceof HorseEntity he) {
-                if (he.getOwnerUuid() != null) ownerName = he.getOwnerUuid().toString();
+                if (he.getOwnerReference() != null && he.getOwnerReference().getUuid() != null)
+                    ownerName = he.getOwnerReference().getUuid().toString();
             } else if (ent instanceof TameableEntity te && te.isTamed() && te.getOwner() != null) {
                 ownerName = te.getOwner().getDisplayName().getString();
             } else continue;
@@ -453,10 +453,10 @@ public class NameTags extends Module {
         if ((mc.getNetworkHandler() != null && mc.getNetworkHandler().getServerInfo() != null && mc.getNetworkHandler().getServerInfo().address.contains("funtime") || funtimeHp.getValue())) {
             ScoreboardObjective scoreBoard = null;
             String resolvedHp = "";
-            if ((ent.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME) != null) {
-                scoreBoard = (ent.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME);
+            if ((mc.world.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME) != null) {
+                scoreBoard = (mc.world.getScoreboard()).getObjectiveForSlot(ScoreboardDisplaySlot.BELOW_NAME);
                 if (scoreBoard != null) {
-                    ReadableScoreboardScore readableScoreboardScore = ent.getScoreboard().getScore(ent, scoreBoard);
+                    ReadableScoreboardScore readableScoreboardScore = mc.world.getScoreboard().getScore(ent, scoreBoard);
                     MutableText text2 = ReadableScoreboardScore.getFormattedScore(readableScoreboardScore, scoreBoard.getNumberFormatOr(StyledNumberFormat.EMPTY));
                     resolvedHp = text2.getString();
                 }
@@ -493,10 +493,7 @@ public class NameTags extends Module {
             if (l >= i) {
                 int r = q - k;
                 if (q - k < absorption) {
-                    context.getMatrices().pushMatrix();
-                    context.getMatrices().translate(0, 0, 0.001f);
                     drawHeart(context, HeartType.ABSORBING, o, r + 1 == absorption, player);
-                    context.getMatrices().popMatrix();
                 }
             }
         }
@@ -517,7 +514,7 @@ public class NameTags extends Module {
                     Render2DEngine.drawRect(context, x, 0, 7, 3, getHealthColor2(player.getHealth() + player.getAbsorptionAmount()));
                 }
             }
-        } else context.drawGuiTexture(type.getTexture(half), x, 0, 9, 9);
+        } else context.drawGuiTexture(RenderPipelines.GUI_TEXTURED, type.getTexture(half), x, 0, 9, 9);
     }
 
     private enum HeartType {
@@ -580,7 +577,7 @@ public class NameTags extends Module {
 
             context.getMatrices().pushMatrix();
             context.getMatrices().translate(x, y);
-            context.drawSprite(0, 0, 0, 18, 18, mc.getStatusEffectSpriteManager().getSprite(statusEffectInstance.getEffectType()));
+            Render2DEngine.drawRound(context, 0, 0, 18, 18, 4, new Color(statusEffectInstance.getEffectType().value().getColor()));
             FontRenderers.sf_bold_mini.drawCenteredString(context, PotionHud.getDuration(statusEffectInstance), 9, -8, -1);
             FontRenderers.categories.drawCenteredString(context, power, 9, -16, -1);
             context.getMatrices().popMatrix();
@@ -598,7 +595,7 @@ public class NameTags extends Module {
             Item focusedItem = stack.getItem();
             if (focusedItem instanceof BlockItem bi && bi.getBlock() instanceof ShulkerBoxBlock) {
                 try {
-                    Color c = new Color(Objects.requireNonNull(ShulkerBoxBlock.getColor(stack.getItem())).getEntityColor());
+                    Color c = new Color(Objects.requireNonNull(((ShulkerBoxBlock) bi.getBlock()).getColor()).getEntityColor());
                     colors = new float[]{c.getRed() / 255f, c.getGreen() / 255f, c.getRed() / 255f, c.getAlpha() / 255f};
                 } catch (NullPointerException npe) {
                     colors = new float[]{1F, 1F, 1F};
@@ -622,7 +619,6 @@ public class NameTags extends Module {
 
         drawBackground(context, offsetX, offsetY, colors);
 
-        DiffuseLighting.enableGuiDepthLighting();
         int row = 0;
         int i = 0;
         for (ItemStack itemStack : itemStacks) {
@@ -634,14 +630,13 @@ public class NameTags extends Module {
                 row++;
             }
         }
-        DiffuseLighting.disableGuiDepthLighting();
         GlStateManager._enableDepthTest();
     }
 
     private void drawBackground(DrawContext context, int x, int y, float[] colors) {
         GlStateManager._disableBlend();
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
-        RenderSystem.texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
+        GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MAG_FILTER, GL11.GL_LINEAR);
+        GlStateManager._texParameter(GL11.GL_TEXTURE_2D, GL11.GL_TEXTURE_MIN_FILTER, GL11.GL_LINEAR_MIPMAP_LINEAR);
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.container, x, y, 0, 0, 176, 67, 176, 67);
         GlStateManager._enableBlend();
     }

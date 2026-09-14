@@ -112,7 +112,7 @@ public class ModuleButton extends AbstractButton {
                 int gScale = ModuleManager.clickGui.gearScale.getValue();
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(px, py);
-                context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees(gearAnimation.getValue()));
+                context.getMatrices().rotate(gearAnimation.getValue());
                 context.getMatrices().translate(-px, -py);
                 Render2DEngine.bindTexture(TextureStorage.Gear);
                 GlStateManager._enableBlend();
@@ -124,10 +124,10 @@ public class ModuleButton extends AbstractButton {
                         Render2DEngine.injectAlpha(HudEditor.getColor(90).darker(), 110));
                 GlStateManager._disableBlend();
                 context.getMatrices().translate(px, py);
-                context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotationDegrees((float) Render2DEngine.interpolate(mc.player.age - 1, mc.player.age, Render3DEngine.getTickDelta()) * -4f));
+                context.getMatrices().rotate((float) Render2DEngine.interpolate(mc.player.age - 1, mc.player.age, Render3DEngine.getTickDelta()) * -4f);
                 context.getMatrices().translate(-px, -py);
                 context.getMatrices().popMatrix();
-                Render2DEngine.popWindow();
+                Render2DEngine.popWindow(context);
             }
 
             if (Render2DEngine.isHovered(mouseX, mouseY, x + 4, y + height - 12f, width - 8, height + (float) getElementsHeight())) {
@@ -170,12 +170,12 @@ public class ModuleButton extends AbstractButton {
             Render2DEngine.drawBlurredShadow(context, x + 3, y + height, width - 6, 3, 13, HudEditor.getColor(1));
             if (!module.isEnabled())
                 Render2DEngine.draw2DGradientRect(context, x + 4, y + height - 1f, x + 3f + width - 7f, 3f + y + height, Render2DEngine.applyOpacity(HudEditor.getColor(0), 0), HudEditor.getColor(0), Render2DEngine.applyOpacity(HudEditor.getColor(90), 0), HudEditor.getColor(90));
-            Render2DEngine.popWindow();
+            Render2DEngine.popWindow(context);
         } else {
             if (hovered) {
                 Render2DEngine.addWindow(context, x + 1, y, x + width - 2, y + height, 1.);
                 Render2DEngine.drawBlurredShadow(context, mouseX - 10, mouseY - 10, 20, 20, 35, HudEditor.getColor(270));
-                Render2DEngine.popWindow();
+                Render2DEngine.popWindow(context);
             }
         }
 

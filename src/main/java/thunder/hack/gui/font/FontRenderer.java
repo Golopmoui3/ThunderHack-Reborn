@@ -184,7 +184,7 @@ public class FontRenderer implements Closeable {
         Matrix3x2fStack stack = context.getMatrices();
         stack.pushMatrix();
         y -= 3f;
-        stack.translate(roundToDecimal(x, 1), roundToDecimal(y, 1));
+        stack.translate((float) roundToDecimal(x, 1), (float) roundToDecimal(y, 1));
         stack.scale(1f / this.scaleMul, 1f / this.scaleMul);
 
         GuiRenderState state = ((IDrawContextAccessor) context).thunderhack$getRenderState();

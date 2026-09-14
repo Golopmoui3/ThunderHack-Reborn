@@ -1,8 +1,10 @@
 package thunder.hack.gui.hud;
 
 import com.google.common.collect.Lists;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
+import net.minecraft.client.input.KeyInput;
 import net.minecraft.client.util.InputUtil;
 import net.minecraft.text.Text;
 import org.lwjgl.glfw.GLFW;
@@ -87,7 +89,10 @@ public class HudEditorGui extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
         windows.forEach(w -> {
             w.mouseClicked((int) mouseX, (int) mouseY, button);
 
@@ -96,22 +101,26 @@ public class HudEditorGui extends Screen {
                     w1.dragging = false;
             });
         });
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     @Override
-    public boolean mouseReleased(double mouseX, double mouseY, int button) {
+    public boolean mouseReleased(Click click) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
         windows.forEach(w -> w.mouseReleased((int) mouseX, (int) mouseY, button));
-        return super.mouseReleased(mouseX, mouseY, button);
+        return super.mouseReleased(click);
     }
 
 
     @Override
-    public boolean keyPressed(int keyCode, int scanCode, int modifiers) {
+    public boolean keyPressed(KeyInput input) {
+        int keyCode = input.key();
         windows.forEach(w -> w.keyTyped(keyCode));
 
         if (keyCode == GLFW.GLFW_KEY_ESCAPE) {
-            super.keyPressed(keyCode, scanCode, modifiers);
+            super.keyPressed(input);
             return true;
         }
 

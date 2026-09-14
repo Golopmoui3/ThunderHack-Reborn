@@ -6,10 +6,12 @@ import net.minecraft.enchantment.EnchantmentHelper;
 import net.minecraft.enchantment.Enchantments;
 import net.minecraft.entity.DamageUtil;
 import net.minecraft.entity.Entity;
+import net.minecraft.entity.LivingEntity;
 import net.minecraft.entity.attribute.EntityAttributes;
 import net.minecraft.entity.effect.StatusEffects;
 import net.minecraft.entity.player.PlayerEntity;
 import net.minecraft.item.ItemStack;
+import net.minecraft.server.world.ServerWorld;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
@@ -21,8 +23,8 @@ import net.minecraft.world.RaycastContext;
 import net.minecraft.world.explosion.Explosion;
 import org.apache.commons.lang3.mutable.MutableInt;
 import thunder.hack.core.manager.client.ModuleManager;
-import thunder.hack.injection.accesors.IExplosion;
 import thunder.hack.utility.math.PredictUtility;
+import thunder.hack.utility.player.InventoryUtility;
 
 import java.util.Objects;
 
@@ -32,6 +34,51 @@ public final class ExplosionUtility {
 
     public static boolean terrainIgnore = false;
     public static Explosion explosion;
+
+    /**
+     * Client-side stand-in for damage math (vanilla Explosion is server-only now).
+     */
+    private record FakeExplosion(Vec3d pos) implements Explosion {
+        @Override
+        public ServerWorld getWorld() {
+            return null;
+        }
+
+        @Override
+        public DestructionType getDestructionType() {
+            return DestructionType.DESTROY;
+        }
+
+        @Override
+        public LivingEntity getCausingEntity() {
+            return mc.player;
+        }
+
+        @Override
+        public Entity getEntity() {
+            return mc.player;
+        }
+
+        @Override
+        public float getPower() {
+            return 6f;
+        }
+
+        @Override
+        public Vec3d getPosition() {
+            return pos;
+        }
+
+        @Override
+        public boolean canTriggerBlocks() {
+            return true;
+        }
+
+        @Override
+        public boolean preservesDecorativeEntities() {
+            return false;
+        }
+    }
 
     /**
      * Calculate target damage based on crystal position and target. Uses AutoCrystal settings so use only in AutoCrystal
@@ -70,14 +117,7 @@ public final class ExplosionUtility {
     public static float getExplosionDamage(Vec3d explosionPos, PlayerEntity target, boolean optimized) {
         if (mc.world.getDifficulty() == Difficulty.PEACEFUL || target == null) return 0f;
 
-        if (explosion == null)
-            explosion = new Explosion(mc.world, mc.player, 1f, 33f, 7f, 6f, false, Explosion.DestructionType.DESTROY);
-
-        ((IExplosion) explosion).setX(explosionPos.x);
-        ((IExplosion) explosion).setY(explosionPos.y);
-        ((IExplosion) explosion).setZ(explosionPos.z);
-
-        if (((IExplosion) explosion).getWorld() != mc.world) ((IExplosion) explosion).setWorld(mc.world);
+        explosion = new FakeExplosion(explosionPos);
 
         if (!new Box(MathHelper.floor(explosionPos.x - 11), MathHelper.floor(explosionPos.y - 11), MathHelper.floor(explosionPos.z - 11), MathHelper.floor(explosionPos.x + 13), MathHelper.floor(explosionPos.y + 13), MathHelper.floor(explosionPos.z + 13)).intersects(target.getBoundingBox()))
             return 0f;
@@ -95,7 +135,7 @@ public final class ExplosionUtility {
                 if (mc.world.getDifficulty() == Difficulty.EASY) toDamage = Math.min(toDamage / 2f + 1f, toDamage);
                 else if (mc.world.getDifficulty() == Difficulty.HARD) toDamage = toDamage * 3f / 2f;
 
-                toDamage = DamageUtil.getDamageLeft(target, toDamage, ((IExplosion) explosion).getDamageSource(), target.getArmor(), (float) target.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS).getValue());
+                toDamage = DamageUtil.getDamageLeft(target, toDamage, Explosion.createDamageSource(mc.world, mc.player), target.getArmor(), (float) target.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS).getValue());
 
                 if (target.hasStatusEffect(StatusEffects.RESISTANCE)) {
                     int resistance = 25 - (target.getStatusEffect(StatusEffects.RESISTANCE).getAmplifier() + 1) * 5;
@@ -129,14 +169,7 @@ public final class ExplosionUtility {
 
         if (target == null || predict == null) return 0f;
 
-        if (explosion == null)
-            explosion = new Explosion(mc.world, mc.player, 1f, 33f, 7f, 6f, false, Explosion.DestructionType.DESTROY);
-
-        ((IExplosion) explosion).setX(explosionPos.x);
-        ((IExplosion) explosion).setY(explosionPos.y);
-        ((IExplosion) explosion).setZ(explosionPos.z);
-
-        if (((IExplosion) explosion).getWorld() != mc.world) ((IExplosion) explosion).setWorld(mc.world);
+        explosion = new FakeExplosion(explosionPos);
 
         if (!new Box(MathHelper.floor(explosionPos.x - 11d), MathHelper.floor(explosionPos.y - 11d), MathHelper.floor(explosionPos.z - 11d), MathHelper.floor(explosionPos.x + 13d), MathHelper.floor(explosionPos.y + 13d), MathHelper.floor(explosionPos.z + 13d)).intersects(predict))
             return 0f;
@@ -154,7 +187,7 @@ public final class ExplosionUtility {
                 if (mc.world.getDifficulty() == Difficulty.EASY) toDamage = Math.min(toDamage / 2f + 1f, toDamage);
                 else if (mc.world.getDifficulty() == Difficulty.HARD) toDamage = toDamage * 3f / 2f;
 
-                toDamage = DamageUtil.getDamageLeft(target, toDamage, ((IExplosion) explosion).getDamageSource(), target.getArmor(), (float) Objects.requireNonNull(target.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS)).getValue());
+                toDamage = DamageUtil.getDamageLeft(target, toDamage, Explosion.createDamageSource(mc.world, mc.player), target.getArmor(), (float) Objects.requireNonNull(target.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS)).getValue());
 
                 if (target.hasStatusEffect(StatusEffects.RESISTANCE)) {
                     int resistance = 25 - (Objects.requireNonNull(target.getStatusEffect(StatusEffects.RESISTANCE)).getAmplifier() + 1) * 5;
@@ -217,14 +250,7 @@ public final class ExplosionUtility {
 
         if (mc.world.getDifficulty() == Difficulty.PEACEFUL) return 0f;
 
-        if (explosion == null)
-            explosion = new Explosion(mc.world, mc.player, 1f, 33f, 7f, 6f, false, Explosion.DestructionType.DESTROY);
-
-        ((IExplosion) explosion).setX(explosionPos.x);
-        ((IExplosion) explosion).setY(explosionPos.y);
-        ((IExplosion) explosion).setZ(explosionPos.z);
-
-        if (((IExplosion) explosion).getWorld() != mc.world) ((IExplosion) explosion).setWorld(mc.world);
+        explosion = new FakeExplosion(explosionPos);
 
         double maxDist = 12;
         if (!new Box(MathHelper.floor(explosionPos.x - maxDist - 1.0), MathHelper.floor(explosionPos.y - maxDist - 1.0), MathHelper.floor(explosionPos.z - maxDist - 1.0), MathHelper.floor(explosionPos.x + maxDist + 1.0), MathHelper.floor(explosionPos.y + maxDist + 1.0), MathHelper.floor(explosionPos.z + maxDist + 1.0)).intersects(target.getBoundingBox())) {
@@ -247,7 +273,7 @@ public final class ExplosionUtility {
                     toDamage = toDamage * 3f / 2f;
                 }
 
-                toDamage = DamageUtil.getDamageLeft(target, toDamage, ((IExplosion) explosion).getDamageSource(), target.getArmor(), (float) target.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS).getValue());
+                toDamage = DamageUtil.getDamageLeft(target, toDamage, Explosion.createDamageSource(mc.world, mc.player), target.getArmor(), (float) target.getAttributeInstance(EntityAttributes.ARMOR_TOUGHNESS).getValue());
 
                 if (target.hasStatusEffect(StatusEffects.RESISTANCE)) {
                     int resistance = 25 - (target.getStatusEffect(StatusEffects.RESISTANCE).getAmplifier() + 1) * 5;

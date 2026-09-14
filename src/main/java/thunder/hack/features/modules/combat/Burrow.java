@@ -73,14 +73,14 @@ public final class Burrow extends Module {
     @EventHandler
     public void onPacketReceive(PacketEvent.Receive event) {
         if (mode.getValue() != Mode.Default) return;
-        if (event.getPacket() instanceof ExplosionS2CPacket) {
+        if (event.getPacket() instanceof ExplosionS2CPacket explosion) {
             if (scaleExplosion.getValue()) {
-                motionY = ((ExplosionS2CPacket) event.getPacket()).getPlayerVelocityY();
+                motionY = explosion.playerKnockback().map(Vec3d::getY).orElse(0.0);
                 scaleTimer.reset();
             }
             if (scaleVelocity.getValue()) return;
             if (mc.player != null) {
-                motionY = ((ExplosionS2CPacket) event.getPacket()).getPlayerVelocityY() / 8000.0;
+                motionY = explosion.playerKnockback().map(Vec3d::getY).orElse(0.0);
                 scaleTimer.reset();
             }
         }
@@ -228,7 +228,7 @@ public final class Burrow extends Module {
         if (timer.passedMs(1000)) {
             if (rotate.getValue()) {
                 if (r != null) {
-                    if (rEntity.getPos().equals(new Vec3d(last_x, last_y, last_z))) sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(r[0], r[1], onGround.getValue(), false));
+                    if (rEntity.getEntityPos().equals(new Vec3d(last_x, last_y, last_z))) sendPacket(new PlayerMoveC2SPacket.LookAndOnGround(r[0], r[1], onGround.getValue(), false));
                     else sendPacket(new PlayerMoveC2SPacket.Full(rEntity.getX(), rEntity.getY(), rEntity.getZ(), r[0], r[1], onGround.getValue(), false));
                 }
             }

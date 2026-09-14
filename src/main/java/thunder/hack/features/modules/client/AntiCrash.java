@@ -4,6 +4,7 @@ import meteordevelopment.orbit.EventHandler;
 import net.minecraft.network.packet.s2c.play.ExplosionS2CPacket;
 import net.minecraft.network.packet.s2c.play.ParticleS2CPacket;
 import net.minecraft.network.packet.s2c.play.PlayerPositionLookS2CPacket;
+import net.minecraft.util.math.Vec3d;
 import org.jetbrains.annotations.NotNull;
 import thunder.hack.events.impl.PacketEvent;
 import thunder.hack.features.modules.Module;
@@ -21,7 +22,7 @@ public class AntiCrash extends Module { //https://github.com/Bram1903/MinecraftP
 
     @EventHandler
     public void onPacketReceive(PacketEvent.@NotNull Receive receive) {
-        if (receive.getPacket() instanceof ExplosionS2CPacket exp && (exp.getX() > 1E9 || exp.getY() > 1E9 || exp.getZ() > 1E9 || exp.getRadius() > 1E9)) {
+        if (receive.getPacket() instanceof ExplosionS2CPacket exp && (exp.center().getX() > 1E9 || exp.center().getY() > 1E9 || exp.center().getZ() > 1E9 || exp.radius() > 1E9)) {
             if (debug.getValue() && debugTimer.passedMs(1000)) {
                 sendMessage("ExplosionS2CPacket canceled");
                 debugTimer.reset();

@@ -1,8 +1,8 @@
 package thunder.hack.gui.thundergui.components;
 
+import net.minecraft.client.gui.DrawContext;
+
 import net.minecraft.client.resource.language.I18n;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.RotationAxis;
 import thunder.hack.features.cmd.Command;
 import thunder.hack.features.modules.Module;
 import thunder.hack.features.modules.client.ThunderHackGui;
@@ -42,7 +42,7 @@ public class ModulePlate {
         scroll_animation = 0;
     }
 
-    public void render(MatrixStack stack, int MouseX, int MouseY) {
+    public void render(DrawContext context, int MouseX, int MouseY) {
         if (scrollPosY != posY) {
             scroll_animation = AnimationUtility.fast(scroll_animation, 1, 15f);
             posY = (int) Render2DEngine.interpolate(prevPosY, scrollPosY, scroll_animation);
@@ -52,48 +52,48 @@ public class ModulePlate {
             return;
         }
 
-        Render2DEngine.addWindow(stack, new Render2DEngine.Rectangle(posX + 1, posY + 1, posX + 90, posY + 30));
+        Render2DEngine.addWindow(context, new Render2DEngine.Rectangle(posX + 1, posY + 1, posX + 90, posY + 30));
 
         if (module.isOn()) {
-            Render2DEngine.drawGradientRound(stack, posX + 1, posY, 89, 30, 4f,
+            Render2DEngine.drawGradientRound(context, posX + 1, posY, 89, 30, 4f,
                     Render2DEngine.applyOpacity(ThunderHackGui.onColor1.getValue().getColorObject(), getFadeFactor()),
                     Render2DEngine.applyOpacity(ThunderHackGui.onColor1.getValue().getColorObject(), getFadeFactor()),
                     Render2DEngine.applyOpacity(ThunderHackGui.onColor2.getValue().getColorObject(), getFadeFactor()),
                     Render2DEngine.applyOpacity(ThunderHackGui.onColor2.getValue().getColorObject(), getFadeFactor()));
         } else {
-            Render2DEngine.drawRound(stack, posX + 1, posY, 89, 30, 4f, Render2DEngine.applyOpacity(new Color(25, 20, 30, 255), getFadeFactor()));
+            Render2DEngine.drawRound(context, posX + 1, posY, 89, 30, 4f, Render2DEngine.applyOpacity(new Color(25, 20, 30, 255), getFadeFactor()));
         }
 
         if (first_open) {
-            Render2DEngine.drawBlurredShadow(stack, MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
+            Render2DEngine.drawBlurredShadow(context, MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
             first_open = false;
         }
 
         if (isHovered(MouseX, MouseY)) {
-            Render2DEngine.drawBlurredShadow(stack, MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
+            Render2DEngine.drawBlurredShadow(context, MouseX - 20, MouseY - 20, 40, 40, 60, Render2DEngine.applyOpacity(new Color(0xC3555A7E, true), getFadeFactor()));
         }
 
         if (ThunderGui.selected_plate != this)
-            FontRenderers.icons.drawString(stack, "H", (int) (posX + 80f), (int) (posY + 22f), Render2DEngine.applyOpacity(new Color(0xFFECECEC, true).getRGB(), getFadeFactor()));
+            FontRenderers.icons.drawString(context, "H", (int) (posX + 80f), (int) (posY + 22f), Render2DEngine.applyOpacity(new Color(0xFFECECEC, true).getRGB(), getFadeFactor()));
         else {
 
-            stack.push();
-            stack.translate((posX + 91f), (posY + 15f), 0.0F);
-            stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(mc.player.age * 4));
-            stack.translate(-(posX + 91f), -(posY + 15f), 0.0F);
-            FontRenderers.big_icons.drawString(stack, "H", (posX + 78f), (posY + 5f), Render2DEngine.applyOpacity(new Color(0xFF646464, true).getRGB(), getFadeFactor()));
-            stack.translate((posX + 91f), (posY + 15f), 0.0F);
-            stack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-mc.player.age * 4));
-            stack.translate(-(posX + 91f), -(posY + 15f), 0.0F);
-            stack.pop();
+            context.getMatrices().pushMatrix();
+            context.getMatrices().translate((posX + 91f), (posY + 15f));
+            context.getMatrices().rotate(mc.player.age * 4);
+            context.getMatrices().translate(-(posX + 91f), -(posY + 15f));
+            FontRenderers.big_icons.drawString(context, "H", (posX + 78f), (posY + 5f), Render2DEngine.applyOpacity(new Color(0xFF646464, true).getRGB(), getFadeFactor()));
+            context.getMatrices().translate((posX + 91f), (posY + 15f));
+            context.getMatrices().rotate(-mc.player.age * 4);
+            context.getMatrices().translate(-(posX + 91f), -(posY + 15f));
+            context.getMatrices().popMatrix();
         }
 
         if (!listening_bind) {
-            FontRenderers.sf_medium.drawString(stack, module.getName(), posX + 5, posY + 5, Render2DEngine.applyOpacity(-1, getFadeFactor()));
+            FontRenderers.sf_medium.drawString(context, module.getName(), posX + 5, posY + 5, Render2DEngine.applyOpacity(-1, getFadeFactor()));
         }
 
         if (listening_bind) {
-            FontRenderers.modules.drawString(stack, "PressKey", posX + 85 - FontRenderers.modules.getStringWidth("PressKey"), posY + 5, Render2DEngine.applyOpacity(new Color(0xB0B0B0), getFadeFactor()).getRGB());
+            FontRenderers.modules.drawString(context, "PressKey", posX + 85 - FontRenderers.modules.getStringWidth("PressKey"), posY + 5, Render2DEngine.applyOpacity(new Color(0xB0B0B0), getFadeFactor()).getRGB());
         } else if (!Objects.equals(module.getBind().getBind(), "None")) {
             String sbind = module.getBind().getBind();
             if (sbind.equals("LEFT_CONTROL")) {
@@ -115,7 +115,7 @@ public class ModulePlate {
                 sbind = "RAlt";
             }
 
-            FontRenderers.modules.drawString(stack, sbind, posX + 86 - FontRenderers.modules.getStringWidth(sbind), posY + 6, Render2DEngine.applyOpacity(new Color(0xB0B0B0), getFadeFactor()).getRGB());
+            FontRenderers.modules.drawString(context, sbind, posX + 86 - FontRenderers.modules.getStringWidth(sbind), posY + 6, Render2DEngine.applyOpacity(new Color(0xB0B0B0), getFadeFactor()).getRGB());
         }
 
         if (!listening_bind && module.getDescription() != null) {
@@ -129,24 +129,24 @@ public class ModulePlate {
                     step++;
                 }
             }
-            FontRenderers.sf_medium_mini.drawString(stack, firstString.toString(), posX + 5, posY + 14, Render2DEngine.applyOpacity(new Color(0xFFBDBDBD, true).getRGB(), getFadeFactor()));
+            FontRenderers.sf_medium_mini.drawString(context, firstString.toString(), posX + 5, posY + 14, Render2DEngine.applyOpacity(new Color(0xFFBDBDBD, true).getRGB(), getFadeFactor()));
         }
 
         if (listening_bind) {
-            Render2DEngine.drawRound(stack, posX + 5, posY + 5, 40, 20, 3, Color.BLACK);
+            Render2DEngine.drawRound(context, posX + 5, posY + 5, 40, 20, 3, Color.BLACK);
 
             if (!holdbind) {
-                Render2DEngine.drawRound(stack, posX + 6, posY + 6, 38, 8, 2, Render2DEngine.injectAlpha(ThunderHackGui.onColor1.getValue().getColorObject(), 170));
-                FontRenderers.settings.drawCenteredString(stack, "Toggle", posX + 25, posY + 7, -1);
-                FontRenderers.settings.drawCenteredString(stack, "Hold", posX + 25, posY + 17, new Color(0xA8FFFFFF, true).getRGB());
+                Render2DEngine.drawRound(context, posX + 6, posY + 6, 38, 8, 2, Render2DEngine.injectAlpha(ThunderHackGui.onColor1.getValue().getColorObject(), 170));
+                FontRenderers.settings.drawCenteredString(context, "Toggle", posX + 25, posY + 7, -1);
+                FontRenderers.settings.drawCenteredString(context, "Hold", posX + 25, posY + 17, new Color(0xA8FFFFFF, true).getRGB());
             } else {
-                Render2DEngine.drawRound(stack, posX + 6, posY + 16, 38, 8, 2, Render2DEngine.injectAlpha(ThunderHackGui.onColor1.getValue().getColorObject(), 170));
-                FontRenderers.settings.drawCenteredString(stack, "Hold", posX + 25, posY + 17, -1);
-                FontRenderers.settings.drawCenteredString(stack, "Toggle", posX + 25, posY + 7, new Color(0xA8FFFFFF, true).getRGB());
+                Render2DEngine.drawRound(context, posX + 6, posY + 16, 38, 8, 2, Render2DEngine.injectAlpha(ThunderHackGui.onColor1.getValue().getColorObject(), 170));
+                FontRenderers.settings.drawCenteredString(context, "Hold", posX + 25, posY + 17, -1);
+                FontRenderers.settings.drawCenteredString(context, "Toggle", posX + 25, posY + 7, new Color(0xA8FFFFFF, true).getRGB());
             }
         }
 
-        Render2DEngine.popWindow();
+        Render2DEngine.popWindow(context);
     }
 
     private float getFadeFactor() {

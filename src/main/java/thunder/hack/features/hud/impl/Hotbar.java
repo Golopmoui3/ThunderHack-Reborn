@@ -30,28 +30,27 @@ public class Hotbar extends HudElement {
 
         PlayerEntity playerEntity = mc.player;
         if (playerEntity != null) {
-            MatrixStack matrices = context.getMatrices();
             int i = mc.getWindow().getScaledWidth() / 2;
 
             if (mc.player.getOffHandStack().isEmpty()) {
-                Render2DEngine.drawHudBase(matrices, i - 90, mc.getWindow().getScaledHeight() - 25, 180, 20, HudEditor.hudRound.getValue());
+                Render2DEngine.drawHudBase(context, i - 90, mc.getWindow().getScaledHeight() - 25, 180, 20, HudEditor.hudRound.getValue());
             } else if (lmode.getValue() == Mode.Merged) {
-                Render2DEngine.drawHudBase(matrices, i - 111, mc.getWindow().getScaledHeight() - 25, 201, 20, HudEditor.hudRound.getValue());
+                Render2DEngine.drawHudBase(context, i - 111, mc.getWindow().getScaledHeight() - 25, 201, 20, HudEditor.hudRound.getValue());
 
                 if (HudEditor.hudStyle.is(HudEditor.HudStyle.Blurry)) {
                     Render2DEngine.drawRect(context, i - 109 + 18, mc.getWindow().getScaledHeight() - 23, 0.5f, 15, new Color(0x44FFFFFF, true));
                 } else {
-                    Render2DEngine.verticalGradient(matrices, i - 109 + 18, mc.getWindow().getScaledHeight() - 22 + 1 - 4, i - 108 + 18 - 0.5f, mc.getWindow().getScaledHeight() - 11 + 1 - 4, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
-                    Render2DEngine.verticalGradient(matrices, i - 109 + 18, mc.getWindow().getScaledHeight() - 11 - 4, i - 108 + 18 - 0.5f, mc.getWindow().getScaledHeight() - 5, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
+                    Render2DEngine.verticalGradient(context, i - 109 + 18, mc.getWindow().getScaledHeight() - 22 + 1 - 4, i - 108 + 18 - 0.5f, mc.getWindow().getScaledHeight() - 11 + 1 - 4, Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0), HudEditor.textColor.getValue().getColorObject());
+                    Render2DEngine.verticalGradient(context, i - 109 + 18, mc.getWindow().getScaledHeight() - 11 - 4, i - 108 + 18 - 0.5f, mc.getWindow().getScaledHeight() - 5, HudEditor.textColor.getValue().getColorObject(), Render2DEngine.injectAlpha(HudEditor.textColor.getValue().getColorObject(), 0));
                 }
             } else {
-                Render2DEngine.drawHudBase(matrices, i - 90, mc.getWindow().getScaledHeight() - 25, 180, 20, HudEditor.hudRound.getValue());
-                Render2DEngine.drawHudBase(matrices, i - 112.5f, mc.getWindow().getScaledHeight() - 25, 20, 20, HudEditor.hudRound.getValue());
+                Render2DEngine.drawHudBase(context, i - 90, mc.getWindow().getScaledHeight() - 25, 180, 20, HudEditor.hudRound.getValue());
+                Render2DEngine.drawHudBase(context, i - 112.5f, mc.getWindow().getScaledHeight() - 25, 20, 20, HudEditor.hudRound.getValue());
             }
 
             Color c = HudEditor.hudStyle.is(HudEditor.HudStyle.Blurry) ? new Color(0x7C151515, true) : new Color(0x7C2F2F2F, true);
 
-            Render2DEngine.drawRect(matrices, i - 88 + playerEntity.getInventory().getSelectedSlot() * 19.8f, mc.getWindow().getScaledHeight() - 24, 17, 17, HudEditor.hudRound.getValue(), 0.7f, c, c, c, c);
+            Render2DEngine.drawRect(context, i - 88 + playerEntity.getInventory().getSelectedSlot() * 19.8f, mc.getWindow().getScaledHeight() - 24, 17, 17, HudEditor.hudRound.getValue(), 0.7f, c, c, c, c);
         }
     }
 
@@ -63,7 +62,6 @@ public class Hotbar extends HudElement {
         PlayerEntity playerEntity = mc.player;
         if (playerEntity != null) {
 
-            MatrixStack matrices = context.getMatrices();
             int i = mc.getWindow().getScaledWidth() / 2;
             int o = mc.getWindow().getScaledHeight() - 16 - 3;
 
@@ -77,8 +75,8 @@ public class Hotbar extends HudElement {
             for (int m = 0; m < 9; ++m) {
                 int n = i - 90 + m * 20 + 2;
                 if (m == mc.player.getInventory().getSelectedSlot())
-                    renderHotbarItem(context, n, o - 7, playerEntity.getInventory().main.get(m));
-                else renderHotbarItem(context, n, o - 5, playerEntity.getInventory().main.get(m));
+                    renderHotbarItem(context, n, o - 7, playerEntity.getInventory().getStack(m));
+                else renderHotbarItem(context, n, o - 5, playerEntity.getInventory().getStack(m));
             }
         }
     }
@@ -86,28 +84,24 @@ public class Hotbar extends HudElement {
     private static void renderHotbarItem(DrawContext context, int i, int j, ItemStack itemStack) {
         if (!itemStack.isEmpty()) {
             context.getMatrices().pushMatrix();
-            context.getMatrices().translate((float) (i + 8), (float) (j + 12), 0.0F);
+            context.getMatrices().translate((float) (i + 8), (float) (j + 12));
             context.getMatrices().scale(0.9f, 0.9f);
-            context.getMatrices().translate((float) (-(i + 8)), (float) (-(j + 12)), 0.0F);
+            context.getMatrices().translate((float) (-(i + 8)), (float) (-(j + 12)));
             context.drawItem(itemStack, i, j);
             context.drawStackOverlay(mc.textRenderer, itemStack, i, j);
             context.getMatrices().popMatrix();
         }
     }
 
-    public static void renderXpBar(int x, MatrixStack matrices) {
-        mc.getProfiler().push("expBar");
+    public static void renderXpBar(int x, DrawContext context) {
         int k;
         int l;
-        mc.getProfiler().pop();
 
         if (mc.player.experienceLevel > 0) {
-            mc.getProfiler().push("expLevel");
             String string = "" + mc.player.experienceLevel;
             k = (int) ((mc.getWindow().getScaledWidth() - FontRenderers.sf_bold_mini.getStringWidth(string)) / 2);
             l = mc.getWindow().getScaledHeight() - 31 - 4;
-            FontRenderers.sf_bold_mini.drawString(matrices, string, k, l, 8453920);
-            mc.getProfiler().pop();
+            FontRenderers.sf_bold_mini.drawString(context, string, k, l, 8453920);
         }
     }
 }

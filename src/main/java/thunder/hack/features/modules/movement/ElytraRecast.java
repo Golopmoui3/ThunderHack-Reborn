@@ -97,7 +97,7 @@ public class ElytraRecast extends Module {
     }
 
     private boolean checkElytra() {
-        if (mc.player.input.jumping && !mc.player.getAbilities().flying && !mc.player.hasVehicle() && !mc.player.isClimbing()) {
+        if (mc.player.input.playerInput.jump() && !mc.player.getAbilities().flying && !mc.player.hasVehicle() && !mc.player.isClimbing()) {
             ItemStack is = mc.player.getEquippedStack(EquipmentSlot.CHEST);
             return is.isOf(Items.ELYTRA) && ((is.getDamage() < is.getMaxDamage() - 1) || allowBroken.getValue());
         }

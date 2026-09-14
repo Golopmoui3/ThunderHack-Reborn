@@ -1,6 +1,7 @@
 package thunder.hack.gui.thundergui.components;
 
-import net.minecraft.client.util.math.MatrixStack;
+import net.minecraft.client.gui.DrawContext;
+
 import thunder.hack.features.modules.Module;
 import thunder.hack.gui.font.FontRenderers;
 import thunder.hack.gui.thundergui.ThunderGui;
@@ -23,15 +24,15 @@ public class CategoryPlate {
         this.posY = posY;
     }
 
-    public void render(MatrixStack matrixStack, int MouseX, int MouseY) {
+    public void render(DrawContext context, int MouseX, int MouseY) {
         category_animation = fast(category_animation, isHovered(MouseX, MouseY) ? 1 : 0, 15f);
-        Render2DEngine.addWindow(matrixStack, new Render2DEngine.Rectangle(posX, posY + 0.5f, posX + 84, posY + 15.5f));
+        Render2DEngine.addWindow(context, new Render2DEngine.Rectangle(posX, posY + 0.5f, posX + 84, posY + 15.5f));
         if (isHovered(MouseX, MouseY)) {
-            Render2DEngine.drawRound(matrixStack, posX, posY, 84, 15, 2f, new Color(25, 20, 30, (int) MathUtility.clamp(65 * category_animation, 0, 255)));
-            Render2DEngine.drawBlurredShadow(matrixStack, MouseX - 20, MouseY - 20, 40, 40, 60, new Color(0xC3555A7E, true));
+            Render2DEngine.drawRound(context, posX, posY, 84, 15, 2f, new Color(25, 20, 30, (int) MathUtility.clamp(65 * category_animation, 0, 255)));
+            Render2DEngine.drawBlurredShadow(context, MouseX - 20, MouseY - 20, 40, 40, 60, new Color(0xC3555A7E, true));
         }
-        FontRenderers.modules.drawString(matrixStack, cat.getName(), posX + 5, posY + 6, -1);
-        Render2DEngine.popWindow();
+        FontRenderers.modules.drawString(context, cat.getName(), posX + 5, posY + 6, -1);
+        Render2DEngine.popWindow(context);
     }
 
     public void movePosition(float deltaX, float deltaY) {

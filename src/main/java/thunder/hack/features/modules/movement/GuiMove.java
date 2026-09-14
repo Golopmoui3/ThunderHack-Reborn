@@ -9,9 +9,11 @@ import net.minecraft.network.packet.c2s.play.ClientCommandC2SPacket;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
 import net.minecraft.screen.slot.SlotActionType;
+import net.minecraft.util.math.Vec2f;
 import thunder.hack.events.impl.EventClickSlot;
 import thunder.hack.events.impl.PacketEvent;
 import thunder.hack.features.modules.Module;
+import thunder.hack.injection.accesors.IInput;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.player.MovementUtility;
 
@@ -76,7 +78,7 @@ public class GuiMove extends Module {
         if (e.getPacket() instanceof ClickSlotC2SPacket click) {
             switch (clickBypass.getValue()) {
                 case GrimSwap -> {
-                    if (click.getActionType() != SlotActionType.PICKUP && click.getActionType() != SlotActionType.PICKUP_ALL)
+                    if (click.actionType() != SlotActionType.PICKUP && click.actionType() != SlotActionType.PICKUP_ALL)
                         sendPacket(new CloseHandledScreenC2SPacket(0));
                 }
 
@@ -99,8 +101,7 @@ public class GuiMove extends Module {
                 case MatrixNcp -> {
                     sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.STOP_SPRINTING));
                     mc.options.forwardKey.setPressed(false);
-                    mc.player.input.getMovementInput().y = 0;
-                    mc.player.input.pressingForward = false;
+                    ((IInput) mc.player.input).setMovementVector(new Vec2f(mc.player.input.getMovementInput().x, 0));
                 }
 
                 case Delay -> {

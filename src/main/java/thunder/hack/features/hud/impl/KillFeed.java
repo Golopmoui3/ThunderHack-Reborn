@@ -71,7 +71,7 @@ public class KillFeed extends HudElement {
             FontRenderers.modules.drawString(context, kc.getString(), getPosX() + 5, getPosY() + 18 + y_offset, -1);
             y_offset += 10;
         }
-        Render2DEngine.popWindow();
+        Render2DEngine.popWindow(context);
         setBounds(getPosX(), getPosY(), hAnimation, vAnimation);
     }
 

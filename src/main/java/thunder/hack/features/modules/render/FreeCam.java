@@ -4,9 +4,12 @@ import meteordevelopment.orbit.EventHandler;
 import meteordevelopment.orbit.EventPriority;
 import net.minecraft.entity.LivingEntity;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
+import net.minecraft.util.PlayerInput;
+import net.minecraft.util.math.Vec2f;
 import org.lwjgl.glfw.GLFW;
 import thunder.hack.events.impl.*;
 import thunder.hack.features.modules.Module;
+import thunder.hack.injection.accesors.IInput;
 import thunder.hack.setting.Setting;
 import thunder.hack.utility.player.MovementUtility;
 import thunder.hack.utility.render.Render2DEngine;
@@ -105,10 +108,9 @@ public class FreeCam extends Module {
                 fakeY -= hspeed.getValue();
         }
 
-        mc.player.input.getMovementInput().y = 0;
-        mc.player.input.getMovementInput().x = 0;
-        mc.player.input.jumping = false;
-        mc.player.input.sneaking = false;
+        ((IInput) mc.player.input).setMovementVector(Vec2f.ZERO);
+        PlayerInput pi = mc.player.input.playerInput;
+        mc.player.input.playerInput = new PlayerInput(pi.forward(), pi.backward(), pi.left(), pi.right(), false, false, pi.sprint());
     }
 
     @EventHandler(priority = EventPriority.LOW)

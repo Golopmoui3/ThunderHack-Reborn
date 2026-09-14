@@ -87,7 +87,7 @@ public class FriendsWindow extends WindowBase {
             if ((int) (friendPlate.offset + getY() + 25) + getScrollOffset() > getY() + getHeight() || friendPlate.offset + getScrollOffset() + getY() + 10 < getY())
                 continue;
 
-            boolean online = mc.player != null && mc.player.networkHandler.getPlayerList().stream().map(p -> p.getProfile().getName()).toList().contains(friendPlate.name()) || Managers.TELEMETRY.getOnlinePlayers().contains(friendPlate.name());
+            boolean online = mc.player != null && mc.player.networkHandler.getPlayerList().stream().map(p -> p.getProfile().name()).toList().contains(friendPlate.name()) || Managers.TELEMETRY.getOnlinePlayers().contains(friendPlate.name());
 
             // Name
             Render2DEngine.drawRectWithOutline(context, getX() + 11, friendPlate.offset + getY() + 36 + getScrollOffset(), getWidth() - 28, 11, color, color2);
@@ -100,7 +100,7 @@ public class FriendsWindow extends WindowBase {
             FontRenderers.sf_medium_mini.drawString(context, id + ".", getX() + 3, friendPlate.offset + getY() + 41 + getScrollOffset(), textColor);
         }
         setMaxElementsHeight(friendPlates.size() * 20);
-        Render2DEngine.popWindow();
+        Render2DEngine.popWindow(context);
     }
 
     @Override

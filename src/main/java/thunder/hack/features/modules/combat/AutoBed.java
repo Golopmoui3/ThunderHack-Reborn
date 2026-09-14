@@ -12,7 +12,10 @@ import net.minecraft.item.BedItem;
 import net.minecraft.network.packet.c2s.play.CloseHandledScreenC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerInteractBlockC2SPacket;
 import net.minecraft.network.packet.c2s.play.PlayerMoveC2SPacket;
-import net.minecraft.recipe.RecipeEntry;
+import net.minecraft.recipe.RecipeDisplayEntry;
+import net.minecraft.recipe.display.ShapedCraftingRecipeDisplay;
+import net.minecraft.recipe.display.ShapelessCraftingRecipeDisplay;
+import net.minecraft.recipe.display.SlotDisplay;
 import net.minecraft.screen.CraftingScreenHandler;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
@@ -23,6 +26,7 @@ import net.minecraft.util.math.Box;
 import net.minecraft.util.math.Direction;
 import net.minecraft.util.math.Vec3d;
 import net.minecraft.world.RaycastContext;
+import net.minecraft.world.World;
 import org.jetbrains.annotations.NotNull;
 import thunder.hack.core.Managers;
 import thunder.hack.core.manager.client.ModuleManager;
@@ -96,7 +100,7 @@ public final class AutoBed extends Module {
     public void onPlayerUpdate(PlayerUpdateEvent e) {
         target = findTarget();
 
-        if (mc.world.getDimension().bedWorks() && dimCheck.getValue()) {
+        if (mc.world.getRegistryKey() == World.OVERWORLD && dimCheck.getValue()) {
             disable(isRu() ? "Кровати не взрываются в этом измерении!" : "Beds don't explode in this dimension!");
             return;
         }
@@ -309,10 +313,13 @@ public final class AutoBed extends Module {
                     if (mc.player.currentScreenHandler instanceof CraftingScreenHandler craft) {
                         mc.player.getRecipeBook().setGuiOpen(craft.getCategory(), true);
                         for (RecipeResultCollection results : mc.player.getRecipeBook().getOrderedResults()) {
-                            for (RecipeEntry<?> recipe : results.getRecipes(true)) {
-                                if (recipe.value().getResult(results.getRegistryManager()).getItem() instanceof BedItem) {
+                            for (RecipeDisplayEntry entry : results.getAllRecipes()) {
+                                SlotDisplay resultDisplay = null;
+                                if (entry.display() instanceof ShapedCraftingRecipeDisplay shaped) resultDisplay = shaped.result();
+                                else if (entry.display() instanceof ShapelessCraftingRecipeDisplay shapeless) resultDisplay = shapeless.result();
+                                if (resultDisplay instanceof SlotDisplay.StackSlotDisplay stack && stack.stack().getItem() instanceof BedItem) {
                                     for (int i = 0; i < bedsPerCraft.getValue(); i++)
-                                        mc.interactionManager.clickRecipe(mc.player.currentScreenHandler.syncId, recipe, false);
+                                        mc.interactionManager.clickRecipe(mc.player.currentScreenHandler.syncId, entry.id(), false);
                                     mc.interactionManager.clickSlot(mc.player.currentScreenHandler.syncId, 0, 0, SlotActionType.QUICK_MOVE, mc.player);
                                     break;
                                 }

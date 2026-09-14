@@ -96,7 +96,7 @@ public final class Quiver extends Module {
     private SearchInvResult getArrow(String name) {
         return InventoryUtility.findInInventory(stack -> {
             if (stack.getItem() instanceof TippedArrowItem tai) {
-                String key = tai.getTranslationKey(stack);
+                String key = tai.getTranslationKey();
                 return key.contains("effect." + name);
             }
             return false;

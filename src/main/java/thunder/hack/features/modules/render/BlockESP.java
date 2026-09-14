@@ -119,7 +119,7 @@ public class BlockESP extends Module {
                     Vec3d vec2 = new Vec3d(0, 0, 75)
                             .rotateX(-(float) Math.toRadians(mc.gameRenderer.getCamera().getPitch()))
                             .rotateY(-(float) Math.toRadians(mc.gameRenderer.getCamera().getYaw()))
-                            .add(mc.cameraEntity.getEyePos());
+                            .add(mc.getCameraEntity().getEyePos());
 
                     Render3DEngine.drawLineDebug(vec2, vec.getVector(), color.getValue().getColorObject());
                 }

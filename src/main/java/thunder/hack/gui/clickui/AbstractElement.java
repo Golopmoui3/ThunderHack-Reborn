@@ -28,7 +28,7 @@ public abstract class AbstractElement {
     }
 
     public void mouseClicked(int mouseX, int mouseY, int button) {
-        if (InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow().getHandle(), GLFW.GLFW_KEY_DELETE) && button == 2 && hovered) {
+        if (InputUtil.isKeyPressed(MinecraftClient.getInstance().getWindow(), GLFW.GLFW_KEY_DELETE) && button == 2 && hovered) {
             if (setting.getValue() instanceof ColorSetting cs)
                 cs.setDefault();
             else

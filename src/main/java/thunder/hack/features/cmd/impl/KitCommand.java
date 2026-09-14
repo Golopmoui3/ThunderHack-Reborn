@@ -130,8 +130,10 @@ public class KitCommand extends Command {
 
         StringBuilder jsonInventory = new StringBuilder();
 
-        for (ItemStack item : mc.player.getInventory().main)
+        for (int slot = 0; slot < mc.player.getInventory().size(); slot++) {
+            ItemStack item = mc.player.getInventory().getStack(slot);
             jsonInventory.append(item.getItem() instanceof PotionItem ? item.getItem().getTranslationKey() + item.getItem().getComponents().get(DataComponentTypes.POTION_CONTENTS).getColor() : item.getItem().getTranslationKey()).append(" ");
+        }
 
         json.addProperty(name, jsonInventory.toString());
         saveFile(json, name, isRu() ? "сохранен" : "saved");

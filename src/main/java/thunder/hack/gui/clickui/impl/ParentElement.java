@@ -3,8 +3,6 @@ package thunder.hack.gui.clickui.impl;
 import net.minecraft.client.gl.RenderPipelines;
 
 import net.minecraft.client.gui.DrawContext;
-import net.minecraft.client.util.math.MatrixStack;
-import net.minecraft.util.math.RotationAxis;
 import thunder.hack.core.Managers;
 import thunder.hack.gui.clickui.AbstractElement;
 import thunder.hack.gui.font.FontRenderers;
@@ -29,23 +27,21 @@ public class ParentElement extends AbstractElement {
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         super.render(context, mouseX, mouseY, delta);
 
-        MatrixStack matrixStack = context.getMatrices();
-
         float tx = x + width - 11;
         float ty = y + 7.5f;
 
         animation = fast(animation, getParentSetting().getValue().isExtended() ? 0 : 1, 15f);
 
-        matrixStack.push();
-        matrixStack.translate(tx, ty, 0);
-        matrixStack.multiply(RotationAxis.POSITIVE_Z.rotationDegrees(-180f * animation));
-        matrixStack.translate(-tx, -ty, 0);
-        matrixStack.translate((x + width - 14), (y + 4.5f), 0);
+        context.getMatrices().pushMatrix();
+        context.getMatrices().translate(tx, ty);
+        context.getMatrices().rotate(-180f * animation);
+        context.getMatrices().translate(-tx, -ty);
+        context.getMatrices().translate((x + width - 14), (y + 4.5f));
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6);
-        matrixStack.translate(-(x + width - 14), -(y + 4.5f), 0);
-        matrixStack.pop();
+        context.getMatrices().translate(-(x + width - 14), -(y + 4.5f));
+        context.getMatrices().popMatrix();
 
-        FontRenderers.sf_medium_mini.drawString(matrixStack, setting.getName(), x + 6 + (6 * getParentSetting().getValue().getHierarchy()), y + height / 2 - 1f, new Color(-1).getRGB());
+        FontRenderers.sf_medium_mini.drawString(context, setting.getName(), x + 6 + (6 * getParentSetting().getValue().getHierarchy()), y + height / 2 - 1f, new Color(-1).getRGB());
     }
 
     @Override

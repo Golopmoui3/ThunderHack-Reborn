@@ -108,8 +108,8 @@ public class PotionHud extends HudElement {
             float px = getPosX() + (max_width - pointerX - 10);
 
             context.getMatrices().pushMatrix();
-            context.getMatrices().translate(getPosX() + 2, getPosY() + 16 + y_offset, 0);
-            context.drawSprite(0, 0, 0, 8, 8, mc.getStatusEffectSpriteManager().getSprite(potionEffect.getEffectType()));
+            context.getMatrices().translate(getPosX() + 2, getPosY() + 16 + y_offset);
+            Render2DEngine.drawRound(context, 0, 0, 8, 8, 2, new Color(potion.getColor()));
             context.getMatrices().popMatrix();
 
             FontRenderers.sf_bold_mini.drawString(context, potion.getName().getString() + " " + Formatting.RED + (potionEffect.getAmplifier() + 1), getPosX() + 12, getPosY() + 19 + y_offset, HudEditor.textColor.getValue().getColor());
@@ -117,7 +117,7 @@ public class PotionHud extends HudElement {
             Render2DEngine.drawRect(context, px, getPosY() + 17 + y_offset, 0.5f, 8, new Color(0x44FFFFFF, true));
             y_offset += 9;
         }
-        Render2DEngine.popWindow();
+        Render2DEngine.popWindow(context);
         setBounds(getPosX(), getPosY(), hAnimation, vAnimation);
     }
 }

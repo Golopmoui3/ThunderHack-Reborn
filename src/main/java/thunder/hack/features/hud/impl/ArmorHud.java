@@ -34,7 +34,7 @@ public class ArmorHud extends HudElement {
                 float offset = (InventoryUtility.getArmorSlot(itemStack) == EquipmentSlot.HEAD) ? -4 : 0;
                 Render2DEngine.addWindow(context, (int) xItemOffset, getPosY() + offset + (15 - offset) * ((float) itemStack.getDamage() / (float) itemStack.getMaxDamage()), xItemOffset + 15, getPosY() + 15, 1f);
                 context.drawItem(itemStack, (int) xItemOffset, (int) getPosY());
-                Render2DEngine.popWindow();
+                Render2DEngine.popWindow(context);
             }
             xItemOffset += 20;
         }

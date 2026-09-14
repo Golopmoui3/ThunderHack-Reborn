@@ -2,8 +2,10 @@ package thunder.hack.gui.mainmenu;
 
 import net.minecraft.client.gl.RenderPipelines;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.MinecraftClient;
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.client.texture.NativeImage;
@@ -100,7 +102,10 @@ public class CreditsScreen extends Screen {
 
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
         float halfOfWidth = mc.getWindow().getScaledWidth() / 2f;
         float halfOfHeight = mc.getWindow().getScaledHeight() / 2f;
         float globalOffset = (contributors.size() * 150) / 2f;
@@ -116,7 +121,7 @@ public class CreditsScreen extends Screen {
         if (Render2DEngine.isHovered(mouseX, mouseY, mc.getWindow().getScaledWidth() - 40, mc.getWindow().getScaledHeight() - 40, 40, 40))
             mc.setScreen(MainMenuScreen.getInstance());
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
     public record Contributor(String name, Identifier avatar, String role, String description, String clickAction) {
@@ -127,7 +132,9 @@ public class CreditsScreen extends Screen {
             NativeImageBackedTexture nIBT = getAvatarFromURL("https://cdn.discordapp.com/avatars/" + name + ".png?size=96");
 
             if (nIBT != null) {
-                return MinecraftClient.getInstance().getTextureManager().registerDynamicTexture("th-contributors-" + (int) MathUtility.random(0, 1000000), nIBT);
+                Identifier id = Identifier.of("thunderhack", "contributors/th-contributors-" + (int) MathUtility.random(0, 1000000));
+                MinecraftClient.getInstance().getTextureManager().registerTexture(id, nIBT);
+                return id;
             } else {
                 return null;
             }
@@ -154,7 +161,7 @@ public class CreditsScreen extends Screen {
             e.printStackTrace();
         }
         if (pic != null) {
-            return new NativeImageBackedTexture(parseAvatar(pic));
+            return new NativeImageBackedTexture(() -> "th-avatar", parseAvatar(pic));
         }
         return null;
     }
@@ -164,8 +171,8 @@ public class CreditsScreen extends Screen {
         for (int x = 0; x < 96; x++) {
             for (int y = 0; y < 96; y++) {
                 if (Math.hypot(x - 48, y - 48) > 45)
-                    imgNew.setColor(x, y, Render2DEngine.injectAlpha(new Color(image.getColor(x, y)), (int) ((float) (48 - Math.hypot(x - 48, y - 48)) / 3f * 255f)).getRGB());
-                else imgNew.setColor(x, y, image.getColor(x, y));
+                    imgNew.setColorArgb(x, y, Render2DEngine.injectAlpha(new Color(image.getColorArgb(x, y)), (int) ((float) (48 - Math.hypot(x - 48, y - 48)) / 3f * 255f)).getRGB());
+                else imgNew.setColorArgb(x, y, image.getColorArgb(x, y));
             }
         }
         image.close();

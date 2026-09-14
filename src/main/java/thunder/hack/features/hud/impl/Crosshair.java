@@ -86,7 +86,7 @@ public class Crosshair extends Module {
                 Color color = this.color.getValue().getColorObject();
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(xAnim, yAnim);
-                context.getMatrices().multiply(RotationAxis.POSITIVE_Z.rotation((System.currentTimeMillis() % 70000) / 70000f * 360f));
+                context.getMatrices().rotate((System.currentTimeMillis() % 70000) / 70000f * 360f);
                 context.getMatrices().translate(-xAnim, -yAnim);
                 Render2DEngine.drawRect(context, xAnim - 0.75f, yAnim - 5, 1.5f, 10, color);
                 Render2DEngine.drawRect(context, xAnim - 5, yAnim - 0.75f, 10, 1.5f, color);
@@ -101,16 +101,10 @@ public class Crosshair extends Module {
                 context.getMatrices().translate(xAnim + 4, yAnim + 4);
                 GlStateManager._enableBlend();
                 GlStateManager.glBlendFuncSeparate(770, 1, 1, 0);
-                BufferBuilder bufferBuilder = Tessellator.getInstance().begin(VertexFormat.DrawMode.QUADS, VertexFormats.POSITION_TEXTURE_COLOR);
 
                 Render2DEngine.bindTexture(TextureStorage.firefly);
                 Color color1 = colorMode.getValue() == ColorMode.Sync ? HudEditor.getColor(1) : color.getValue().getColorObject();
-                Matrix4f posMatrix = context.getMatrices().peek().getPositionMatrix();
-                bufferBuilder.vertex(posMatrix, 0, -8f, 0).texture(0f, 1f).color(color1.getRGB());
-                bufferBuilder.vertex(posMatrix, -8f, -8f, 0).texture(1f, 1f).color(color1.getRGB());
-                bufferBuilder.vertex(posMatrix, -8f, 0, 0).texture(1f, 0).color(color1.getRGB());
-                bufferBuilder.vertex(posMatrix, 0, 0, 0).texture(0, 0).color(color1.getRGB());
-                BufferRenderer.drawWithGlobalProgram(bufferBuilder.end());
+                Render2DEngine.texturedQuad(context, TextureStorage.firefly, 0, -8f, -8f, 0, 0f, 0f, 1f, 1f, color1.getRGB());
                 GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);
                 GlStateManager._disableBlend();
                 context.getMatrices().popMatrix();

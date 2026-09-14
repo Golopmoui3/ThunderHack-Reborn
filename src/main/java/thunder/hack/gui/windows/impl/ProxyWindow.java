@@ -177,7 +177,7 @@ public class ProxyWindow extends WindowBase {
             FontRenderers.sf_medium_mini.drawCenteredString(context, ping, getX() + getWidth() - 41, proxyPlate.offset + getY() + 40 + getScrollOffset(), hover10 ? -1 : Color.GRAY.getRGB());
         }
         setMaxElementsHeight(proxyPlates.size() * 20);
-        Render2DEngine.popWindow();
+        Render2DEngine.popWindow(context);
     }
 
     @Override

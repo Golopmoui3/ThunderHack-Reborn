@@ -1,5 +1,6 @@
 package thunder.hack.gui.windows;
 
+import com.mojang.blaze3d.opengl.GlStateManager;
 import com.mojang.blaze3d.systems.RenderSystem;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.util.Colors;
@@ -66,8 +67,8 @@ public class WindowBase {
         Render2DEngine.drawRectWithOutline(context, x + width, y + 19, 6, getHeight() - 34, hover2 ? new Color(0x5F131313, true) : new Color(0x5F000000, true), color2);
         Render2DEngine.drawRect(context, x + width, Math.max(y + 19 - (scrollOffset * ratio), y + 19), 6, Math.min((getHeight() - 34) * ratio, getHeight() - 34), new Color(0xA1313131, true));
 
-        Render2DEngine.drawLine(x + width - 2, y + 5, x + width + 4, y + 11, Colors.WHITE);
-        Render2DEngine.drawLine(x + width - 2, y + 11, x + width + 4, y + 5, Colors.WHITE);
+        Render2DEngine.drawLine(context, x + width - 2, y + 5, x + width + 4, y + 11, Colors.WHITE);
+        Render2DEngine.drawLine(context, x + width - 2, y + 11, x + width + 4, y + 5, Colors.WHITE);
         GlStateManager._disableBlend();
 
         if (dragging) {
@@ -92,8 +93,8 @@ public class WindowBase {
 
         hoveringWindow = Render2DEngine.isHovered(mouseX, mouseY, getX(), getY(), getWidth(), getHeight());
 
-        Render2DEngine.drawLine(getX() + getWidth(), getY() + getHeight() - 3, getX() + getWidth() + 7, getY() + getHeight() - 10, color2.getRGB());
-        Render2DEngine.drawLine(getX() + getWidth() + 5, getY() + getHeight() - 3, getX() + getWidth() + 7, getY() + getHeight() - 5, color2.getRGB());
+        Render2DEngine.drawLine(context, getX() + getWidth(), getY() + getHeight() - 3, getX() + getWidth() + 7, getY() + getHeight() - 10, color2.getRGB());
+        Render2DEngine.drawLine(context, getX() + getWidth() + 5, getY() + getHeight() - 3, getX() + getWidth() + 7, getY() + getHeight() - 5, color2.getRGB());
     }
 
     protected void mouseClicked(double mouseX, double mouseY, int button) {

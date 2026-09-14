@@ -88,7 +88,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, S extend
             }
             //noinspection unchecked
             ModuleManager.chams.renderPlayer(playerState, matrixStack, orderedRenderCommandQueue, (PlayerEntityModel) model, pe);
-            if (!ModuleManager.chams.playerTexture.getValue() && pe != null && !pe.isSpectator())
+            if (!ModuleManager.chams.playerTexture() && pe != null && !pe.isSpectator())
                 ci.cancel();
         }
     }

@@ -13,7 +13,6 @@ public class PlayerEntityCopy extends OtherClientPlayerEntity {
 
         copyFrom(mc.player);
         getPlayerListEntry();
-        dataTracker.set(PLAYER_MODEL_PARTS, mc.player.getDataTracker().get(PLAYER_MODEL_PARTS));
         setUuid(UUID.randomUUID());
     }
 

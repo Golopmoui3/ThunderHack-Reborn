@@ -107,7 +107,7 @@ public final class Blocker extends PlaceModule {
     @SuppressWarnings("unused")
     private void onBreak(EventBreakBlock event) {
         if (!onBreak.getValue()) return;
-        doLogic(event.getEntityPos());
+        doLogic(event.getPos());
     }
 
     @EventHandler

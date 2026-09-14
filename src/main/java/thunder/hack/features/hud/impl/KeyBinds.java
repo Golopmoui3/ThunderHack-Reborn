@@ -95,7 +95,7 @@ public class KeyBinds extends HudElement {
                 y_offset += 9;
             }
         }
-        Render2DEngine.popWindow();
+        Render2DEngine.popWindow(context);
         setBounds(getPosX(), getPosY(), hAnimation, vAnimation);
     }
 

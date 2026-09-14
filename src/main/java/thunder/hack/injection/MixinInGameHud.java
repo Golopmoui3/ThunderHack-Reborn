@@ -68,7 +68,7 @@ public abstract class MixinInGameHud {
 
         if (ModuleManager.hotbar.isEnabled()) {
             ci.cancel();
-            Hotbar.renderXpBar(x, context.getMatrices());
+            Hotbar.renderXpBar(x, context);
         }
     }
 

@@ -2,6 +2,7 @@ package thunder.hack.gui.misc;
 
 import net.minecraft.client.gl.RenderPipelines;
 
+import net.minecraft.client.gui.Click;
 import net.minecraft.client.gui.DrawContext;
 import net.minecraft.client.gui.screen.Screen;
 import net.minecraft.text.Text;
@@ -75,14 +76,17 @@ public class DialogScreen extends Screen {
     }
 
     @Override
-    public boolean mouseClicked(double mouseX, double mouseY, int button) {
+    public boolean mouseClicked(Click click, boolean doubled) {
+        double mouseX = click.x();
+        double mouseY = click.y();
+        int button = click.button();
         if (yesHovered((int) mouseX, (int) mouseY))
             yesAction.run();
 
         else if (noHovered((int) mouseX, (int) mouseY))
             noAction.run();
 
-        return super.mouseClicked(mouseX, mouseY, button);
+        return super.mouseClicked(click, doubled);
     }
 
 }

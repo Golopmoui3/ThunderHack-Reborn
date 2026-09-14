@@ -17,6 +17,7 @@ import net.minecraft.item.Items;
 import net.minecraft.network.packet.c2s.play.*;
 import net.minecraft.screen.slot.SlotActionType;
 import net.minecraft.util.Hand;
+import net.minecraft.util.PlayerInput;
 import net.minecraft.util.hit.BlockHitResult;
 import net.minecraft.util.hit.HitResult;
 import net.minecraft.util.math.*;
@@ -140,6 +141,10 @@ public final class AutoAnchor extends Module {
     private int prevAnchorAmmount, anchorSpeed, invTimer;
 
     private boolean rotated, facePlacing;
+
+    private static PlayerInput pi() {
+        return mc.player.input.playerInput;
+    }
 
     private long confirmTime, calcTime;
 
@@ -447,7 +452,7 @@ public final class AutoAnchor extends Module {
 
         if (ak47.is(AK47.OFF)) {
             if (mc.player.isSneaking())
-                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+                sendPacket(new PlayerInputC2SPacket(new PlayerInput(pi().forward(), pi().backward(), pi().left(), pi().right(), pi().jump(), false, pi().sprint())));
 
             if (mc.world.getBlockState(bhr.getBlockPos()).get(RespawnAnchorBlock.CHARGES) == 0) {
                 sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(offhand ? Hand.OFF_HAND : Hand.MAIN_HAND, bhr, id));
@@ -459,7 +464,7 @@ public final class AutoAnchor extends Module {
             }
         } else {
             if (mc.player.isSneaking())
-                sendPacket(new ClientCommandC2SPacket(mc.player, ClientCommandC2SPacket.Mode.RELEASE_SHIFT_KEY));
+                sendPacket(new PlayerInputC2SPacket(new PlayerInput(pi().forward(), pi().backward(), pi().left(), pi().right(), pi().jump(), false, pi().sprint())));
             sendSequencedPacket(id -> new PlayerInteractBlockC2SPacket(offhand ? Hand.OFF_HAND : Hand.MAIN_HAND, bhr, id));
             mc.player.swingHand(offhand ? Hand.OFF_HAND : Hand.MAIN_HAND);
 
