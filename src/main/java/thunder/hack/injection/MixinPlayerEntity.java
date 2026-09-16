@@ -38,7 +38,7 @@ public class MixinPlayerEntity {
         }
     }
 
-    @Inject(method = "attack", at = @At(value = "INVOKE", target = "Lnet/minecraft/entity/player/PlayerEntity;setSprinting(Z)V", shift = At.Shift.AFTER))
+    @Inject(method = "attack", at = @At("TAIL"))
     public void attackAHook(CallbackInfo callbackInfo) {
         if (ModuleManager.autoSprint.isEnabled() && AutoSprint.sprint.getValue()) {
             final float multiplier = 0.6f + 0.4f * AutoSprint.motion.getValue();

@@ -143,9 +143,7 @@ public class ClickGUI extends Screen {
 
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
-        if (ModuleManager.clickGui.blur.getValue())
-            applyBlur(context);
-
+        // NB: vanilla renderWithTooltip already renders background + blur once per frame
         anyHovered = false;
 
         ClickGui.Image image = ModuleManager.clickGui.image.getValue();
@@ -174,8 +172,6 @@ public class ClickGUI extends Screen {
         }
 
 
-        if (Module.fullNullCheck())
-            renderBackground(context, mouseX, mouseY, delta);
         //   Render2DEngine.drawMainMenuShader(context, 0, 0, mc.getWindow().getScaledWidth(), mc.getWindow().getScaledHeight());
 
         if (ModuleManager.clickGui.scrollMode.getValue() == ClickGui.scrollModeEn.Old) {

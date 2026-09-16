@@ -27,7 +27,7 @@ import static thunder.hack.features.modules.Module.mc;
 
 @Mixin(LivingEntityRenderer.class)
 public abstract class MixinLivingEntityRenderer<T extends LivingEntity, S extends LivingEntityRenderState, M extends EntityModel<S>> {
-    private float originalHeadYaw, originalPrevHeadYaw, originalPrevHeadPitch, originalHeadPitch;
+    private float originalHeadYaw, originalPrevHeadYaw, originalPrevHeadPitch, originalHeadPitch, originalPrevBodyYaw;
 
     @Shadow
     protected M model;
@@ -40,6 +40,7 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, S extend
             originalPrevHeadYaw = livingEntity.lastHeadYaw;
             originalPrevHeadPitch = livingEntity.lastPitch;
             originalHeadPitch = livingEntity.getPitch();
+            originalPrevBodyYaw = livingEntity.lastBodyYaw;
 
             livingEntity.setPitch(((IClientPlayerEntity) MinecraftClient.getInstance().player).getLastPitch());
             livingEntity.lastPitch = Managers.PLAYER.lastPitch;
@@ -62,13 +63,14 @@ public abstract class MixinLivingEntityRenderer<T extends LivingEntity, S extend
     }
 
     @Inject(method = "updateRenderState", at = @At("TAIL"))
-    private void updateRenderStatePost(T livingEntity, S livingEntityRenderState, CallbackInfo ci) {
+    private void updateRenderStatePost(T livingEntity, S livingEntityRenderState, float f, CallbackInfo ci) {
         if (Module.fullNullCheck()) return;
         if (mc.player != null && livingEntity == mc.player && mc.player.getControllingVehicle() == null && ClientSettings.renderRotations.getValue() && !ThunderHack.isFuturePresent()) {
             livingEntity.lastPitch = originalPrevHeadPitch;
             livingEntity.setPitch(originalHeadPitch);
             livingEntity.headYaw = originalHeadYaw;
             livingEntity.lastHeadYaw = originalPrevHeadYaw;
+            livingEntity.lastBodyYaw = originalPrevBodyYaw;
         }
     }
 

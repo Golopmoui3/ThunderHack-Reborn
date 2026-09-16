@@ -157,8 +157,8 @@ public abstract class MixinHandledScreen<T extends ScreenHandler> extends Screen
         }
     }
 
-    @Inject(method = "drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;)V", at = @At("TAIL"))
-    protected void drawSlotHook(DrawContext context, Slot slot, CallbackInfo ci) {
+    @Inject(method = "drawSlot(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/screen/slot/Slot;II)V", at = @At("TAIL"))
+    protected void drawSlotHook(DrawContext context, Slot slot, int mouseX, int mouseY, CallbackInfo ci) {
         if (ModuleManager.serverHelper.isEnabled() && ModuleManager.serverHelper.aucHelper.getValue())
             ModuleManager.serverHelper.onRenderChest(context, slot);
     }

@@ -2,6 +2,7 @@ package thunder.hack.injection;
 
 import net.minecraft.entity.Entity;
 import net.minecraft.world.BlockView;
+import net.minecraft.world.World;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
 import thunder.hack.core.manager.client.ModuleManager;
 import net.minecraft.client.render.Camera;
@@ -36,7 +37,7 @@ public abstract class MixinCamera {
     }
 
     @Inject(method = "update", at = @At("TAIL"))
-    private void updateHook(BlockView area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
+    private void updateHook(World area, Entity focusedEntity, boolean thirdPerson, boolean inverseView, float tickDelta, CallbackInfo ci) {
         if (ModuleManager.freeCam.isEnabled()) {
             this.thirdPerson = true;
         }

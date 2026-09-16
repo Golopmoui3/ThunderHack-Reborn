@@ -15,6 +15,7 @@ import org.spongepowered.asm.mixin.Mixin;
 import org.spongepowered.asm.mixin.injection.At;
 import org.spongepowered.asm.mixin.injection.Inject;
 import org.spongepowered.asm.mixin.injection.callback.CallbackInfo;
+import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 
 import static thunder.hack.core.manager.IManager.mc;
 
@@ -61,15 +62,18 @@ public abstract class MixinInGameHud {
         }
     }
 
-    @Inject(method = "renderExperienceBar", at = @At(value = "HEAD"), cancellable = true)
-    public void renderXpBarCustom(DrawContext context, int x, CallbackInfo ci) {
+    @Inject(method = "shouldShowExperienceBar", at = @At(value = "HEAD"), cancellable = true)
+    private void shouldShowExperienceBarHook(CallbackInfoReturnable<Boolean> cir) {
         if (mc != null && mc.currentScreen instanceof WindowsScreen)
-            ci.cancel();
+            cir.setReturnValue(false);
+        else if (ModuleManager.hotbar.isEnabled())
+            cir.setReturnValue(false);
+    }
 
-        if (ModuleManager.hotbar.isEnabled()) {
-            ci.cancel();
-            Hotbar.renderXpBar(x, context);
-        }
+    @Inject(method = "renderStatusBars", at = @At(value = "TAIL"))
+    private void renderStatusBarsPost(DrawContext context, CallbackInfo ci) {
+        if (ModuleManager.hotbar.isEnabled())
+            Hotbar.renderXpBar(0, context);
     }
 
     @Inject(method = "renderScoreboardSidebar(Lnet/minecraft/client/gui/DrawContext;Lnet/minecraft/scoreboard/ScoreboardObjective;)V", at = @At(value = "HEAD"), cancellable = true)

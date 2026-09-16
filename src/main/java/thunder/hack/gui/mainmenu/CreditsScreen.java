@@ -69,7 +69,6 @@ public class CreditsScreen extends Screen {
         float globalOffset = (contributors.size() * 150) / 2f;
 
         //  Render2DEngine.drawMainMenuShader(context, 0, 0, halfOfWidth * 2f, halfOfHeight * 2);
-        renderBackground(context, mouseX, mouseY, delta);
 
         GlStateManager._enableBlend();
         GlStateManager.glBlendFuncSeparate(770, 771, 1, 0);

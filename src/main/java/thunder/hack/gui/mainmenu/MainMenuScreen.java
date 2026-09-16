@@ -80,7 +80,7 @@ public class MainMenuScreen extends Screen {
         float mainHeight = 140;
 
         // Render2DEngine.drawMainMenuShader(context, 0, 0, halfOfWidth * 2f, halfOfHeight * 2);
-        renderBackground(context, mouseX, mouseY, delta);
+        // NB: vanilla renderWithTooltip already calls renderBackground (blur once per frame!)
 
         Render2DEngine.drawHudBase(context, mainX, mainY, mainWidth, mainHeight, 20);
 

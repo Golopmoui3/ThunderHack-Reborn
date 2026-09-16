@@ -42,8 +42,6 @@ public class WindowsScreen extends Screen {
     @Override
     public void render(DrawContext context, int mouseX, int mouseY, float delta) {
         //   super.render(context, mouseX, mouseY, delta);
-        if (Module.fullNullCheck())
-            renderBackground(context, mouseX, mouseY, delta);
 
         int i = mc.getWindow().getScaledWidth() / 2;
 

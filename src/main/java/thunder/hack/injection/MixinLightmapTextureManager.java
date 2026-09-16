@@ -13,10 +13,8 @@ import org.spongepowered.asm.mixin.injection.callback.CallbackInfoReturnable;
 @Mixin(LightmapTextureManager.class)
 public class MixinLightmapTextureManager {
 
-    @Inject(method = "getDarknessFactor(F)F", at = @At("HEAD"), cancellable = true)
-    private void getDarknessFactor(float tickDelta, CallbackInfoReturnable<Float> info) {
-        if (ModuleManager.noRender.isEnabled() && ModuleManager.noRender.darkness.getValue()) info.setReturnValue(0.0f);
-    }
+    // TODO(1.21.11): getDarknessFactor is gone (darkness now feeds the lightmap UBO in update());
+    //  NoRender.darkness needs a new hook.
     @Inject(method = "getBrightness", at = @At("HEAD"), cancellable = true)
     private static void getBrightnessHook(DimensionType type, int lightLevel, CallbackInfoReturnable<Float> cir) {
         if (ModuleManager.fullbright.isEnabled()) {
