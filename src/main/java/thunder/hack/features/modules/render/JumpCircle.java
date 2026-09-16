@@ -41,24 +41,29 @@ public class JumpCircle extends Module {
     private final List<Circle> circles = new ArrayList<>();
     private final List<PlayerEntity> cache = new CopyOnWriteArrayList<>();
     private Identifier custom;
+    private boolean customMissingNotified;
 
     @Override
     public void onEnable() {
+        customMissingNotified = false;
+        tryLoadCustom();
+    }
+
+    private void tryLoadCustom() {
         try {
             custom = ThunderUtility.getCustomImg("circle");
         } catch (Exception e) {
-            sendMessage(e.getMessage());
+            if (!customMissingNotified) {
+                customMissingNotified = true;
+                sendMessage(".minecraft -> ThunderHackRecode -> misc -> images -> circle.png (using built-in circle)");
+            }
         }
     }
 
     @Override
     public void onUpdate() {
         if (mode.is(Mode.Custom) && custom == null) {
-            try {
-                custom = ThunderUtility.getCustomImg("circle");
-            } catch (Exception e) {
-                sendMessage(".minecraft -> ThunderHackRecode -> misc -> images -> circle.png");
-            }
+            tryLoadCustom();
         }
 
         for (PlayerEntity pl : mc.world.getPlayers())
