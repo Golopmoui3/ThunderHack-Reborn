@@ -41,7 +41,7 @@ public class JumpCircle extends Module {
     private final List<Circle> circles = new ArrayList<>();
     private final List<PlayerEntity> cache = new CopyOnWriteArrayList<>();
     private Identifier custom;
-    private boolean customMissingNotified;
+    private static boolean customMissingNotified;
 
     @Override
     public void onEnable() {
