@@ -52,7 +52,24 @@ public final class ThunderUtility {
 
     public static Identifier getCustomImg(String name) throws IOException {
         Identifier id = Identifier.of("thunderhack", "custom/th-" + name);
-        mc.getTextureManager().registerTexture(id, new NativeImageBackedTexture(() -> "th-" + name, NativeImage.read(new FileInputStream(IMAGES_FOLDER + "/" + name + ".png"))));
+        File file = new File(IMAGES_FOLDER + "/" + name + ".png");
+        if (!file.exists()) {
+            // ship the default from mod assets so Custom modes work out of the box (user can replace the file)
+            String[] candidates = {
+                    "assets/thunderhack/textures/particles/" + name + ".png",
+                    "assets/thunderhack/textures/misc/" + name + ".png",
+                    "assets/thunderhack/textures/gui/headers/" + name + ".png"
+            };
+            for (String path : candidates) {
+                try (InputStream in = ThunderUtility.class.getResourceAsStream("/" + path)) {
+                    if (in != null) {
+                        java.nio.file.Files.copy(in, file.toPath());
+                        break;
+                    }
+                }
+            }
+        }
+        mc.getTextureManager().registerTexture(id, new NativeImageBackedTexture(() -> "th-" + name, NativeImage.read(new FileInputStream(file))));
         return id;
     }
 
