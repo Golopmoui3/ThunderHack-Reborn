@@ -34,7 +34,7 @@ public class ParentElement extends AbstractElement {
 
         context.getMatrices().pushMatrix();
         context.getMatrices().translate(tx, ty);
-        context.getMatrices().rotate(-180f * animation);
+        context.getMatrices().rotate((float) Math.toRadians(-180f * animation));
         context.getMatrices().translate(-tx, -ty);
         context.getMatrices().translate((x + width - 14), (y + 4.5f));
         context.drawTexture(RenderPipelines.GUI_TEXTURED, TextureStorage.guiArrow, 0, 0, 0, 0, 6, 6, 6, 6);

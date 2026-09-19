@@ -112,7 +112,7 @@ public class ModuleButton extends AbstractButton {
                 int gScale = ModuleManager.clickGui.gearScale.getValue();
                 context.getMatrices().pushMatrix();
                 context.getMatrices().translate(px, py);
-                context.getMatrices().rotate(gearAnimation.getValue());
+                context.getMatrices().rotate((float) Math.toRadians(gearAnimation.getValue()));
                 context.getMatrices().translate(-px, -py);
                 Render2DEngine.bindTexture(TextureStorage.Gear);
                 GlStateManager._enableBlend();
@@ -124,7 +124,7 @@ public class ModuleButton extends AbstractButton {
                         Render2DEngine.injectAlpha(HudEditor.getColor(90).darker(), 110));
                 GlStateManager._disableBlend();
                 context.getMatrices().translate(px, py);
-                context.getMatrices().rotate((float) Render2DEngine.interpolate(mc.player.age - 1, mc.player.age, Render3DEngine.getTickDelta()) * -4f);
+                context.getMatrices().rotate((float) Math.toRadians(Render2DEngine.interpolate(mc.player.age - 1, mc.player.age, Render3DEngine.getTickDelta()) * -4f));
                 context.getMatrices().translate(-px, -py);
                 context.getMatrices().popMatrix();
                 Render2DEngine.popWindow(context);

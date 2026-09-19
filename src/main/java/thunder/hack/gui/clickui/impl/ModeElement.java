@@ -38,7 +38,7 @@ public class ModeElement extends AbstractElement {
         float tx = x + width - 11;
         float ty = y + 7.5f;
 
-        float thetaRotation = -180f * animation;
+        float thetaRotation = (float) Math.toRadians(-180f * animation);
         context.getMatrices().pushMatrix();
 
         context.getMatrices().translate(tx, ty);
