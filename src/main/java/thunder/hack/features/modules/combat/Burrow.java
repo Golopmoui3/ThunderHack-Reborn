@@ -33,7 +33,7 @@ import static thunder.hack.features.modules.client.ClientSettings.isRu;
 
 public final class Burrow extends Module {
     private final Setting<Mode> mode = new Setting<>("Mode", Mode.Default);
-    private final Setting<OffsetMode> offsetMode = new Setting<>("Mode", OffsetMode.Smart, v -> mode.getValue() == Mode.Default);
+    private final Setting<OffsetMode> offsetMode = new Setting<>("OffsetMode", OffsetMode.Smart, v -> mode.getValue() == Mode.Default);
     private final Setting<Float> vClip = new Setting<>("VClip", -9.0F, -256.0F, 256.0F, v -> offsetMode.getValue() == OffsetMode.Constant && mode.getValue() == Mode.Default);
     private final Setting<Boolean> scaleDown = new Setting<>("ScaleDown", false, v -> mode.getValue() == Mode.Default);
     private final Setting<Boolean> scaleVelocity = new Setting<>("ScaleVelocity", false, v -> mode.getValue() == Mode.Default);
