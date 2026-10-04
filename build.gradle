@@ -16,6 +16,10 @@ loom {
 
 repositories {
 	maven {
+		name = "local-maven"
+		url = uri("${rootDir}/local-maven")
+	}
+	maven {
 		name = "jitpack.io"
 		url = "https://jitpack.io"
 	}
