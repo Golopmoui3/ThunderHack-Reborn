@@ -45,10 +45,10 @@ public class StaffBoard extends HudElement {
     public static List<String> getOnlinePlayerD() {
         List<String> S = new ArrayList<>();
         for (PlayerListEntry player : mc.player.networkHandler.getPlayerList()) {
-            if (mc.isInSingleplayer() || player.getScoreboardTeam() == null) break;
+            if (mc.isInSingleplayer() || player.getScoreboardTeam() == null) continue;
             String prefix = player.getScoreboardTeam().getPrefix().getString();
             if (check(Formatting.strip(prefix).toLowerCase())
-                    || StaffCommand.staffNames.toString().toLowerCase().contains(player.getProfile().name().toLowerCase())
+                    || StaffCommand.staffNames.stream().anyMatch(n -> n.toLowerCase().contains(player.getProfile().name().toLowerCase()))
                     || player.getProfile().name().toLowerCase().contains("1danil_mansoru1")
                     || player.getProfile().name().toLowerCase().contains("barslan_")
                     || player.getProfile().name().toLowerCase().contains("timmings")
@@ -70,14 +70,14 @@ public class StaffBoard extends HudElement {
 
     public List<String> getVanish() {
         List<String> list = new ArrayList<>();
+        List<String> online = getOnlinePlayer();
         for (Team s : mc.world.getScoreboard().getTeams()) {
             if (s.getPrefix().getString().isEmpty() || mc.isInSingleplayer()) continue;
             String name = Arrays.asList(s.getPlayerList().toArray()).toString().replace("[", "").replace("]", "");
 
-            if (getOnlinePlayer().contains(name) || name.isEmpty())
+            if (s.getPlayerList().stream().allMatch(online::contains))
                 continue;
-            if (StaffCommand.staffNames.toString().toLowerCase().contains(name.toLowerCase())
-                    && check(s.getPrefix().getString().toLowerCase())
+            if (StaffCommand.staffNames.stream().anyMatch(n -> n.toLowerCase().contains(name.toLowerCase()))
                     || check(s.getPrefix().getString().toLowerCase())
                     || name.toLowerCase().contains("1danil_mansoru1")
                     || name.toLowerCase().contains("barslan_")
