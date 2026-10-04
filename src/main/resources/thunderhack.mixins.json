@@ -40,6 +40,7 @@
     "MixinPlayerListHud",
     "MixinScreen",
     "MixinSignBlockEntityRenderer",
+    "MixinSkinTextures",
     "MixinTextVisitFactory",
     "MixinTitleScreen",
     "MixinWorldRenderer",

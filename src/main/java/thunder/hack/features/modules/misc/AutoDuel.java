@@ -40,7 +40,7 @@ public final class AutoDuel extends Module {
 
             switch (mode.getValue()) {
                 case Accept -> {
-                    if (!pac.content.getString().contains("duel request received from " + nickname.getValue().toLowerCase()))
+                    if (!message.contains("duel request received from " + nickname.getValue().toLowerCase()))
                         return;
 
                     sendChatCommand("duel accept " + nickname.getValue());
@@ -49,7 +49,7 @@ public final class AutoDuel extends Module {
                     LOGGER.info(message);
 
                     if (message.contains("[duels]")
-                            && message.contains(nickname.toString().toLowerCase())
+                            && message.contains(nickname.getValue().toLowerCase())
                             && message.contains(mc.getSession().getUsername().toLowerCase())) {
                         sendChatCommand("duel " + nickname.getValue());
                         waiting = true;
@@ -62,9 +62,5 @@ public final class AutoDuel extends Module {
     private enum Mode {
         Send,
         Accept
-    }
-
-    private enum Server {
-        CC,
     }
 }

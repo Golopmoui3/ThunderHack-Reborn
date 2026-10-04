@@ -61,6 +61,7 @@ public class ModuleManager implements IManager {
     public static Notifications notifications = new Notifications();
     public static NoEntityTrace noEntityTrace = new NoEntityTrace();
     public static MessageAppend messageAppend = new MessageAppend();
+    public static AutoDuel autoDuel = new AutoDuel();
     public static EntityControl entityControl = new EntityControl();
     public static ElytraReplace elytraReplace = new ElytraReplace();
     public static ChorusExploit chorusExploit = new ChorusExploit();
