@@ -55,11 +55,11 @@ public class MixinPlayerListEntry {
                 BufferedReader in = new BufferedReader(new InputStreamReader(capesList.openStream()));
                 String inputLine;
                 while ((inputLine = in.readLine()) != null) {
-                    String colune = inputLine.trim();
-                    String name = colune.split(":")[0];
-                    String cape = colune.split(":")[1];
-                    if (Objects.equals(profile.name(), name)) {
-                        customCapeTexture = new AssetInfo.TextureAssetInfo(Identifier.of("thunderhack", "textures/capes/" + cape + ".png"));
+                    String[] capeParts = inputLine.trim().split(":");
+                    if (capeParts.length < 2)
+                        continue;
+                    if (Objects.equals(profile.name(), capeParts[0])) {
+                        customCapeTexture = new AssetInfo.TextureAssetInfo(Identifier.of("thunderhack", "textures/capes/" + capeParts[1] + ".png"));
                         return;
                     }
                 }

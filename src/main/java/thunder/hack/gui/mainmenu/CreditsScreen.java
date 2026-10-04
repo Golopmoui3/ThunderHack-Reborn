@@ -43,11 +43,14 @@ public class CreditsScreen extends Screen {
         for (String line : ThunderHack.contributors) {
             if (line == null)
                 continue;
-            String name = line.split(";")[0];
-            String avatar = line.split(";")[1];
-            String role = line.split(";")[2];
-            String description = line.split(";")[3];
-            String clickAction = line.split(";")[4];
+            String[] contributorData = line.split(";");
+            if (contributorData.length < 5)
+                continue;
+            String name = contributorData[0];
+            String avatar = contributorData[1];
+            String role = contributorData[2];
+            String description = contributorData[3];
+            String clickAction = contributorData[4];
             CreditsScreen.getInstance().contributors.add(new CreditsScreen.Contributor(name, CreditsScreen.getAvatar(avatar), role, description.replace('т', '\n'), clickAction));
         }
     }

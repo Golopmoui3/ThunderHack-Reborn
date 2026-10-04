@@ -117,9 +117,10 @@ public final class RPC extends Module {
                                 presence.largeImageKey = "https://media1.tenor.com/images/6bcbfcc0be97d029613b54f97845bc59/tenor.gif?itemid=26823781";
                         case Custom -> {
                             readFile();
-                            presence.largeImageKey = String1.split("SEPARATOR")[0];
-                            if (!Objects.equals(String1.split("SEPARATOR")[1], "none")) {
-                                presence.smallImageKey = String1.split("SEPARATOR")[1];
+                            String[] rpcParts = String1.split("SEPARATOR");
+                            presence.largeImageKey = rpcParts[0];
+                            if (rpcParts.length > 1 && !Objects.equals(rpcParts[1], "none")) {
+                                presence.smallImageKey = rpcParts[1];
                             }
                         }
                     }

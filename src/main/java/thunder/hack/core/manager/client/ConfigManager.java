@@ -94,8 +94,8 @@ public class ConfigManager implements IManager {
                     parseBinds(element.getAsJsonObject());
 
             Command.sendMessage(isRu() ? "Загружены бинды с конфига: " + config.getName() : "Loaded bind from config: " + config.getName());
-        } catch (IOException e) {
-            LogUtils.getLogger().warn(e.getMessage());
+        } catch (Exception e) {
+            LogUtils.getLogger().warn(e.toString());
         }
         saveCurrentConfig();
     }
@@ -194,8 +194,8 @@ public class ConfigManager implements IManager {
             Command.sendMessage(isRu() ? "Загружен модуль " + module.getName() + " с конфига " + config.getName() :
                     "Loaded " + module.getName() + " from " + config.getName());
 
-        } catch (IOException e) {
-            LogUtils.getLogger().warn(e.getMessage());
+        } catch (Exception e) {
+            LogUtils.getLogger().warn(e.toString());
         }
     }
 
@@ -223,8 +223,8 @@ public class ConfigManager implements IManager {
             FileWriter writer = new FileWriter(config, StandardCharsets.UTF_8);
             new GsonBuilder().setPrettyPrinting().create().toJson(array, writer);
             writer.close();
-        } catch (IOException e) {
-            LogUtils.getLogger().warn(e.getMessage());
+        } catch (Exception e) {
+            LogUtils.getLogger().warn(e.toString());
         }
     }
 
